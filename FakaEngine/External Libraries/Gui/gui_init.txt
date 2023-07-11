@@ -1,0 +1,10 @@
+init 
+   ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui_ImplGlfwGL3_Init(window->getWindow(), true);
+
+    ImGui::StyleColorsDark();
+
+deinit   
+   ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
