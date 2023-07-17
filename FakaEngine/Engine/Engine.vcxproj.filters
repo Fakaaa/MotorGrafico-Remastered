@@ -19,17 +19,218 @@
     <Filter Include="Src\PrivateClass">
       <UniqueIdentifier>{a7b8f443-b9aa-4e6f-80bd-edb63bbb6a02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Gui">
+      <UniqueIdentifier>{67921245-77d9-477c-94b7-6047ab40ac7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\PrivateClass\Export.h">
       <Filter>Src\PrivateClass</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Animation.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\AxisAlignedBoundingBox.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CollisionManager.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CompilationController.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Entity.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Entity2D.h">
+      <Filter>Src</Filter>
+    </ClInclude>
     <ClInclude Include="Src\GameBase.h">
       <Filter>Src</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Input.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Light.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Material.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\MathLibrary.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\mesh.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\model.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ModelImporter.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ModelNode.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Plane.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Primitive3D.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shader.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Shape.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Sprite.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\stb_image.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Texture.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\TextureImporter.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Timer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Window.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Frame.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\EngineGui.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imconfig.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imgui.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imgui_impl_glfw_gl3.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imgui_internal.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\stb_rect_pack.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\stb_textedit.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\stb_truetype.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Animation.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\AxisAlignedBoundingBox.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Entity.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Entity2D.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="Src\GameBase.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Input.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Light.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Material.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MathLibrary.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\mesh.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\model.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ModelImporter.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ModelNode.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Plane.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Primitive3D.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shape.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Sprite.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\stb_image.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Texture.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\TextureImporter.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Timer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Window.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Frame.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\EngineGui.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui_demo.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui_draw.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui_impl_glfw_gl3.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\CollisionManager.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,11 +19,77 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Animation.h" />
+    <ClInclude Include="Src\AxisAlignedBoundingBox.h" />
+    <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="Src\CollisionManager.h" />
+    <ClInclude Include="Src\CompilationController.h" />
+    <ClInclude Include="Src\Entity.h" />
+    <ClInclude Include="Src\Entity2D.h" />
+    <ClInclude Include="Src\Frame.h" />
     <ClInclude Include="Src\GameBase.h" />
+    <ClInclude Include="Src\Gui\EngineGui.h" />
+    <ClInclude Include="Src\Gui\imconfig.h" />
+    <ClInclude Include="Src\Gui\imgui.h" />
+    <ClInclude Include="Src\Gui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="Src\Gui\imgui_internal.h" />
+    <ClInclude Include="Src\Gui\stb_rect_pack.h" />
+    <ClInclude Include="Src\Gui\stb_textedit.h" />
+    <ClInclude Include="Src\Gui\stb_truetype.h" />
+    <ClInclude Include="Src\Input.h" />
+    <ClInclude Include="Src\Light.h" />
+    <ClInclude Include="Src\Material.h" />
+    <ClInclude Include="Src\MathLibrary.h" />
+    <ClInclude Include="Src\mesh.h" />
+    <ClInclude Include="Src\model.h" />
+    <ClInclude Include="Src\ModelImporter.h" />
+    <ClInclude Include="Src\ModelNode.h" />
+    <ClInclude Include="Src\Plane.h" />
+    <ClInclude Include="Src\Primitive3D.h" />
     <ClInclude Include="Src\PrivateClass\Export.h" />
+    <ClInclude Include="Src\Renderer.h" />
+    <ClInclude Include="Src\Shader.h" />
+    <ClInclude Include="Src\Shape.h" />
+    <ClInclude Include="Src\Sprite.h" />
+    <ClInclude Include="Src\stb_image.h" />
+    <ClInclude Include="Src\Texture.h" />
+    <ClInclude Include="Src\TextureImporter.h" />
+    <ClInclude Include="Src\Timer.h" />
+    <ClInclude Include="Src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Animation.cpp" />
+    <ClCompile Include="Src\AxisAlignedBoundingBox.cpp" />
+    <ClCompile Include="Src\Camera.cpp" />
+    <ClCompile Include="Src\CollisionManager.cpp" />
+    <ClCompile Include="Src\Entity.cpp" />
+    <ClCompile Include="Src\Entity2D.cpp" />
+    <ClCompile Include="Src\Frame.cpp" />
     <ClCompile Include="Src\GameBase.cpp" />
+    <ClCompile Include="Src\Gui\EngineGui.cpp" />
+    <ClCompile Include="Src\Gui\imgui.cpp" />
+    <ClCompile Include="Src\Gui\imgui_demo.cpp" />
+    <ClCompile Include="Src\Gui\imgui_draw.cpp" />
+    <ClCompile Include="Src\Gui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="Src\Input.cpp" />
+    <ClCompile Include="Src\Light.cpp" />
+    <ClCompile Include="Src\Material.cpp" />
+    <ClCompile Include="Src\MathLibrary.cpp" />
+    <ClCompile Include="Src\mesh.cpp" />
+    <ClCompile Include="Src\model.cpp" />
+    <ClCompile Include="Src\ModelImporter.cpp" />
+    <ClCompile Include="Src\ModelNode.cpp" />
+    <ClCompile Include="Src\Plane.cpp" />
+    <ClCompile Include="Src\Primitive3D.cpp" />
+    <ClCompile Include="Src\Renderer.cpp" />
+    <ClCompile Include="Src\Shader.cpp" />
+    <ClCompile Include="Src\Shape.cpp" />
+    <ClCompile Include="Src\Sprite.cpp" />
+    <ClCompile Include="Src\stb_image.cpp" />
+    <ClCompile Include="Src\Texture.cpp" />
+    <ClCompile Include="Src\TextureImporter.cpp" />
+    <ClCompile Include="Src\Timer.cpp" />
+    <ClCompile Include="Src\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
