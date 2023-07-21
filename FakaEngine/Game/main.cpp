@@ -10,6 +10,12 @@ int main()
     {
         if (game != NULL) 
         {
+            game->InitGame();
+            game->UpdateEngine();
+            game->DestroyGame();
+            game->DestroyEngine();
+            delete game;
+            game = NULL;
         }
     }
     return 0;

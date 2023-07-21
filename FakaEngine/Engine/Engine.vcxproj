@@ -24,6 +24,7 @@
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\CollisionManager.h" />
     <ClInclude Include="Src\CompilationController.h" />
+    <ClInclude Include="Src\EmptyObject.h" />
     <ClInclude Include="Src\Entity.h" />
     <ClInclude Include="Src\Entity2D.h" />
     <ClInclude Include="Src\Frame.h" />
@@ -62,6 +63,7 @@
     <ClCompile Include="Src\AxisAlignedBoundingBox.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\CollisionManager.cpp" />
+    <ClCompile Include="Src\EmptyObject.cpp" />
     <ClCompile Include="Src\Entity.cpp" />
     <ClCompile Include="Src\Entity2D.cpp" />
     <ClCompile Include="Src\Frame.cpp" />

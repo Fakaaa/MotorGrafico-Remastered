@@ -20,12 +20,24 @@ class ENGINE_API GameBase
 private:
 	vector<Light*> _lights;
 
+	bool InitializeEngine();
+	void ConfigureRenderer();
+	void ConfigureCamera();
+
 	void HandleCamera();
 	void HandleLight();
 
+	bool _useGUI = true;
+
 	EmptyObject* _rootScene = NULL;
-	
+
+	const float _nearPlane = 100.0f;
+	const float _farPlane = -10000.0f;
+	const float _fovAmount = 65.0f;
 protected:
+
+	static vector<Entity*> entitysDebugInGame;
+
 	Window* _window = NULL;
 	Renderer* _renderer = NULL;
 	Camera* _mainCamera = NULL;
