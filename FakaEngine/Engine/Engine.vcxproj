@@ -93,6 +93,13 @@
     <ClCompile Include="Src\Timer.cpp" />
     <ClCompile Include="Src\Window.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\Shaders\BasicFragmentShader.shader" />
+    <None Include="Res\Shaders\BasicVertexShader.shader" />
+    <None Include="Res\Shaders\FragmentColor.shader" />
+    <None Include="Res\Shaders\FragmentTexture.shader" />
+    <None Include="Res\Shaders\Vertex.shader" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

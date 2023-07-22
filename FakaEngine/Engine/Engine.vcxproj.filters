@@ -22,6 +22,12 @@
     <Filter Include="Src\Gui">
       <UniqueIdentifier>{67921245-77d9-477c-94b7-6047ab40ac7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Res">
+      <UniqueIdentifier>{00394c2a-f622-45e9-9535-2d167d25425f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res\Shaders">
+      <UniqueIdentifier>{89e1a7b5-bf20-4ae0-9e81-67c7a0b12021}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\PrivateClass\Export.h">
@@ -239,5 +245,22 @@
     <ClCompile Include="Src\EmptyObject.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\Shaders\BasicFragmentShader.shader">
+      <Filter>Res\Shaders</Filter>
+    </None>
+    <None Include="Res\Shaders\BasicVertexShader.shader">
+      <Filter>Res\Shaders</Filter>
+    </None>
+    <None Include="Res\Shaders\FragmentColor.shader">
+      <Filter>Res\Shaders</Filter>
+    </None>
+    <None Include="Res\Shaders\FragmentTexture.shader">
+      <Filter>Res\Shaders</Filter>
+    </None>
+    <None Include="Res\Shaders\Vertex.shader">
+      <Filter>Res\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

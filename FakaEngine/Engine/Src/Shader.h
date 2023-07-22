@@ -4,8 +4,17 @@
 #include "PrivateClass/Export.h"
 #include <iostream>
 
+static enum ShaderType {
+	VERTEX,
+	FRAGMENT
+};
+
 using namespace std;
-class ENGINE_API Shader {
+class ENGINE_API Shader 
+{
+private:
+	void ValidateShaderCompilation(unsigned int shader, ShaderType typeShader);
+	void ValidateShaderLinking(unsigned int shaderProgram);
 public:
 	unsigned int id;
 	Shader();

@@ -5,6 +5,9 @@
 #include <sstream>
 #include "shader.h"
 
+#pragma region PUBLIC_METHODS
+
+
 Shader::Shader()
 {
 }
@@ -22,6 +25,10 @@ void Shader::CreateShader(const char* vertexPath, const char* fragmentPath)
 	glAttachShader(id, vertex);
 	glAttachShader(id, fragment);
 	glLinkProgram(id);
+
+	//Check if link process has succeed.
+	ValidateShaderLinking(id);
+
 	glValidateProgram(id);
 
 	glDeleteShader(vertex);
@@ -70,5 +77,48 @@ unsigned int Shader::compileShader(unsigned int type, const char* source)
 	glShaderSource(id, 1, &sourceCode, nullptr);
 	glCompileShader(id);
 
+	//Check if compilation  succeed.
+	ValidateShaderCompilation(id, type == GL_VERTEX_SHADER ? ShaderType::VERTEX : ShaderType::FRAGMENT);
+
 	return id;
 }
+
+#pragma endregion
+
+#pragma region PRIVATE_METHODS
+
+void Shader::ValidateShaderCompilation(unsigned int shader, ShaderType typeShader)
+{
+	int success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		switch (typeShader)
+		{
+		case VERTEX:
+			cout<<"ERROR:SHADER:VERTEX:COMPILATION_FAILED"<<endl;
+			break;
+		case FRAGMENT:
+			cout << "ERROR:SHADER:FRAGMENT:COMPILATION_FAILED" << endl;
+			break;
+		}
+	}
+}
+
+void Shader::ValidateShaderLinking(unsigned int shaderProgram)
+{
+	int success;
+	char infoLog[512];
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+	if (!success)
+	{
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		cout << "ERROR:SHADER:LINK_FAILED" << endl;
+	}
+}
+
+#pragma endregion

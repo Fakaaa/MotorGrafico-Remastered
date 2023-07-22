@@ -3,6 +3,9 @@
 
 #include "GameBase.h"
 #include "Camera.h"
+#include "Material.h"
+
+vector<Entity*> GameBase::entitysDebugInGame = vector<Entity*>();
 
 #pragma region CONSTRUCTOR
 
@@ -100,6 +103,40 @@ void GameBase::DestroyEngine()
 	}
 }
 
+void GameBase::AddObjectInDenugGame(Entity* entity)
+{
+	if (entity != NULL)
+	{
+		for (int i = 0; i < entitysDebugInGame.size(); i++)
+		{
+			if (entitysDebugInGame[i] == entity)
+			{
+				return;
+			}
+		}
+		entitysDebugInGame.push_back(entity);
+		_rootScene->AddChildren(entity);
+	}
+}
+
+void GameBase::RemoveObjectInDebugGame(Entity* entity)
+{
+	int index = -1;
+	for (int i = 0; i < entitysDebugInGame.size(); i++)
+	{
+		if (entitysDebugInGame[i] == entity)
+		{
+			entitysDebugInGame[i]->SetShowInDebug(false);
+			index = i;
+			i = elementsForVertexCount;
+		}
+	}
+	if (index != -1) {
+		entitysDebugInGame.erase(entitysDebugInGame.begin() + index);
+		_rootScene->RemoveChildren(entity, _rootScene);
+	}
+}
+
 void GameBase::DisableObjectInGame(Entity* entity)
 {
 }
@@ -133,7 +170,19 @@ void GameBase::ConfigureRenderer()
 	_window->CheckCreateWindows();
 	_window->CreateContextWindows();
 	_renderer->GLEWInit();
-	_renderer->SetCurrentShaderUse("", "");
+	_renderer->SetCurrentShaderUse("../Engine/Res/Shaders/Vertex.shader", "../Engine/Res/Shaders/FragmentTexture.shader");
+
+	_textureMaterialForLight = new Material();
+	_textureMaterialForLight->SetAmbientMat(glm::vec3(0.5f, 0.5f, 0.5f));
+	_textureMaterialForLight->SetDiffuseMat(glm::vec3(0.0f, 0.0f, 0.0f));
+	_textureMaterialForLight->SetSpecularMat(glm::vec3(0.5f, 0.5f, 0.5f));
+	_textureMaterialForLight->SetNewShininess(1.0f, 128.0f);
+
+	_textureMaterialDefault = new Material();
+	_textureMaterialDefault->SetAmbientMat(glm::vec3(0.0f, 0.0f, 0.0f));
+	_textureMaterialDefault->SetDiffuseMat(glm::vec3(0.0f, 0.0f, 0.0f));
+	_textureMaterialDefault->SetSpecularMat(glm::vec3(0.0f, 0.0f, 0.0f));
+	_textureMaterialDefault->SetNewShininess(0.25f, 128.0f);
 }
 
 void GameBase::ConfigureCamera()

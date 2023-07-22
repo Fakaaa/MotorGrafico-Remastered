@@ -5,11 +5,15 @@
 #include "Window.h"
 #include "Entity.h"
 #include "Input.h"
+#include "Shape.h"
 
 class Game : public GameBase 
 {
 private:
 	void ControlCamera();
+
+	Shape* _triangle = NULL;
+	bool _wireFrameEnable = false;
 public:
 	Game();
 	~Game();
