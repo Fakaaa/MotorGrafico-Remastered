@@ -137,12 +137,144 @@ void GameBase::RemoveObjectInDebugGame(Entity* entity)
 	}
 }
 
+void GameBase::AddLight(Light::TypeLight typeLight, int id)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i] != NULL)
+		{
+			if (_lights[i]->GetMyId() == id)
+			{
+				std::cout << "La luz[" << i << "] del vector ya pose el identificador: " << id << std::endl;
+				return;
+			}
+		}
+	}
+	Light* newLight = new Light(_renderer, typeLight, _mainCamera);
+	if (typeLight == Light::Directional)
+		newLight->SetAmbient(glm::vec3(0.5f, 0.5f, 0.5f));
+	else
+		newLight->SetAmbient(glm::vec3(0.2f, 0.2f, 0.2f));
+
+	newLight->SetDiffuse(glm::vec3(0.2f, 0.2f, 0.2f));
+	newLight->SetSpecular(glm::vec3(1.5f, 1.5f, 1.5f));
+
+	newLight->SetIdLight(id);
+
+	newLight->SetPosition(350.0f, 200.0f, 300.0f);
+	newLight->SetScale(10.0f, 10.0f, 10.0f);
+
+	stringstream ss;
+	ss << id;
+	string index = ss.str();
+
+	switch (newLight->GetTypeLight())
+	{
+	case Light::TypeLight::Directional:
+		_renderer->SetLighting(newLight, Light::nr_of_directional_light - 1);
+
+		newLight->SetName("Directional Light " + index);
+		break;
+	case Light::TypeLight::Point:
+		_renderer->SetLighting(newLight, Light::nr_of_point_light - 1);
+		newLight->SetName("Point Light " + index);
+		break;
+	case Light::TypeLight::Spot:
+		_renderer->SetLighting(newLight, Light::nr_of_spot_light - 1);
+		newLight->SetName("Spot Light " + index);
+		break;
+	}
+	cout << "Count pointLight: " << Light::nr_of_point_light << endl;
+	cout << "Count directionalLight: " << Light::nr_of_directional_light << endl;
+	cout << "Count spotLight: " << Light::nr_of_spot_light << endl;
+
+	_lights.push_back(newLight);
+}
+
+Light* GameBase::GetLight(int id)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i]->GetMyId() == id)
+		{
+			return _lights[i];
+		}
+	}
+	return NULL;
+}
+
+void GameBase::RemoveLight(int id)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i] != NULL)
+		{
+			if (_lights[i]->GetMyId() == id) {
+				delete _lights[i];
+				_lights.erase(_lights.begin() + i);
+				i = _lights.size();
+			}
+		}
+	}
+}
+
+void GameBase::SetLightPosition(int id, glm::vec3 position)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i] != NULL)
+		{
+			if (_lights[i]->GetMyId() == id)
+			{
+				_lights[i]->SetPosition(_lights[i]->transform.position.x + position.x,
+					_lights[i]->transform.position.y + position.y, _lights[i]->transform.position.z + position.z);
+
+				i = _lights.size();
+			}
+		}
+	}
+}
+
+void GameBase::SetTypeLightDefault(int id, Light::TypeLight setType)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i] != NULL)
+		{
+			if (_lights[i]->GetMyId() == id)
+			{
+				_lights[i]->SetTypeLightDefault(setType);
+				system("cls");
+				cout << "Count pointLight: " << Light::nr_of_point_light << endl;
+				cout << "Count directionalLight: " << Light::nr_of_directional_light << endl;
+				cout << "Count spotLight: " << Light::nr_of_spot_light << endl;
+			}
+		}
+	}
+}
+
+void GameBase::ChangeColorLight(int id, glm::vec3 color)
+{
+	for (int i = 0; i < _lights.size(); i++)
+	{
+		if (_lights[i] != NULL)
+		{
+			if (_lights[i]->GetMyId() == id)
+			{
+				_lights[i]->SetColour(color);
+			}
+		}
+	}
+}
+
 void GameBase::DisableObjectInGame(Entity* entity)
 {
+	entity->SetIsAlive(false);
 }
 
 void GameBase::EnableObjectInGame(Entity* entity)
 {
+	entity->SetIsAlive(true);
 }
 #pragma endregion
 
@@ -155,7 +287,7 @@ bool GameBase::InitializeEngine()
 	_window = new Window(1080, 680, "Faka's Engine");
 	_renderer = new Renderer();
 	_input = new Input(_window->GetWindowsPtr());
-	_mainCamera = new Camera(_renderer, TypeProjectionCamera::Ortho);
+	_mainCamera = new Camera(_renderer, TypeProjectionCamera::Perspective);
 
 	_engineGUI = new EngineGui(_window);
 
@@ -170,7 +302,7 @@ void GameBase::ConfigureRenderer()
 	_window->CheckCreateWindows();
 	_window->CreateContextWindows();
 	_renderer->GLEWInit();
-	_renderer->SetCurrentShaderUse("../Engine/Res/Shaders/Vertex.shader", "../Engine/Res/Shaders/FragmentTexture.shader");
+	_renderer->SetCurrentShaderUse("../Engine/Res/Shaders/Vertex.shader", "../Engine/Res/Shaders/FragmentColor.shader");
 
 	_textureMaterialForLight = new Material();
 	_textureMaterialForLight->SetAmbientMat(glm::vec3(0.5f, 0.5f, 0.5f));
@@ -189,12 +321,15 @@ void GameBase::ConfigureCamera()
 {
 	_mainCamera->SetDataOrtho(0.0f, _window->GetSizeX(), 0.0f, _window->GetSizeY(), _nearPlane, _farPlane);
 	_mainCamera->SetDataPerspective(_fovAmount, _window->GetSizeX(), _window->GetSizeY(), _nearPlane, _farPlane);
-	_mainCamera->UseProjection();
 
 	_mainCamera->SetPosition(300.0f, 100.0f, 1000.0f);
 	_mainCamera->InitCamera(_mainCamera->transform.position, glm::vec3(0.0f, 1.0f, 0.0f), -90, 0);
 	_mainCamera->SetViewFirstPerson();
+	_mainCamera->ChangeActualFrustrum();
+	_mainCamera->SetFrustrumCulling();
 	_mainCamera->SetName("MainCamera");
+
+	_mainCamera->ChangePerspective(TypeProjectionCamera::Perspective);
 }
 
 

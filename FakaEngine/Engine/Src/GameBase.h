@@ -9,6 +9,7 @@
 #include "Input.h"
 #include "Timer.h"
 #include "Light.h"
+#include "Primitive3D.h"
 #include "EmptyObject.h"
 
 #include <stdlib.h>
@@ -44,12 +45,26 @@ protected:
 	Input* _input = NULL;
 	Time _timeClock;
 	EngineGui* _engineGUI = NULL;
+
+	Material* _textureMaterialForLight = NULL;
+	Material* _textureMaterialDefault = NULL;
+
 public:
+	void AddObjectInDenugGame(Entity* entity);
+	void RemoveObjectInDebugGame(Entity* entity);
+
 	GameBase();
 	~GameBase();
 
 	static void DisableObjectInGame(Entity* entity);
 	static void EnableObjectInGame(Entity* entity);
+
+	Light* GetLight(int id);
+	void AddLight(Light::TypeLight typeLight, int id);
+	void RemoveLight(int id);
+	void SetLightPosition(int id, glm::vec3 position);
+	void SetTypeLightDefault(int id, Light::TypeLight setType);
+	void ChangeColorLight(int id, glm::vec3 color );
 
 	int InitEngine();
 	void UpdateEngine();

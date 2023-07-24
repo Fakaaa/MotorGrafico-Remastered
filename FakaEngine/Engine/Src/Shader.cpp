@@ -106,6 +106,17 @@ void Shader::ValidateShaderCompilation(unsigned int shader, ShaderType typeShade
 			break;
 		}
 	}
+	else {
+		switch (typeShader)
+		{
+		case VERTEX:
+			cout << "SUCCESS:SHADER:VERTEX:COMPILATION" << endl;
+			break;
+		case FRAGMENT:
+			cout << "SUCCESS:SHADER:FRAGMENT:COMPILATION" << endl;
+			break;
+		}
+	}
 }
 
 void Shader::ValidateShaderLinking(unsigned int shaderProgram)
@@ -118,6 +129,9 @@ void Shader::ValidateShaderLinking(unsigned int shaderProgram)
 	{
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		cout << "ERROR:SHADER:LINK_FAILED" << endl;
+	}
+	else {
+		cout << "SUCCESS:SHADER:LINK" << endl;
 	}
 }
 

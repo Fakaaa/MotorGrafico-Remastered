@@ -66,8 +66,8 @@ Shape::Shape(Renderer * _renderer, TypeShape typeShape) : Entity2D(_renderer)
 	_typeMaterial = TypeMaterial::ColorType;
 	_path = "None Path";
 	CreateDataShape();
-
 }
+
 Shape::~Shape()
 {
 	UnbindBuffers();

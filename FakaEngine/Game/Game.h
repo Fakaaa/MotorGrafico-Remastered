@@ -10,10 +10,14 @@
 class Game : public GameBase 
 {
 private:
-	void ControlCamera();
+	void ControlCamera(Input* input);
 
 	Shape* _triangle = NULL;
-	bool _wireFrameEnable = false;
+	Primitive3D* _cube = NULL;
+
+	Material* _goldMaterial = NULL;
+
+	void InitOfMaterials();
 public:
 	Game();
 	~Game();
