@@ -53,6 +53,16 @@ void Game::InitGame()
 	ChangeColorLight(0, cyan);
 	AddObjectInDenugGame(GetLight(0));
 
+	AddLight(Light::Point, 1);
+	SetLightPosition(1, glm::vec3(0, -56.0f, -75.0));
+	ChangeColorLight(1, red);
+	AddObjectInDenugGame(GetLight(1));
+
+	AddLight(Light::Point, 2);
+	SetLightPosition(2, glm::vec3(150, 56.0f, -75.0));
+	ChangeColorLight(2, glm::vec3(1.0));
+	AddObjectInDenugGame(GetLight(2));
+
 	InitOfMaterials();
 
 	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);

@@ -28,7 +28,7 @@ struct DireLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_DIRECTIONAL_LIGHTS 100
+#define SIZE_DIRECTIONAL_LIGHTS 50
 uniform DireLight dirLight[SIZE_DIRECTIONAL_LIGHTS];
 
 struct PointLight
@@ -44,9 +44,8 @@ struct PointLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_POINT_LIGHTS 100
+#define SIZE_POINT_LIGHTS 50
 uniform PointLight pLight[SIZE_POINT_LIGHTS];
-uniform PointLight pointLight;
 
 struct SpotLight
 {
@@ -65,7 +64,7 @@ struct SpotLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_SPOT_LIGHTS 100
+#define SIZE_SPOT_LIGHTS 50
 uniform SpotLight spotLight[SIZE_SPOT_LIGHTS];
 
 struct Material
@@ -191,11 +190,11 @@ void main()
 	if(aux >= SIZE_POINT_LIGHTS)
 		aux = SIZE_POINT_LIGHTS;
 	
-	outPutPoint += CalcPointLight(pointLight, norm, FragPos, viewDir);
-	//for (int i = 0; i < aux; i++)
-	//{
-	//	outPutPoint += CalcPointLight(pointLight, norm, FragPos, viewDir);
-	//}
+	//outPutPoint += CalcPointLight(pLight[0], norm, FragPos, viewDir);
+	for (int i = 0; i < aux; i++)
+	{
+		outPutPoint += CalcPointLight(pLight[i], norm, FragPos, viewDir);
+	}
 	//
 	//aux = nr_of_spot_light;
 	//if(aux >= SIZE_SPOT_LIGHTS)
