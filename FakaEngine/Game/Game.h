@@ -11,6 +11,8 @@ class Game : public GameBase
 {
 private:
 	void ControlCamera(Input* input);
+	void InitCustomLights();
+	void InitCustomCamera();
 
 	Shape* _triangle = NULL;
 	Primitive3D* _cube = NULL;

@@ -38,31 +38,8 @@ Game::~Game(){}
 void Game::InitGame()
 {
 	cout << "Init of game" << endl;
-
-	newPositionCamX = 1230.5;
-	newPositionCamY = 115;
-	
-	_mainCamera->SetPosition(glm::vec3(-375.4, 85, 0));
-	_mainCamera->SetInmortalObject(true);
-	_mainCamera->SetRotationX(-15);
-	_mainCamera->SetRotationY(171);
-	AddObjectInDenugGame(_mainCamera);
-
-	AddLight(Light::Point, 0);
-	SetLightPosition(0, glm::vec3(195, -56.0f, -75.0));
-	ChangeColorLight(0, cyan);
-	AddObjectInDenugGame(GetLight(0));
-
-	AddLight(Light::Point, 1);
-	SetLightPosition(1, glm::vec3(0, -56.0f, -75.0));
-	ChangeColorLight(1, red);
-	AddObjectInDenugGame(GetLight(1));
-
-	AddLight(Light::Point, 2);
-	SetLightPosition(2, glm::vec3(150, 56.0f, -75.0));
-	ChangeColorLight(2, glm::vec3(1.0));
-	AddObjectInDenugGame(GetLight(2));
-
+	InitCustomCamera();
+	InitCustomLights();
 	InitOfMaterials();
 
 	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);
@@ -80,6 +57,7 @@ void Game::InitGame()
 	_cube->SetName("Test Cube");
 	_cube->SetPosition(630.0f, -154.0f, -105.0);
 	_cube->SetScale(120.0f, 120.0f, 120.0f);
+	_cube->SetNewMaterial(_goldMaterial);
 
 	AddObjectInDenugGame(_triangle);
 	AddObjectInDenugGame(_cube);
@@ -202,6 +180,46 @@ void Game::ControlCamera(Input* input)
 
 	_mainCamera->SetPosition(newPositionCamX, newPositionCamY, newPositionCamZ);
 #pragma endregion
+}
+
+void Game::InitCustomLights()
+{
+	AddLight(Light::Point, 0);
+	SetLightPosition(0, glm::vec3(300.0f, 100.0f, 10.0));
+	ChangeColorLight(0, cyan);
+	AddObjectInDenugGame(GetLight(0));
+
+	AddLight(Light::Point, 1);
+	SetLightPosition(1, glm::vec3(0, -56.0f, -75.0));
+	ChangeColorLight(1, red);
+	AddObjectInDenugGame(GetLight(1));
+
+	AddLight(Light::Point, 2);
+	SetLightPosition(2, glm::vec3(150, 56.0f, -75.0));
+	ChangeColorLight(2, orange);
+	AddObjectInDenugGame(GetLight(2));
+
+	AddLight(Light::Spot, 3);
+	SetLightPosition(3, glm::vec3(635, -151, 0));
+	ChangeColorLight(3, magenta);
+	AddObjectInDenugGame(GetLight(3));
+
+	AddLight(Light::Directional, 4);
+	ChangeColorLight(4, glm::vec3(1.0));
+	AddObjectInDenugGame(GetLight(4));
+}
+
+void Game::InitCustomCamera()
+{
+	newPositionCamX = 1200.5;
+	newPositionCamY = 120;
+	newPositionCamZ = 375;
+
+	_mainCamera->SetPosition(glm::vec3(newPositionCamX, newPositionCamY, newPositionCamZ));
+	_mainCamera->SetInmortalObject(true);
+	_mainCamera->SetRotationX(-15);
+	_mainCamera->SetRotationY(197);
+	AddObjectInDenugGame(_mainCamera);
 }
 
 void Game::InitOfMaterials()

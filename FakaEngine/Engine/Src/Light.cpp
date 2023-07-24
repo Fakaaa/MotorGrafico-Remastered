@@ -467,6 +467,8 @@ void Light::UpdateCountLightInShader(Shader shader)
 	glUseProgram(0);
 }
 
+#pragma region DIRECTIONAL_LIGHT
+
 void Light::SetUniformColourDirectional(Shader& shader, int iter)
 {
 	stringstream iterS;
@@ -512,8 +514,9 @@ void Light::SetUniformDirectionLightLocation(Shader& shader, int iter)
 	_uniformDirectionLocation = glGetUniformLocation(shader.getId(), result.c_str());
 }
 
-//================================================
-//POINT LIGHT
+#pragma endregion
+
+#pragma region POINT_LIGHT
 
 void Light::SetUniformConstPointLight(Shader& shader, int iter)
 {
@@ -587,13 +590,15 @@ void Light::SetUniformColourPoint(Shader& shader, int iter)
 	_unifromColourPoint = glGetUniformLocation(shader.getId(), result.c_str());
 }
 
-//================================================
-//SPOT LIGHT
+#pragma endregion
+
+#pragma region SPOT_LIGHT
+
 void Light::SetUniformCutOffSopttLight(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].cutOff";
+	string result = "sLight[" + iterS.str() + "].cutOff";
 
 	_uniformCutOffSpotLight = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -602,7 +607,7 @@ void Light::SetUniformOuterCutOffSopttLight(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].outerCutOff";
+	string result = "sLight[" + iterS.str() + "].outerCutOff";
 
 	_uniformOuterCutOffSpotLight = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -611,7 +616,7 @@ void Light::SetUniformPosLightSpot(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].posLight";
+	string result = "sLight[" + iterS.str() + "].posLight";
 
 	_uniformPosLightSpotLoc = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -620,7 +625,7 @@ void Light::SetUniformSpotLightDirection(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].direction";
+	string result = "sLight[" + iterS.str() + "].direction";
 
 	_uniformSpotLightDirection = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -629,7 +634,7 @@ void Light::SetUniformColourSpot(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].colour";
+	string result = "sLight[" + iterS.str() + "].colour";
 
 	_unifromColourSpot = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -638,7 +643,7 @@ void Light::SetUniformAmbientSpotLoc(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].ambient";
+	string result = "sLight[" + iterS.str() + "].ambient";
 
 	_uniformAmbientSpotLoc = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -647,7 +652,7 @@ void Light::SetUniformDiffSpotLoc(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].diffuse";
+	string result = "sLight[" + iterS.str() + "].diffuse";
 
 	_uniformDiffuseSpotLoc = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -656,7 +661,7 @@ void Light::SetUniformSpecSpotLoc(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].specular";
+	string result = "sLight[" + iterS.str() + "].specular";
 
 	_uniformSpecularSpotLoc = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -665,7 +670,7 @@ void Light::SetUniformLinearSpotLight(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].linear";
+	string result = "sLight[" + iterS.str() + "].linear";
 
 	_uniformLinearSpotLight = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -674,7 +679,7 @@ void Light::SetUniformQuadraticSpotLight(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].quadratic";
+	string result = "sLight[" + iterS.str() + "].quadratic";
 
 	_uniformQuadraticSpotLight = glGetUniformLocation(shader.getId(), result.c_str());
 }
@@ -683,10 +688,12 @@ void Light::SetUniformConstSpotLight(Shader& shader, int iter)
 {
 	stringstream iterS;
 	iterS << iter;
-	string result = "spotLight[" + iterS.str() + "].constant";
+	string result = "sLight[" + iterS.str() + "].constant";
 
 	_uniformConstSpotLight = glGetUniformLocation(shader.getId(), result.c_str());
 }
+
+#pragma endregion
 
 void Light::SetUniformPosCameraLocation(Shader& shader)
 {

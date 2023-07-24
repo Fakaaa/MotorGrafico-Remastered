@@ -28,7 +28,7 @@ struct DireLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_DIRECTIONAL_LIGHTS 50
+#define SIZE_DIRECTIONAL_LIGHTS 10
 uniform DireLight dirLight[SIZE_DIRECTIONAL_LIGHTS];
 
 struct PointLight
@@ -44,7 +44,7 @@ struct PointLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_POINT_LIGHTS 50
+#define SIZE_POINT_LIGHTS 10
 uniform PointLight pLight[SIZE_POINT_LIGHTS];
 
 struct SpotLight
@@ -64,8 +64,8 @@ struct SpotLight
 	vec3 diffuse;
 	vec3 specular;
 };
-#define SIZE_SPOT_LIGHTS 50
-uniform SpotLight spotLight[SIZE_SPOT_LIGHTS];
+#define SIZE_SPOT_LIGHTS 10
+uniform SpotLight sLight[SIZE_SPOT_LIGHTS];
 
 struct Material
 {
@@ -81,7 +81,7 @@ out vec4 FragColor;
 
 vec3 CalcDirLight(DireLight directionalLight, vec3 normal,vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
-vec3 CalcSpotLight(SpotLight spotLigh, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 vec3 CalcDirLight(DireLight directionalLight, vec3 normal, vec3 viewDir)
 {
@@ -128,44 +128,44 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	return (ambient + diffuse + specular) * light.colour;
 }
 
-vec3 CalcSpotLight(SpotLight spotLigh, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 ambient = vec3(0.0);
 	vec3 diffuse = vec3(0.0);
 	vec3 specular = vec3(0.0);
 
-	vec3 lightDir = normalize(spotLigh.posLight - fragPos);
+	vec3 lightDir = normalize(light.posLight - fragPos);
 
-	float theta = dot(lightDir, normalize(-spotLigh.direction));
-	float epsilon = spotLigh.cutOff - spotLigh.outerCutOff;
-	float intensity = clamp((theta - spotLigh.outerCutOff) / epsilon, 0.0, 1.0);
+	float theta = dot(lightDir, normalize(-light.direction));
+	float epsilon = light.cutOff - light.outerCutOff;
+	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-	if (theta > spotLigh.cutOff)
+	if (theta > light.cutOff)
 	{
 
-		ambient = spotLigh.ambient * material.ambient;
+		ambient = light.ambient * material.ambient;
 
 		float diff = max(dot(normal, lightDir), 0.0);
 
-		diffuse = spotLigh.diffuse * (diff * material.diffuse);
+		diffuse = light.diffuse * (diff * material.diffuse);
 
 		vec3 reflectDir = reflect(-lightDir, normal);
 
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
-		specular = spotLigh.specular * (spec * material.specular);
+		specular = light.specular * (spec * material.specular);
 
 		diffuse *= intensity;
 		specular *= intensity;
 
-		float distance = length(spotLigh.posLight - fragPos);
-		float attenuation = 1.0 / (spotLigh.constant + spotLigh.linearVal * distance + spotLigh.quadratic * (distance * distance));
+		float distance = length(light.posLight - fragPos);
+		float attenuation = 1.0 / (light.constant + light.linearVal * distance + light.quadratic * (distance * distance));
 
 		diffuse *= attenuation;
 		specular *= attenuation;
 	}
 
-	return (ambient + diffuse + specular) * spotLigh.colour;
+	return (ambient + diffuse + specular) * light.colour;
 }
 
 void main()
@@ -190,22 +190,22 @@ void main()
 	if(aux >= SIZE_POINT_LIGHTS)
 		aux = SIZE_POINT_LIGHTS;
 	
-	//outPutPoint += CalcPointLight(pLight[0], norm, FragPos, viewDir);
 	for (int i = 0; i < aux; i++)
 	{
 		outPutPoint += CalcPointLight(pLight[i], norm, FragPos, viewDir);
 	}
-	//
-	//aux = nr_of_spot_light;
-	//if(aux >= SIZE_SPOT_LIGHTS)
-	//	aux = SIZE_SPOT_LIGHTS;
-	//
-	//for (int i = 0; i < aux; i++)
-	//{
-	//	outPutSpot += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);
-	//}
+	
+	aux = nr_of_spot_light;
+	if(aux >= SIZE_SPOT_LIGHTS)
+		aux = SIZE_SPOT_LIGHTS;
+	
+	for (int i = 0; i < aux; i++)
+	{
+		outPutSpot += CalcSpotLight(sLight[i], norm, FragPos, viewDir);
+	}
+
 	vec4 outPutShader = vec4((outPutDirectional + outPutPoint + outPutSpot), 1.0);
 	vec4 result = (outPutShader + texture(ourTexture, texCoord));
 
-	FragColor = result;//vec4(1.0,0.0,0.0,1.0);
+	FragColor = result;
 }
