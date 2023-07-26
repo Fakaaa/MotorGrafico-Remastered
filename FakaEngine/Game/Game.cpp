@@ -46,17 +46,14 @@ void Game::InitGame()
 	_triangle->BindGeneralData();
 	
 	_triangle->SetName("Test_Triangle");
-	_triangle->SetPosition(300.0f, 100.0f, 10.0);
-	_triangle->SetRotationX(0);
-	_triangle->SetRotationY(90);
-	_triangle->SetRotationZ(0);
+	_triangle->SetPosition(883.0f, 71.0f, 355.0);
 	_triangle->SetScale(120.0f, 120.0f, 120.0f);
 	_triangle->SetNewMaterial(_goldMaterial);
 
 	_cube = new Primitive3D(_renderer, TypeModel::Cube);
 	_cube->SetName("Test Cube");
-	_cube->SetPosition(630.0f, -154.0f, -105.0);
-	_cube->SetScale(120.0f, 120.0f, 120.0f);
+	_cube->SetPosition(847.0f, -12.0f, 250.0);
+	_cube->SetScale(690.0f, 20.0f, 815.0f);
 	_cube->SetNewMaterial(_goldMaterial);
 
 	AddObjectInDenugGame(_triangle);
@@ -185,40 +182,41 @@ void Game::ControlCamera(Input* input)
 void Game::InitCustomLights()
 {
 	AddLight(Light::Point, 0);
-	SetLightPosition(0, glm::vec3(300.0f, 100.0f, 10.0));
+	SetLightPosition(0, glm::vec3(1016.0f, -77.0f, 310.0));
 	ChangeColorLight(0, cyan);
 	AddObjectInDenugGame(GetLight(0));
 
 	AddLight(Light::Point, 1);
-	SetLightPosition(1, glm::vec3(0, -56.0f, -75.0));
+	SetLightPosition(1, glm::vec3(120, -81.0f, 385.0));
 	ChangeColorLight(1, red);
 	AddObjectInDenugGame(GetLight(1));
 
 	AddLight(Light::Point, 2);
-	SetLightPosition(2, glm::vec3(150, 56.0f, -75.0));
+	SetLightPosition(2, glm::vec3(567, -56.0f, -619.0));
 	ChangeColorLight(2, orange);
 	AddObjectInDenugGame(GetLight(2));
 
 	AddLight(Light::Spot, 3);
-	SetLightPosition(3, glm::vec3(635, -151, 0));
+	SetLightPosition(3, glm::vec3(625, -123, 502));
 	ChangeColorLight(3, magenta);
 	AddObjectInDenugGame(GetLight(3));
 
 	AddLight(Light::Directional, 4);
+	SetLightPosition(4, glm::vec3(16, 645, 300));
 	ChangeColorLight(4, glm::vec3(1.0));
 	AddObjectInDenugGame(GetLight(4));
 }
 
 void Game::InitCustomCamera()
 {
-	newPositionCamX = 1200.5;
-	newPositionCamY = 120;
-	newPositionCamZ = 375;
+	newPositionCamX = 1201.5;
+	newPositionCamY = 277;
+	newPositionCamZ = 1566;
 
 	_mainCamera->SetPosition(glm::vec3(newPositionCamX, newPositionCamY, newPositionCamZ));
 	_mainCamera->SetInmortalObject(true);
-	_mainCamera->SetRotationX(-15);
-	_mainCamera->SetRotationY(197);
+	_mainCamera->SetRotationX(-10);
+	_mainCamera->SetRotationY(252);
 	AddObjectInDenugGame(_mainCamera);
 }
 

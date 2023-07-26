@@ -284,7 +284,7 @@ bool GameBase::InitializeEngine()
 {
 	bool initGLFW = glfwInit();
 
-	_window = new Window(1080, 680, "Faka's Engine");
+	_window = new Window(1440, 980, "Faka's Engine");
 	_renderer = new Renderer();
 	_input = new Input(_window->GetWindowsPtr());
 	_mainCamera = new Camera(_renderer, TypeProjectionCamera::Perspective);
