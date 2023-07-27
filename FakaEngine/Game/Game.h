@@ -6,6 +6,7 @@
 #include "Entity.h"
 #include "Input.h"
 #include "Shape.h"
+#include "model.h"
 
 class Game : public GameBase 
 {
@@ -16,6 +17,7 @@ private:
 
 	Shape* _triangle = NULL;
 	Primitive3D* _cube = NULL;
+	Model* _testModel = NULL;
 
 	Material* _goldMaterial = NULL;
 

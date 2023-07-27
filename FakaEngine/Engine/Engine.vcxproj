@@ -87,7 +87,6 @@
     <ClCompile Include="Src\Shader.cpp" />
     <ClCompile Include="Src\Shape.cpp" />
     <ClCompile Include="Src\Sprite.cpp" />
-    <ClCompile Include="Src\stb_image.cpp" />
     <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\TextureImporter.cpp" />
     <ClCompile Include="Src\Timer.cpp" />

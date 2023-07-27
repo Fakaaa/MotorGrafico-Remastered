@@ -191,11 +191,6 @@ void ModelImporter::LoadMaterial(const aiScene * scene, const string& texturePat
 				}
 			}
 		}
-
-		if (!textureList[i]) {
-			textureList[i] = new Texture("res/textures/plain.png", false);
-			textureList[i]->LoadTexture(false);
-		}
 	}
 }
 

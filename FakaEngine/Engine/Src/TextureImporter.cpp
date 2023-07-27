@@ -4,8 +4,9 @@
 
 #include <glew.h>
 #include <GLFW/glfw3.h>
-#include "stb_image.h"
+
 #define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 
 TextureImporter::TextureImporter() {
@@ -13,12 +14,14 @@ TextureImporter::TextureImporter() {
 }
 TextureImporter::~TextureImporter() {
 }
+
 bool TextureImporter::LoadTexture(const char* path, unsigned char* data, unsigned int& texture, int width, int height, int channels, bool transparent) {
 	stbi_set_flip_vertically_on_load(true);
 
 	data = stbi_load(path, &width, &height, &channels, 0);
 	if (!data) {
 		std::cout << "No Carga Textura" << std::endl;
+		std::cout<< "Reason: " << stbi_failure_reason() << std::endl;
 		return false;
 	}
 

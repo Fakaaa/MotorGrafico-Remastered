@@ -206,9 +206,6 @@
     <ClCompile Include="Src\Sprite.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\stb_image.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Texture.cpp">
       <Filter>Src</Filter>
     </ClCompile>

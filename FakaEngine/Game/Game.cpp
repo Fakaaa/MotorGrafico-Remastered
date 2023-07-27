@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Camera.h"
 #include "Light.h"
+#include "model.h"
 #include <stdlib.h>
 
 using namespace std;
@@ -50,14 +51,23 @@ void Game::InitGame()
 	_triangle->SetScale(120.0f, 120.0f, 120.0f);
 	_triangle->SetNewMaterial(_goldMaterial);
 
-	_cube = new Primitive3D(_renderer, TypeModel::Cube);
+	_cube = new Primitive3D(_renderer, TypeModel::Cube, "Res/Textures/ZoroProfile.jpg", false);
 	_cube->SetName("Test Cube");
 	_cube->SetPosition(847.0f, -12.0f, 250.0);
 	_cube->SetScale(690.0f, 20.0f, 815.0f);
 	_cube->SetNewMaterial(_goldMaterial);
 
+	_testModel = new Model(_renderer, false);
+	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
+	_testModel->SetMaterial(_textureMaterialForLight);
+	_testModel->SetName("TankModel");
+	_testModel->SetPosition(1170, 30, 850);
+	_testModel->SetScale(30.0f, 30.0f, 30.0f);
+	_testModel->SetRotationY(160.0f);
+
 	AddObjectInDenugGame(_triangle);
 	AddObjectInDenugGame(_cube);
+	AddObjectInDenugGame(_testModel);
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -70,6 +80,11 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 	if (_cube != NULL)
 	{
 		_cube->Draw(_engineGUI->GetIfWireFrameIsActive());
+	}
+
+	if (_testModel != NULL)
+	{
+		_testModel->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
 	if (_mainCamera != NULL)
@@ -92,6 +107,13 @@ void Game::DestroyGame()
 	{
 		delete _cube;
 		_cube = NULL;
+	}
+
+	if (_testModel != NULL)
+	{
+		_testModel->UnloadModel();
+		delete _testModel;
+		_testModel = NULL;
 	}
 }
 
