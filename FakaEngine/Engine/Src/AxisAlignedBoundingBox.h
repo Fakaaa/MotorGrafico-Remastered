@@ -68,7 +68,7 @@ public:
 	void UpdateInternalDataBoundingBox(InternalData& entityInternalData, Transform& transformAttach);
 	void SetVerticesColliders(glm::vec3 values[countVerticesCollider], glm::vec4 colors[countVerticesCollider]);
 	void SetVerticesColliders(unsigned int index, glm::vec3 value);
-	string GetClassName() override;
+	string GetNameOfClass() override;
 	void Draw(bool& colliderDrawActive) override;
 	void SetEnableDraw(bool value) { enableDraw = value; }
 	bool& GetEnableDraw() { return enableDraw; }

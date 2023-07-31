@@ -4,6 +4,8 @@
 #include "GameBase.h"
 #include "Camera.h"
 #include "Material.h"
+#include "CollisionManager.h"
+#include "Gui/EngineGui.h"
 
 vector<Entity*> GameBase::entitysDebugInGame = vector<Entity*>();
 
@@ -16,7 +18,7 @@ GameBase::~GameBase() {}
 
 #pragma region PUBLIC_METHODS
 
-int GameBase::InitEngine() 
+int GameBase::InitEngine()
 {
 	if (!InitializeEngine())
 		return INIT_ERROR;
@@ -40,6 +42,9 @@ void GameBase::UpdateEngine()
 		{
 			_engineGUI->NewFrame();
 			_engineGUI->TreeEntitys(_rootScene);
+			_engineGUI->SetCountObjectInScreen(0);
+			_engineGUI->CheckCountObjectsInScreen(_rootScene);
+			_engineGUI->Text("Objetos en pantalla: " + to_string(_engineGUI->GetCountObjectInScreen() - 1));
 		}
 
 		HandleCamera();
@@ -116,6 +121,9 @@ void GameBase::AddObjectInDenugGame(Entity* entity)
 		}
 		entitysDebugInGame.push_back(entity);
 		_rootScene->AddChildren(entity);
+
+		if (entity->GetName() != "MainCamera")
+			AddObjectInFrustrumCulling(entity);
 	}
 }
 
@@ -134,6 +142,24 @@ void GameBase::RemoveObjectInDebugGame(Entity* entity)
 	if (index != -1) {
 		entitysDebugInGame.erase(entitysDebugInGame.begin() + index);
 		_rootScene->RemoveChildren(entity, _rootScene);
+	}
+}
+
+void GameBase::AddObjectInFrustrumCulling(Entity* entity)
+{
+	bool pushEnableFrustrumCulling = true;
+
+	for (int i = 0; i < _mainCamera->objectsCheckFrustrum.size(); i++)
+	{
+		if (_mainCamera->objectsCheckFrustrum[i] == entity)
+			pushEnableFrustrumCulling = false;
+	}
+
+	if (pushEnableFrustrumCulling)
+		_mainCamera->objectsCheckFrustrum.push_back(entity);
+
+	for (Entity* child : entity->GetChildrens()) {
+		AddObjectInFrustrumCulling(child);
 	}
 }
 
@@ -286,8 +312,8 @@ bool GameBase::InitializeEngine()
 
 	_window = new Window(1440, 980, "Faka's Engine");
 	_renderer = new Renderer();
-	_input = new Input(_window->GetWindowsPtr());
 	_mainCamera = new Camera(_renderer, TypeProjectionCamera::Perspective);
+	_input = new Input(_window->GetWindowsPtr(), _mainCamera);
 
 	_engineGUI = new EngineGui(_window);
 
@@ -321,19 +347,25 @@ void GameBase::ConfigureCamera()
 {
 	_mainCamera->SetDataOrtho(0.0f, _window->GetSizeX(), 0.0f, _window->GetSizeY(), _nearPlane, _farPlane);
 	_mainCamera->SetDataPerspective(_fovAmount, _window->GetSizeX(), _window->GetSizeY(), _nearPlane, _farPlane);
+	_mainCamera->UseProjection();
 
 	_mainCamera->SetPosition(300.0f, 100.0f, 1000.0f);
+
 	_mainCamera->InitCamera(_mainCamera->transform.position, glm::vec3(0.0f, 1.0f, 0.0f), -90, 0);
 	_mainCamera->SetViewFirstPerson();
-	_mainCamera->ChangeActualFrustrum();
-	_mainCamera->SetFrustrumCulling();
 	_mainCamera->SetName("MainCamera");
 
 	_mainCamera->ChangePerspective(TypeProjectionCamera::Perspective);
+	_mainCamera->ChangeActualFrustrum();
+
+	_mainCamera->SetEnableDrawAABB(false);
 }
 
+void GameBase::ConfigureOtherUtils()
+{
+}
 
-void GameBase::HandleCamera() 
+void GameBase::HandleCamera()
 {
 	switch (_mainCamera->GetTypeCamera())
 	{
@@ -344,11 +376,11 @@ void GameBase::HandleCamera()
 		_mainCamera->SetViewThirdPerson();
 		break;
 	}
-
+	_mainCamera->UseFrustrum();
 	_mainCamera->UseCamera(_renderer->GetCurrentShaderUse(), _mainCamera->GetInternalData().localModel);
 }
 
-void GameBase::HandleLight() 
+void GameBase::HandleLight()
 {
 	for (int i = 0; i < _lights.size(); i++)
 	{

@@ -42,6 +42,8 @@ Light::Light(Renderer* _render, TypeLight type, Camera* camera) : Entity(_render
 
 	UpdateCountLightInShader(_render->GetCurrentShaderUse());
 
+	CreateMyAxisAlignedBoundingBox();
+
 	CreateDataLight();
 }
 
@@ -76,6 +78,8 @@ Light::Light(glm::vec3 colour, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 s
 	InmortalObject = true;
 
 	UpdateCountLightInShader(render->GetCurrentShaderUse());
+
+	CreateMyAxisAlignedBoundingBox();
 
 	CreateDataLight();
 }
@@ -215,7 +219,7 @@ void Light::UseLight()
 
 	glUseProgram(0);
 }
-string Light::GetClassName()
+string Light::GetNameOfClass()
 {
 	return "Light";
 }

@@ -15,7 +15,7 @@ Primitive3D::Primitive3D(Renderer* renderer) : Entity(renderer)
 	_useTexture = false;
 	my_Mat = NULL;
 	CreateDataModel();
-	
+
 	//Creamos el axisAlignedBoundingBox
 	CreateMyAxisAlignedBoundingBox();
 
@@ -45,7 +45,7 @@ Primitive3D::Primitive3D(Renderer* renderer) : Entity(renderer)
 	}
 }
 
-Primitive3D::Primitive3D(Renderer * renderer, TypeModel typeModel) : Entity(renderer)
+Primitive3D::Primitive3D(Renderer* renderer, TypeModel typeModel) : Entity(renderer)
 {
 	_type = typeModel;
 
@@ -70,7 +70,7 @@ Primitive3D::Primitive3D(Renderer * renderer, TypeModel typeModel) : Entity(rend
 		// 2. PASAR LA DATA EN LIMPIO AL AxisAlignedBoundingBox 
 		// = SetVerticesCollidersPositions(GenerateAxisAlignedBoundingBox(vector<glm::vec3> _values))
 		axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
-													 axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
 		break;
 	case Pyramid:
 		// 1. OBTENER LA DATA XYZ EN LIMPIO
@@ -78,7 +78,7 @@ Primitive3D::Primitive3D(Renderer * renderer, TypeModel typeModel) : Entity(rend
 		// 2. PASAR LA DATA EN LIMPIO AL AxisAlignedBoundingBox 
 		// = SetVerticesCollidersPositions(GenerateAxisAlignedBoundingBox(vector<glm::vec3> _values))
 		axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
-			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol()); 
+			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
 
 		break;
 	}
@@ -87,7 +87,7 @@ Primitive3D::Primitive3D(Renderer * renderer, TypeModel typeModel) : Entity(rend
 Primitive3D::Primitive3D(Renderer* renderer, TypeModel typeModel, const char* filePath, bool useTransparency) : Entity(renderer)
 {
 	_type = typeModel;
-	
+
 	CreateDataModel();
 
 	_path = filePath;
@@ -116,7 +116,7 @@ Primitive3D::Primitive3D(Renderer* renderer, TypeModel typeModel, const char* fi
 		// 2. PASAR LA DATA EN LIMPIO AL AxisAlignedBoundingBox 
 		// = SetVerticesCollidersPositions(GenerateAxisAlignedBoundingBox(vector<glm::vec3> _values))
 		axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
-													 axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
 		break;
 	case Pyramid:
 		// 1. OBTENER LA DATA XYZ EN LIMPIO
@@ -129,10 +129,10 @@ Primitive3D::Primitive3D(Renderer* renderer, TypeModel typeModel, const char* fi
 	}
 }
 
-Primitive3D::~Primitive3D(){}
+Primitive3D::~Primitive3D() {}
 
 
-string Primitive3D::GetClassName()
+string Primitive3D::GetNameOfClass()
 {
 	return "Primitive3D";
 }
@@ -143,7 +143,7 @@ void Primitive3D::UseMyMaterial()
 		my_Mat->UseMaterial(renderer->GetCurrentShaderUse());
 }
 
-void Primitive3D::SetNewMaterial(Material * mat)
+void Primitive3D::SetNewMaterial(Material* mat)
 {
 	my_Mat = mat;
 
@@ -152,7 +152,7 @@ void Primitive3D::SetNewMaterial(Material * mat)
 
 void Primitive3D::Draw(bool& wireFrameActive)
 {
-	if (isAlive) 
+	if (isAlive)
 	{
 		CheckIsModel();
 		//----
@@ -187,7 +187,7 @@ void Primitive3D::Draw(bool& wireFrameActive)
 			axisAlignedBoundingBox->UpdateInternalDataBoundingBox(internalData, transform);
 
 			renderer->Draw(indicesCubeCount, renderer->GetCurrentShaderUse(), internalData.localModel, wireFrameActive);
-			
+
 			// 3. LLAMAR AL DRAW DEL AxisAlignedBoundingBox en el draw de esta clase.
 			axisAlignedBoundingBox->Draw(axisAlignedBoundingBox->GetEnableDraw());
 			break;
@@ -240,7 +240,7 @@ void Primitive3D::SetEnableDrawAABB(bool value)
 		axisAlignedBoundingBox->SetEnableDraw(value);
 }
 
-vector<glm::vec3> Primitive3D::FilterVertexDataXYZ(float * vertex, unsigned int countElementsForVertex, unsigned int sizeArrVertex)
+vector<glm::vec3> Primitive3D::FilterVertexDataXYZ(float* vertex, unsigned int countElementsForVertex, unsigned int sizeArrVertex)
 {
 	vector<vector<float>> vertices;
 	vector<float> aux;
@@ -248,11 +248,11 @@ vector<glm::vec3> Primitive3D::FilterVertexDataXYZ(float * vertex, unsigned int 
 	vector<glm::vec3> dataReturn;
 
 	int counter = 0;
-	for (int j = 0; j < sizeArrVertex; j++) 
+	for (int j = 0; j < sizeArrVertex; j++)
 	{
 		aux.push_back(vertex[j]);
 		counter++;
-		if (counter >= countElementsForVertex) 
+		if (counter >= countElementsForVertex)
 		{
 			counter = 0;
 			vector<vector<float>>::iterator alreadyOnVertices = find(vertices.begin(), vertices.end(), aux);
@@ -266,10 +266,10 @@ vector<glm::vec3> Primitive3D::FilterVertexDataXYZ(float * vertex, unsigned int 
 
 	aux.clear();
 
-	for (int i = 0; i < vertices.size(); i++) 
+	for (int i = 0; i < vertices.size(); i++)
 	{
 		vector<glm::vec3>::iterator alreadyOnData = find(dataReturn.begin(), dataReturn.end(), glm::vec3(vertices[i][0], vertices[i][1], vertices[i][2]));
-		if(alreadyOnData == dataReturn.end())
+		if (alreadyOnData == dataReturn.end())
 			dataReturn.push_back(glm::vec3(vertices[i][0], vertices[i][1], vertices[i][2]));
 	}
 

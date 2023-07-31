@@ -2,7 +2,6 @@
 #define GAMEBASE_H
 
 #include "PrivateClass/Export.h"
-#include "Gui/EngineGui.h"
 
 #include "Window.h"
 #include "Entity.h"
@@ -16,7 +15,9 @@
 
 #define INIT_ERROR -1
 
-class ENGINE_API GameBase 
+class EngineGui;
+
+class ENGINE_API GameBase
 {
 private:
 	vector<Light*> _lights;
@@ -24,6 +25,7 @@ private:
 	bool InitializeEngine();
 	void ConfigureRenderer();
 	void ConfigureCamera();
+	void ConfigureOtherUtils();
 
 	void HandleCamera();
 	void HandleLight();
@@ -53,6 +55,8 @@ public:
 	void AddObjectInDenugGame(Entity* entity);
 	void RemoveObjectInDebugGame(Entity* entity);
 
+	void AddObjectInFrustrumCulling(Entity* entity);
+
 	GameBase();
 	~GameBase();
 
@@ -64,7 +68,7 @@ public:
 	void RemoveLight(int id);
 	void SetLightPosition(int id, glm::vec3 position);
 	void SetTypeLightDefault(int id, Light::TypeLight setType);
-	void ChangeColorLight(int id, glm::vec3 color );
+	void ChangeColorLight(int id, glm::vec3 color);
 
 	int InitEngine();
 	void UpdateEngine();

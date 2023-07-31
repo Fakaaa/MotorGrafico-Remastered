@@ -3,7 +3,7 @@
 #include "AxisAlignedBoundingBox.h"
 
 //============================================
-Sprite::Sprite(Renderer * _renderer, const char* filePath, bool transparency):Entity2D(_renderer)
+Sprite::Sprite(Renderer* _renderer, const char* filePath, bool transparency) :Entity2D(_renderer)
 {
 	renderer = _renderer;
 	_transparency = transparency;
@@ -23,7 +23,7 @@ Sprite::~Sprite() {
 		delete texImporter;
 		texImporter = NULL;
 	}
-	if (animation != NULL) 
+	if (animation != NULL)
 	{
 		delete animation;
 		animation = NULL;
@@ -47,7 +47,7 @@ void Sprite::BindBufferSprite()
 void Sprite::SetAttribsSprite()
 {
 	int countElementsForVertex = 5;
-	
+
 	_positionLocation = glGetAttribLocation(renderer->GetCurrentShaderUse().getId(), "position");
 	glVertexAttribPointer(_positionLocation, 3, GL_FLOAT, GL_FALSE, countElementsForVertex * sizeof(float), 0);
 	glEnableVertexAttribArray(_positionLocation);
@@ -56,7 +56,7 @@ void Sprite::SetAttribsSprite()
 	glEnableVertexAttribArray(_texLocation);
 }
 
-void Sprite::BindBuffer(){}
+void Sprite::BindBuffer() {}
 
 void Sprite::SetEnableDrawAABB(bool value)
 {
@@ -64,7 +64,7 @@ void Sprite::SetEnableDrawAABB(bool value)
 		axisAlignedBoundingBox->SetEnableDraw(value);
 }
 
-void Sprite::Draw(bool & wireFrameActive){}
+void Sprite::Draw(bool& wireFrameActive) {}
 
 void Sprite::Draw(Time& timer)
 {
@@ -105,19 +105,19 @@ void Sprite::UpdateSprite(Time& timer)
 	animation->Update(timer);
 
 	_currentFrame = animation->GetCurrentFrame();
-	if (_currentFrame != _previusFrame 
+	if (_currentFrame != _previusFrame
 		|| _currentFrame == animation->GetAnimation().size() - 1
 		|| _currentFrame == 0) {
 		SetTextureCoordinates(animation->GetAnimation()[_currentFrame].frameCoords[0].U, animation->GetAnimation()[_currentFrame].frameCoords[0].V,
-							  animation->GetAnimation()[_currentFrame].frameCoords[1].U, animation->GetAnimation()[_currentFrame].frameCoords[1].V,
-							  animation->GetAnimation()[_currentFrame].frameCoords[2].U, animation->GetAnimation()[_currentFrame].frameCoords[2].V,
-							  animation->GetAnimation()[_currentFrame].frameCoords[3].U, animation->GetAnimation()[_currentFrame].frameCoords[3].V);
+			animation->GetAnimation()[_currentFrame].frameCoords[1].U, animation->GetAnimation()[_currentFrame].frameCoords[1].V,
+			animation->GetAnimation()[_currentFrame].frameCoords[2].U, animation->GetAnimation()[_currentFrame].frameCoords[2].V,
+			animation->GetAnimation()[_currentFrame].frameCoords[3].U, animation->GetAnimation()[_currentFrame].frameCoords[3].V);
 		_previusFrame = _currentFrame;
 	}
 	SetAnimation(animation);
 }
 //============================================
-void Sprite::SetAnimation(Animation * _animation)
+void Sprite::SetAnimation(Animation* _animation)
 {
 	animation = _animation;
 	_previusFrame = std::numeric_limits<unsigned int>::max_digits10;
@@ -171,7 +171,7 @@ int Sprite::getNrChannels()
 {
 	return nrChannels;
 }
-string Sprite::GetClassName()
+string Sprite::GetNameOfClass()
 {
 	return "Sprite";
 }

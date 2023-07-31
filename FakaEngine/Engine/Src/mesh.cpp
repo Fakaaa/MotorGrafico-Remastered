@@ -21,9 +21,9 @@ Mesh::Mesh(Renderer* render) : Entity(render)
 	SetName("Mesh");
 }
 
-Mesh::~Mesh(){}
+Mesh::~Mesh() {}
 
-string Mesh::GetClassName()
+string Mesh::GetNameOfClass()
 {
 	return "Mesh";
 }
@@ -50,13 +50,13 @@ void Mesh::SetIBO(unsigned int* indices, unsigned int numIndices)
 
 void Mesh::BindDataMesh()
 {
-	glVertexAttribPointer(_positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex,0);
+	glVertexAttribPointer(_positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex, 0);
 	glEnableVertexAttribArray(_positionLocation);
 
-	glVertexAttribPointer(_texLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex,(void*)(3 * sizeof(float)));
+	glVertexAttribPointer(_texLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex, (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(_texLocation);
 
-	glVertexAttribPointer(_normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex,(void*)(5 * sizeof(float)));
+	glVertexAttribPointer(_normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(float) * elementsForVertex, (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(_normalLocation);
 }
 
@@ -69,11 +69,11 @@ void Mesh::BindBuffer()
 
 void Mesh::SetEnableDrawAABB(bool value)
 {
-	if(axisAlignedBoundingBox != NULL)
+	if (axisAlignedBoundingBox != NULL)
 		axisAlignedBoundingBox->SetEnableDraw(value);
 }
 
-void Mesh::CreateMesh(float * vertices, unsigned int * indices, unsigned int numVertices, unsigned int numOfIndices)
+void Mesh::CreateMesh(float* vertices, unsigned int* indices, unsigned int numVertices, unsigned int numOfIndices)
 {
 	countIndices = numOfIndices;
 
@@ -97,14 +97,14 @@ void Mesh::CreateMesh(float * vertices, unsigned int * indices, unsigned int num
 
 void Mesh::Draw(bool& wireFrameActive)
 {
-	if (isAlive || InmortalObject) 
+	if (isAlive || InmortalObject)
 	{
 		BindBuffer();
 
 		GetAABB()->UpdateInternalDataBoundingBox(internalData, transform);
 
 		renderer->Draw(countIndices, renderer->GetCurrentShaderUse(), internalData.localModel, wireFrameActive);
-		
+
 		GetAABB()->Draw(GetAABB()->GetEnableDraw());
 	}
 }

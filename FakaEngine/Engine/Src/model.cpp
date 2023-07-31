@@ -11,7 +11,7 @@
 
 #include "Camera.h"
 
-Model::Model(Renderer * render, bool hasBPSPlane) : Entity(render)
+Model::Model(Renderer* render, bool hasBPSPlane) : Entity(render)
 {
 	myMat = NULL;
 	rootNode = NULL;
@@ -31,75 +31,26 @@ Model::~Model()
 	if (!myMat)
 		delete myMat;
 
-	//if (planeBSP1 != NULL && planeBSP2 != NULL && planeBSP3 != NULL)
-	//{
-	//	delete planeBSP1;
-	//	delete planeBSP2;
-	//	delete planeBSP3;
-	//
-	//	planeBSP1 = NULL;
-	//	planeBSP2 = NULL;
-	//	planeBSP3 = NULL;
-	//}
-
 	UnloadModel();
 }
 
-void Model::LoadModel(const string & filePath, const string & texturePath)
+void Model::LoadModel(const string& filePath, const string& texturePath)
 {
-	if (modelImporter != NULL) 
+	if (modelImporter != NULL)
 	{
-		rootNode = modelImporter->LoadModel(modelMeshes, filePath, texturePath, rootNode ,modelChildrens, textureList ,renderer);
+		rootNode = modelImporter->LoadModel(modelMeshes, filePath, texturePath, rootNode, modelChildrens, textureList, renderer);
 	}
 
-	if (!hasBSPPlanes)
+	for (int i = 0; i < modelImporter->getPlanesBSP().size(); i++)
 	{
-		//planeBSP1 = NULL;
-		//planeBSP2 = NULL;
-		//planeBSP3 = NULL;
-	}
-	else
-	{
-		//cout << "POS PLANE 1: " << "[" << modelImporter->getPlanesBSP()[BSP_PLANE1][0].x << "][" << modelImporter->getPlanesBSP()[BSP_PLANE1][0].y <<
-		//	"][" << modelImporter->getPlanesBSP()[BSP_PLANE1][0].z << "]" << endl;
-		//cin.get();
+		cout << "BSP_PLANE: " << i + 1 << endl;
 
-		//planeBSP1 = new PlaneBSP("BSP_Plane1",modelImporter->getPlanesBSP()[BSP_PLANE1][0], modelImporter->getPlanesBSP()[BSP_PLANE1][2],
-		//	modelImporter->getPlanesBSP()[BSP_PLANE1][1]);
-		//
-		//planeBSP2 = new PlaneBSP("BSP_Plane2", modelImporter->getPlanesBSP()[BSP_PLANE2][0], modelImporter->getPlanesBSP()[BSP_PLANE2][1],
-		//	modelImporter->getPlanesBSP()[BSP_PLANE2][2]);
-		//
-		//planeBSP3 = new PlaneBSP("BSP_Plane3", modelImporter->getPlanesBSP()[BSP_PLANE3][0], modelImporter->getPlanesBSP()[BSP_PLANE3][2],
-		//	modelImporter->getPlanesBSP()[BSP_PLANE3][1]);
-
-		//cout<<"Normal plane 1: [" << planeBSP1->getPlaneNormal().x << "]["<<
-		//	planeBSP1->getPlaneNormal().y << "]["<< planeBSP1->getPlaneNormal().z << "]" <<endl;
-		//cout << "Normal plane 2: [" << planeBSP2->getPlaneNormal().x << "][" <<
-		//	planeBSP2->getPlaneNormal().y << "][" << planeBSP2->getPlaneNormal().z << "]" << endl;
-		//cout << "Normal plane 3: [" << planeBSP3->getPlaneNormal().x << "][" <<
-		//	planeBSP3->getPlaneNormal().y << "][" << planeBSP3->getPlaneNormal().z<< "]" << endl;
-		
-		//planeBSP2->flipPlaneBSP();
-		//planeBSP3->flipPlaneBSP();
-		//
-		//cout << "Normal plane 2: [" << planeBSP2->getPlaneNormal().x << "][" <<
-		//	planeBSP2->getPlaneNormal().y << "][" << planeBSP2->getPlaneNormal().z << endl;
-		//
-		//cout << "Normal plane 3: [" << planeBSP3->getPlaneNormal().x << "][" <<
-		//	planeBSP3->getPlaneNormal().y << "][" << planeBSP3->getPlaneNormal().z << "]" << endl;
-
-		for (int i = 0; i < modelImporter->getPlanesBSP().size(); i++)
+		for (int j = 0; j < modelImporter->getPlanesBSP()[i].size(); j++)
 		{
-			cout << "BSP_PLANE: "<< i+1 << endl;
-
-			for (int j = 0; j < modelImporter->getPlanesBSP()[i].size(); j++)
-			{
-				cout <<"Position: "<< j <<
-					   " X[" << modelImporter->getPlanesBSP()[i][j].x <<
-					   "]Y[" << modelImporter->getPlanesBSP()[i][j].y <<
-					   "]Z[" << modelImporter->getPlanesBSP()[i][j].z <<"]"<<endl;
-			}
+			cout << "Position: " << j <<
+				" X[" << modelImporter->getPlanesBSP()[i][j].x <<
+				"]Y[" << modelImporter->getPlanesBSP()[i][j].y <<
+				"]Z[" << modelImporter->getPlanesBSP()[i][j].z << "]" << endl;
 		}
 	}
 
@@ -107,28 +58,28 @@ void Model::LoadModel(const string & filePath, const string & texturePath)
 		AddChildren(rootNode);
 		rootNode->_textureList = textureList;
 	}
-	
+
 	for (int i = 0; i < modelChildrens.size(); i++)
 	{
-		if(modelChildrens[i] != NULL)
+		if (modelChildrens[i] != NULL)
 			modelChildrens[i]->_textureList = textureList;
 	}
 
 	vector<glm::vec3> _dataXYZ;
 
-	for (int i = 0; i < modelMeshes.size(); i++) 
+	for (int i = 0; i < modelMeshes.size(); i++)
 	{
 		for (int j = 0; j < modelMeshes[i]->meshXYZVertices.size(); j++)
 		{
 			_dataXYZ.push_back(modelMeshes[i]->meshXYZVertices[j]);
 		}
 	}
-	//cout << GetName() << ": " << modelMeshes.size()<< " meshes" <<endl;
+
 	axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
 		axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
 }
 
-void Model::Draw(bool & wireFrameActive)
+void Model::Draw(bool& wireFrameActive)
 {
 	if (isAlive || InmortalObject)
 	{
@@ -157,7 +108,7 @@ void Model::UnloadModel()
 
 	for (int i = 0; i < modelChildrens.size(); i++)
 	{
-		if (modelChildrens[i] != NULL) 
+		if (modelChildrens[i] != NULL)
 		{
 			delete modelChildrens[i];
 			modelChildrens[i] = NULL;
@@ -173,12 +124,12 @@ void Model::UnloadModel()
 	}
 }
 
-string Model::GetClassName()
+string Model::GetNameOfClass()
 {
 	return "Model";
 }
 
-void Model::SetMaterial(Material * mat)
+void Model::SetMaterial(Material* mat)
 {
 	myMat = mat;
 
@@ -210,7 +161,7 @@ void Model::ChangeDrawState(Entity* nodeToChange, bool value)
 	nodeToChange->SetIsAlive(value);
 }
 
-void Model::BindBuffer(){}
+void Model::BindBuffer() {}
 
 void Model::SetEnableDrawAABB(bool value)
 {
@@ -224,7 +175,7 @@ void Model::updateNodesIndexBSP()
 	{
 		Entity::SetIndexBSPPlanes((int)planeBSP1->ObjectPositiveSide(this), (int)planeBSP2->ObjectPositiveSide(this),
 			(int)planeBSP3->ObjectPositiveSide(this));
-		
+
 		if (rootNode != NULL)
 		{
 			rootNode->SetIndexBSPPlanes((int)planeBSP1->ObjectPositiveSide(rootNode), (int)planeBSP2->ObjectPositiveSide(rootNode),
@@ -245,7 +196,7 @@ void Model::updateBSPPlanes(glm::vec3 posPlane1, glm::vec3 posPlane2, glm::vec3 
 {
 	if (!hasBSPPlanes)
 		return;
-	
+
 	updateNodesIndexBSP();
 
 	//planeBSP1->update_BSP_Plane(modelImporter->getPlanesBSP()[0][0] + posPlane1, modelImporter->getPlanesBSP()[0][2] + posPlane1,

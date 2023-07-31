@@ -4,6 +4,8 @@
 #include "model.h"
 #include <stdlib.h>
 
+#include "Gui/EngineGui.h"
+
 using namespace std;
 
 #pragma region PRIVATE_VARIABLES
@@ -30,7 +32,7 @@ glm::vec3 magenta = glm::vec3(0.9412f, 0.0157f, 0.7412f);
 
 Game::Game() : GameBase() {}
 
-Game::~Game(){}
+Game::~Game() {}
 
 #pragma endregion
 
@@ -45,7 +47,7 @@ void Game::InitGame()
 
 	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);
 	_triangle->BindGeneralData();
-	
+
 	_triangle->SetName("Test_Triangle");
 	_triangle->SetPosition(883.0f, 71.0f, 355.0);
 	_triangle->SetScale(120.0f, 120.0f, 120.0f);
@@ -93,7 +95,7 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 	}
 }
 
-void Game::DestroyGame() 
+void Game::DestroyGame()
 {
 	cout << "Destroy of game" << endl;
 
@@ -126,18 +128,24 @@ void Game::ControlCamera(Input* input)
 #pragma region CAMERA MOVE
 	float speed = 0;
 	//INPUTS
-	KeyBoard moveUpCamera = KeyBoard::KEY_W;
-	KeyBoard moveDownCamera = KeyBoard::KEY_S;
+	KeyBoard moveUpCamera = KeyBoard::KEY_SPACE;
+	KeyBoard moveDownCamera = KeyBoard::KEY_LEFT_CONTROL;
 	KeyBoard moveLeftCamera = KeyBoard::KEY_A;
 	KeyBoard moveRightCamera = KeyBoard::KEY_D;
-	KeyBoard moveForwardCamera = KeyBoard::KEY_UP;
-	KeyBoard moveBackCamera = KeyBoard::KEY_DOWN;
+	KeyBoard moveForwardCamera = KeyBoard::KEY_S;
+	KeyBoard moveBackCamera = KeyBoard::KEY_W;
 
 	//ROTACION EN Z NO DISPONIBLE AUN.
 	KeyBoard y_rotateLeft = KeyBoard::KEY_J;
 	KeyBoard y_rotateRight = KeyBoard::KEY_L;
 	KeyBoard x_rotateLeft = KeyBoard::KEY_I;
 	KeyBoard x_rotateRight = KeyBoard::KEY_K;
+
+	if (input->GetKey(KEY_TAB))
+	{
+		_mouseCameraControl = !_mouseCameraControl;
+		input->SetUseMouseCamera(_mouseCameraControl);
+	}
 
 	//TRASLACION
 	if (input->GetKey(moveUpCamera))
@@ -198,6 +206,7 @@ void Game::ControlCamera(Input* input)
 	}
 
 	_mainCamera->SetPosition(newPositionCamX, newPositionCamY, newPositionCamZ);
+
 #pragma endregion
 }
 
@@ -231,15 +240,17 @@ void Game::InitCustomLights()
 
 void Game::InitCustomCamera()
 {
-	newPositionCamX = 1201.5;
-	newPositionCamY = 277;
-	newPositionCamZ = 1566;
+	newPositionCamX = 865.5;
+	newPositionCamY = 245;
+	newPositionCamZ = 1355;
 
 	_mainCamera->SetPosition(glm::vec3(newPositionCamX, newPositionCamY, newPositionCamZ));
-	_mainCamera->SetInmortalObject(true);
-	_mainCamera->SetRotationX(-10);
-	_mainCamera->SetRotationY(252);
-	AddObjectInDenugGame(_mainCamera);
+	//_mainCamera->SetRotationX(-10);
+	//_mainCamera->SetRotationY(270);
+
+	_mainCamera->SetUseFrustrum(true);
+	_mainCamera->UseFrustrum();
+	_mainCamera->SetEnableDrawAABB(true);
 }
 
 void Game::InitOfMaterials()

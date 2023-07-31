@@ -13,6 +13,7 @@ public:
 	MyPlane(glm::vec3 normal, glm::vec3 point);
 	~MyPlane();
 
+	void set3Points(glm::vec3 normal, glm::vec3 point);
 	void set3Points(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC);
 
 	glm::vec3 getNormal() { return glm::normalize(_normal); }

@@ -9,7 +9,7 @@ const int elementsForVertex = 8;
 
 class ENGINE_API Mesh : public Entity
 {
-private:	
+private:
 	int countIndices;
 
 protected:
@@ -26,7 +26,7 @@ public:
 	Mesh(Renderer* render);
 	~Mesh();
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 	vector<glm::vec3> meshXYZVertices;
 
 	void CreateMesh(float* vertices, unsigned int* indices, unsigned int numVertices, unsigned int numOfIndices);

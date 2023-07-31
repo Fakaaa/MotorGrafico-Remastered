@@ -37,12 +37,12 @@ public:
 	void Draw(bool& wireFrameActive) override;
 	void UnloadModel();
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 
 	void SetMaterial(Material* mat);
 	virtual void SetIsAlive(bool value);
 	void ChangeDrawState(Entity* nodeToChange, bool value);
-	
+
 	ModelNode* GetMyModelNode() { return rootNode; }
 	vector<ModelNode*> GetModelChildrens() { return modelChildrens; }
 	vector<Mesh*> GetModelMeshes() { return modelMeshes; }

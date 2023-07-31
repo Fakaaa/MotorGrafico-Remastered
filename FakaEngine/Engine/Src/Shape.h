@@ -6,12 +6,12 @@
 #include "../Lib/glm/vec4.hpp"
 #include "Texture.h"
 
-static enum TypeShape 
+static enum TypeShape
 {
 	TRIANGLE = 0x0004,
 	QUAD = 0x0007,
 };
-static enum TypeMaterial 
+static enum TypeMaterial
 {
 	TextureType = 1,
 	ColorType = 2,
@@ -56,17 +56,17 @@ public:
 
 	void Draw(bool& wireFrameActive) override;
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 
 	unsigned int _texture;
 
-	Shape(Renderer *_renderer, TypeShape typeShape, const char* filePath);
-	Shape(Renderer *_renderer, TypeShape typeShape);
+	Shape(Renderer* _renderer, TypeShape typeShape, const char* filePath);
+	Shape(Renderer* _renderer, TypeShape typeShape);
 	~Shape();
 
 	//Textures
 
-	void SetNewMaterial(Material * mat);
+	void SetNewMaterial(Material* mat);
 
 	void BindGeneralData();
 	unsigned int GetVbo();

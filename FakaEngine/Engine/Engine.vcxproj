@@ -28,6 +28,7 @@
     <ClInclude Include="Src\Entity.h" />
     <ClInclude Include="Src\Entity2D.h" />
     <ClInclude Include="Src\Frame.h" />
+    <ClInclude Include="Src\FrustrumCulling.h" />
     <ClInclude Include="Src\GameBase.h" />
     <ClInclude Include="Src\Gui\EngineGui.h" />
     <ClInclude Include="Src\Gui\imconfig.h" />
@@ -67,6 +68,7 @@
     <ClCompile Include="Src\Entity.cpp" />
     <ClCompile Include="Src\Entity2D.cpp" />
     <ClCompile Include="Src\Frame.cpp" />
+    <ClCompile Include="Src\FrustrumCulling.cpp" />
     <ClCompile Include="Src\GameBase.cpp" />
     <ClCompile Include="Src\Gui\EngineGui.cpp" />
     <ClCompile Include="Src\Gui\imgui.cpp" />

@@ -26,8 +26,11 @@ private:
 
 	static Entity* lastEntitySelected;
 	static Entity* currentEntitySelected;
+
 	static void _TreeEntitys(Entity* entity);
+	static int countObjectInScreen;
 public:
+
 	EngineGui(Window* window);
 	static void CreateContext(Window* window);
 	static void Destroy();
@@ -46,9 +49,14 @@ public:
 	static void UpdateWireFrameGui();
 	static void UpdateAABB(Entity* entityNode);
 	float GetSpeedRotation() { return speedRotation; };
+	static void CheckCountObjectsInScreen(Entity* entityRoot);
+
 	void SetSpeedPositionChange(float value) { speedPosition = value; }
 	void SetSpeedRotationChange(float value) { speedRotation = value; }
 	void SetSpeedScalatedChange(float value) { speedScalated = value; }
+
+	void SetCountObjectInScreen(int value) { countObjectInScreen = value; };
+	int GetCountObjectInScreen() { return countObjectInScreen; }
 	~EngineGui();
 };
 

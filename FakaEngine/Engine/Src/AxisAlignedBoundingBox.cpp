@@ -312,7 +312,7 @@ void AxisAlignedBoundingBox::SetVerticesColliders(unsigned int index, glm::vec3 
 	UpdateVerticesData();
 }
 
-string AxisAlignedBoundingBox::GetClassName()
+string AxisAlignedBoundingBox::GetNameOfClass()
 {
 	return "AxisAlignedBoundingBox";
 }

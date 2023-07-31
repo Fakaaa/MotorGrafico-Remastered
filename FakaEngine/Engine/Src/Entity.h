@@ -36,26 +36,28 @@ Renderer* GetRenderer();
 #include "Renderer.h"
 
 class AxisAlignedBoundingBox;
+class FrustrumCulling;
 
 #include "stb_image.h"
 
 #define ENTITY_2DIMENTIONS 1
 #define ENTITY_3DIMENTIONS 2
-//using namespace glm;
 
 struct ENGINE_API Transform
 {
-	glm::vec3 forward;
-	glm::vec3 backward;
-	glm::vec3 left;
-	glm::vec3 right;
-	glm::vec3 up;
-	glm::vec3 down;
+	glm::vec4 forward;
+	glm::vec4 backward;
+	glm::vec4 left;
+	glm::vec4 right;
+	glm::vec4 up;
+	glm::vec4 down;
 
+	glm::vec3 globalScale;
 	glm::vec3 globalPosition;
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
+	glm::quat rotationQuaternion;
 };
 struct ENGINE_API InternalData
 {
@@ -79,7 +81,7 @@ private:
 	void _AddChildren(Entity* children, Entity* newParent);
 	//---------//
 protected:
-	
+
 	void CreateMyAxisAlignedBoundingBox();
 
 	//FRUSTRUM CULLING
@@ -90,6 +92,8 @@ protected:
 	Entity* parent = NULL;
 	vector<Entity*> childrens;
 	//-----------//
+
+	float deg2rad = (glm::pi<float>() * 2.0f) / 360.0f;
 
 	Renderer* renderer;
 	InternalData internalData;
@@ -126,8 +130,8 @@ public:
 	virtual void Draw(bool& wireFrameActive) = 0;
 	virtual void SetEnableDrawAABB(bool value) = 0;
 
-	Entity(Renderer *_renderer);
-	Entity(Renderer *_renderer, float _isModel);
+	Entity(Renderer* _renderer);
+	Entity(Renderer* _renderer, float _isModel);
 	~Entity();
 	Transform transform;
 	Renderer* GetRenderer();
@@ -146,14 +150,14 @@ public:
 	void InitIsModelShader();
 	void CheckIsModel();
 	bool GetIsAlive() { return isAlive; }
-	virtual void SetIsAlive(bool value) 
+	virtual void SetIsAlive(bool value)
 	{
-		isAlive = value; 
+		isAlive = value;
 	}
 	void SetInmortalObject(bool value);
 	bool GetIsInmortal() { return InmortalObject; }
 
-	virtual string GetClassName() 
+	virtual string GetNameOfClass()
 	{
 		return "Entity"; // Aplicar override en todas las clases hijo.
 	}
@@ -163,6 +167,7 @@ public:
 	int* GetIndicesBSP() { return indexBSP; }
 	int amountIndicesTrue;
 	bool CheckAmountIndicesTrue(Camera* camera);
+	void DisableMeAndChilds();
 
 	//UI//
 	void ShowUI();
@@ -182,6 +187,16 @@ public:
 	vector<Entity*> GetChildrens() { return childrens; }
 	//-----------//
 
-	glm::vec3 GetForward();
+	glm::quat EulerToQuat(glm::vec3 euler);
+	glm::vec3 QuatXVec(glm::quat quat, glm::vec3 vec);
+	void UpdateTransformsData();
+
+	void CheckVisibleFrustrumCulling(vector<Entity*> ObjectsInFrustrum, vector<int>& indexObjectsVisibility, FrustrumCulling* FrustrumCulling);
+
+	virtual glm::vec3* GetAABBGlobalPositions();
+
+	glm::vec4 GetForward();
+	glm::vec4 GetUp();
+	glm::vec4 GetRight();
 };
 #endif

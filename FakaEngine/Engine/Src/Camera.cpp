@@ -1,9 +1,10 @@
 #include "Camera.h"
 #include <glew.h>
 #include <GLFW/glfw3.h>
+
 #include "Material.h"
 #include "AxisAlignedBoundingBox.h"
-
+#include "FrustrumCulling.h"
 #include "CollisionManager.h"
 
 Camera::Camera(Renderer* _render, TypeProjectionCamera _typeProjectionCamera) : Entity(_render)
@@ -12,6 +13,7 @@ Camera::Camera(Renderer* _render, TypeProjectionCamera _typeProjectionCamera) : 
 	_MVP.projection = glm::mat4(1.0f);
 	typeProjectionCamera = _typeProjectionCamera;
 	typeCamera = FirstPerson;
+	frustrumCulling = new FrustrumCulling();
 	InmortalObject = true;
 }
 
@@ -25,35 +27,9 @@ Camera::~Camera()
 		_AABBPerspective = NULL;
 	}
 
-	if (_nearPlane != NULL)
-	{
-		delete _nearPlane;
-		_nearPlane = NULL;
-	}
-	if (_farPlane != NULL)
-	{
-		delete _farPlane;
-		_farPlane = NULL;
-	}
-	if (_downPlane != NULL)
-	{
-		delete _downPlane;
-		_downPlane = NULL;
-	}
-	if (_topPlane != NULL)
-	{
-		delete _topPlane;
-		_topPlane = NULL;
-	}
-	if (_leftPlane != NULL)
-	{
-		delete _leftPlane;
-		_leftPlane = NULL;
-	}
-	if (_rightPlane != NULL)
-	{
-		delete _rightPlane;
-		_rightPlane = NULL;
+	if (frustrumCulling != NULL) {
+		delete frustrumCulling;
+		frustrumCulling = NULL;
 	}
 }
 
@@ -72,103 +48,6 @@ void Camera::ChangeActualFrustrum()
 	}
 }
 
-bool Camera::positiveNear(glm::vec3 point)
-{
-	if (_nearPlane == NULL)
-		return false;
-
-	return _nearPlane->getSide(point);
-}
-
-bool Camera::positiveFar(glm::vec3 point)
-{
-	if (_farPlane == NULL)
-		return false;
-
-	return _farPlane->getSide(point);
-}
-
-bool Camera::positiveLeft(glm::vec3 point)
-{
-	if (_leftPlane == NULL)
-		return false;
-
-	return _leftPlane->getSide(point);
-}
-
-bool Camera::positiveRight(glm::vec3 point)
-{
-	if (_rightPlane == NULL)
-		return false;
-
-	return _rightPlane->getSide(point);
-}
-
-bool Camera::positiveTop(glm::vec3 point)
-{
-	if (_topPlane == NULL)
-		return false;
-
-	return _topPlane->getSide(point);
-}
-
-bool Camera::positiveDown(glm::vec3 point)
-{
-	if (_downPlane == NULL)
-		return false;
-
-	return _downPlane->getSide(point);
-}
-
-void Camera::updateFrustrumPlanes()
-{
-	if (_farPlane != NULL && _nearPlane != NULL && _topPlane != NULL
-		&& _downPlane != NULL && _leftPlane != NULL && _rightPlane != NULL)
-	{
-		glm::vec3 point0 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[0].x, transform.position.y + _AABBPerspective->GetAABBPositions()[0].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[0].z);
-
-		glm::vec3 point1 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[1].x, transform.position.y + _AABBPerspective->GetAABBPositions()[1].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[1].z);
-
-		glm::vec3 point2 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[2].x, transform.position.y + _AABBPerspective->GetAABBPositions()[2].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[2].z);
-
-		glm::vec3 point3 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[3].x, transform.position.y + _AABBPerspective->GetAABBPositions()[3].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[3].z);
-
-		glm::vec3 point4 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[4].x, transform.position.y + _AABBPerspective->GetAABBPositions()[4].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[4].z);
-
-		glm::vec3 point5 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[5].x, transform.position.y + _AABBPerspective->GetAABBPositions()[5].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[5].z);
-
-		glm::vec3 point6 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[6].x, transform.position.y + _AABBPerspective->GetAABBPositions()[6].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[6].z);
-
-		glm::vec3 point7 = glm::vec3(transform.position.x + _AABBPerspective->GetAABBPositions()[7].x, transform.position.y + _AABBPerspective->GetAABBPositions()[7].y,
-			transform.position.z + _AABBPerspective->GetAABBPositions()[7].z);
-
-		if (_AABBPerspective != NULL)
-		{
-			_nearPlane->set3Points(point0, point3, point2);
-
-			_farPlane->set3Points(point4, point7, point6);
-
-			_rightPlane->set3Points(point7, point6, point2);
-
-			_leftPlane->set3Points(point4, point5, point1);
-
-			_downPlane->set3Points(point5, point6, point2);
-
-			_topPlane->set3Points(point7, point4, point0);
-
-			_rightPlane->flipPlane();
-			_nearPlane->flipPlane();
-		}
-	}
-}
-
 void Camera::SetIndexBSPPlanes(int plane1, int plane2, int plane3)
 {
 	indicesBSP[0] = plane1;
@@ -176,24 +55,23 @@ void Camera::SetIndexBSPPlanes(int plane1, int plane2, int plane3)
 	indicesBSP[2] = plane3;
 }
 
-void Camera::renderThingsOnScene(CollisionManager* frustrumCheck, vector<Entity*> objectsInScene)
-{
-	for (int i = 0; i < objectsInScene.size(); i++)
-	{
-		checkObjectHerarchy(frustrumCheck, objectsInScene[i]);
-	}
-}
-
 void Camera::SetEnableDrawAABB(bool value)
 {
 	if (axisAlignedBoundingBox != NULL)
 		axisAlignedBoundingBox->SetEnableDraw(value);
+
+	if (_AABBOrthographic != NULL)
+		_AABBOrthographic->SetEnableDraw(value);
+
+	if (_AABBPerspective != NULL)
+		_AABBPerspective->SetEnableDraw(value);
 }
 
 void Camera::BindBuffer() {}
 
 void Camera::Draw(bool& wireFrameActive)
 {
+	UseFrustrum();
 	UseCamera(renderer->GetCurrentShaderUse(), internalData.localModel);
 }
 void Camera::UseCamera(Shader& shader, glm::mat4 trsCamera)
@@ -205,26 +83,6 @@ void Camera::UseCamera(Shader& shader, glm::mat4 trsCamera)
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trsCamera));
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(_MVP.projection));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(_MVP.view));
-
-	switch (typeProjectionCamera)
-	{
-	case Perspective:
-		if (_AABBPerspective != NULL)
-		{
-			_AABBPerspective->UpdateInternalDataBoundingBox(internalData, transform);
-			//_AABBPerspective->Draw(_AABBPerspective->GetEnableDraw());
-			bool disable = false;
-			_AABBPerspective->Draw(disable);
-		}
-		break;
-	case Ortho:
-		if (_AABBOrthographic != NULL)
-		{
-			_AABBOrthographic->UpdateInternalDataBoundingBox(internalData, transform);
-			_AABBOrthographic->Draw(_AABBOrthographic->GetEnableDraw());
-		}
-		break;
-	}
 }
 void Camera::SetViewFirstPerson()
 {
@@ -264,29 +122,10 @@ void Camera::CalculateThirdPersonPositionCamera()
 	UpdateCamera();
 }
 
-void Camera::checkObjectHerarchy(CollisionManager* frustrumCheck, Entity* object)
-{
-	if (object->GetIsInmortal())
-		return;
-
-	if (!frustrumCheck->CheckEntitiesOnFrustrum(this, object))
-		disableChildrenAndParent(object);
-	else {
-		object->SetIsAlive(true);
-		for (int i = 0; i < object->GetChildrens().size(); i++)
-		{
-			checkObjectHerarchy(frustrumCheck, object->GetChildrens()[i]);
-		}
-	}
-}
 
 void Camera::disableChildrenAndParent(Entity* parent)
 {
 	parent->SetIsAlive(false);
-	//for (Entity* child : parent->GetChildrens())
-	//{
-	//	disableChildrenAndParent(child);
-	//}
 }
 
 void Camera::enableChildrenAndParent(Entity* parent)
@@ -363,7 +202,12 @@ float Camera::GetYaw() {
 	return _yaw;
 }
 
-string Camera::GetClassName()
+void Camera::SetFront(glm::vec3 frontValue)
+{
+	_front = frontValue;
+}
+
+string Camera::GetNameOfClass()
 {
 	return "Camera";
 }
@@ -393,109 +237,29 @@ void Camera::ChangePerspective(TypeProjectionCamera _typeProjectionCamera)
 	UseProjection();
 }
 
-void Camera::SetFrustrumCulling()
+void Camera::UseFrustrum()
 {
-	_AABBOrthographic = new AxisAlignedBoundingBox(renderer);
-	_AABBPerspective = new AxisAlignedBoundingBox(renderer);
-
-	float nearDist = ((transform.position.z - projectionDataPerspective._near) / (projectionDataPerspective._FOV / projectionDataPerspective._aspect));
-	float farDist = ((transform.position.z - projectionDataPerspective._front) / (projectionDataPerspective._FOV / projectionDataPerspective._aspect));
-
-	float nearZ = (transform.position.z);
-	float farZ = (projectionDataPerspective._front - transform.position.z);
-
-	vector<glm::vec3> _dataXYZOrtho;
-	vector<glm::vec3> _dataXYZPerspective;
-
-	//float nearMinX = -100;
-	//float nearMaxX =  400;
-
-	float nearMinX = transform.position.x * (-nearDist);
-	float nearMaxX = transform.position.x * (nearDist);
-	float nearMinY = transform.position.y * (-nearDist);
-	float nearMaxY = transform.position.y * (nearDist);
-
-	float farMinX = transform.position.x * (-(farDist));
-	float farMaxX = transform.position.x * ((farDist));
-	float farMinY = transform.position.y * (-(farDist));
-	float farMaxY = transform.position.y * ((farDist));
-
-	cout << "NEAR DIST: " << nearDist << endl;
-	cout << "FAR DIST: " << farDist << endl;
-
-#pragma region ORTHOGRAPHIC VIEW 
-	//--------------------------------------------------------------------
-	//0
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._left, projectionDataOrtho._top, projectionDataOrtho._front));
-	//1
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._left, projectionDataOrtho._bottom, projectionDataOrtho._front));
-	//2
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._right, projectionDataOrtho._bottom, projectionDataOrtho._front));
-	//3
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._right, projectionDataOrtho._top, projectionDataOrtho._front));
-
-	//4
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._left, projectionDataOrtho._top, projectionDataOrtho._near));
-	//5
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._left, projectionDataOrtho._bottom, projectionDataOrtho._near));
-	//6
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._right, projectionDataOrtho._bottom, projectionDataOrtho._near));
-	//7
-	_dataXYZOrtho.push_back(glm::vec3(projectionDataOrtho._right, projectionDataOrtho._top, projectionDataOrtho._near));
-
-	_AABBOrthographic->SetVerticesColliders(_AABBOrthographic->GenerateAxisAlignedBoundingBoxPos(_dataXYZOrtho),
-		_AABBOrthographic->GenerateAxisAlignedBoundingBoxCol());
-
-	//-
-	//--------------------------------------------------------------------
-#pragma endregion
-
-#pragma region PERSPECTIVE VIEW
-
-//0
-	_dataXYZPerspective.push_back(glm::vec3(nearMinX / 16, nearMaxY / 16, nearZ / 1.005f));
-	//1																  
-	_dataXYZPerspective.push_back(glm::vec3(nearMinX / 16, nearMinY / 16, nearZ / 1.005));
-	//2																  
-	_dataXYZPerspective.push_back(glm::vec3(nearMaxX / 16, nearMinY / 16, nearZ / 1.005));
-	//3																  
-	_dataXYZPerspective.push_back(glm::vec3(nearMaxX / 16, nearMaxY / 16, nearZ / 1.005));
-	//4
-	_dataXYZPerspective.push_back(glm::vec3(farMinX / 16, farMaxY / 16, farZ / 2));
-	//5
-	_dataXYZPerspective.push_back(glm::vec3(farMinX / 16, farMinY / 16, farZ / 2));
-	//6
-	_dataXYZPerspective.push_back(glm::vec3(farMaxX / 16, farMinY / 16, farZ / 2));
-	//7
-	_dataXYZPerspective.push_back(glm::vec3(farMaxX / 16, farMaxY / 16, farZ / 2));
-
-	cout << "DATA PERSPECTIVE FRUSTRUM" << endl;
-	for (int i = 0; i < _dataXYZPerspective.size(); i++)
+	if (useFrustrum)
 	{
-		cout << i << "_[" << _dataXYZPerspective[i].x << "][" << _dataXYZPerspective[i].y << "][" << _dataXYZPerspective[i].z << "]." << endl;
+		for (int i = 0; i < objectsCheckFrustrum.size(); i++)
+		{
+			objectsCheckFrustrum[i]->SetIsAlive(true);
+		}
+		frustrumCulling->UpdateFrustrum(this);
+
+		for (int i = 0; i < objectsCheckFrustrum.size(); i++)
+		{
+			if (objectsCheckFrustrum[i]->GetIsAlive())
+				objectsCheckFrustrum[i]->CheckVisibleFrustrumCulling(objectsCheckFrustrum, indexsObjectsDisable, frustrumCulling);
+		}
+
+		for (int i = 0; i < indexsObjectsDisable.size(); i++)
+		{
+			objectsCheckFrustrum[indexsObjectsDisable[i]]->SetIsAlive(false);
+		}
+
+		indexsObjectsDisable.clear();
 	}
-
-	_nearPlane = new MyPlane(_dataXYZPerspective[0], _dataXYZPerspective[3], _dataXYZPerspective[2]);
-
-	_farPlane = new MyPlane(_dataXYZPerspective[4], _dataXYZPerspective[7], _dataXYZPerspective[6]);
-
-	_rightPlane = new MyPlane(_dataXYZPerspective[7], _dataXYZPerspective[6], _dataXYZPerspective[2]);
-
-	_leftPlane = new MyPlane(_dataXYZPerspective[4], _dataXYZPerspective[5], _dataXYZPerspective[1]);
-
-	_downPlane = new MyPlane(_dataXYZPerspective[5], _dataXYZPerspective[6], _dataXYZPerspective[2]);
-
-	_topPlane = new MyPlane(_dataXYZPerspective[7], _dataXYZPerspective[4], _dataXYZPerspective[0]);
-
-	_rightPlane->flipPlane();
-	_nearPlane->flipPlane();
-
-	_AABBPerspective->SetVerticesColliders(_AABBPerspective->GenerateAABBFrustrumPerspective(_dataXYZPerspective),
-		_AABBPerspective->GenerateAxisAlignedBoundingBoxCol());
-#pragma endregion
-
-	_AABBOrthographic->AttachEntity(internalData, transform);
-	_AABBPerspective->AttachEntity(internalData, transform);
 }
 
 void Camera::UseProjection()

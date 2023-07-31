@@ -18,6 +18,7 @@ float EngineGui::speedPosition = 15.0f;
 float EngineGui::speedRotation = 1.0f;
 float EngineGui::speedScalated = 50.0f;
 bool EngineGui::_wireFrameActive = false;
+int EngineGui::countObjectInScreen = 0;
 
 EngineGui::EngineGui(Window* window)
 {
@@ -144,11 +145,22 @@ void EngineGui::UpdateAABB(Entity* entityNode)
 	}
 }
 
+void EngineGui::CheckCountObjectsInScreen(Entity* entityRoot)
+{
+	if (entityRoot->GetIsAlive())
+		countObjectInScreen++;
+
+	for (Entity* child : entityRoot->GetChildrens())
+	{
+		CheckCountObjectsInScreen(child);
+	}
+}
+
 void EngineGui::ShowEntityNodeInfo(Entity* entity)
 {
 	ImGui::Begin("Properties");
 	ImGui::Separator();
-	ImGui::Text(string("Type:" + entity->GetClassName()).c_str());
+	ImGui::Text(string("Type:" + entity->GetNameOfClass()).c_str());
 	static char buf[254];
 	memcpy(buf, (void*)&entity->GetName()[0], entity->GetName().size());
 	if (ImGui::InputText("Name", buf, 254, ImGuiInputTextFlags_EnterReturnsTrue)) {
@@ -184,7 +196,7 @@ void EngineGui::ShowEntityNodeInfo(Entity* entity)
 	ShowEntityInfo(entity);
 
 	ImGui::Separator();
-	if (entity->GetClassName() == "Light")
+	if (entity->GetNameOfClass() == "Light")
 		ShowLightInfo((Light*)entity);
 
 	UpdateWireFrameGui();
@@ -206,7 +218,7 @@ void EngineGui::ShowEntityNodeInfo(Entity* entity)
 
 void EngineGui::ShowEntityInfo(Entity* entityNode)
 {
-	if (entityNode->GetClassName() != "EmptyObject")
+	if (entityNode->GetNameOfClass() != "EmptyObject")
 		ShowTransform(entityNode);
 }
 

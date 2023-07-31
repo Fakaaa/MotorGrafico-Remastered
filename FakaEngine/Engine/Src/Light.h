@@ -28,7 +28,7 @@ public:
 
 	void UseLight();
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 
 	void SetColorLight(float r, float g, float b);
 	glm::vec3 GetColorLight();

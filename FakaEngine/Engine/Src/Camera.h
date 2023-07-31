@@ -33,7 +33,10 @@ public:
 	float _front;
 };
 
+//Foward declarations
 class CollisionManager;
+class FrustrumCulling;
+//---
 
 class ENGINE_API Camera : public Entity
 {
@@ -53,16 +56,13 @@ private:
 
 	AxisAlignedBoundingBox* _actualFrustrumInUse;
 
-	MyPlane* _nearPlane = NULL;
-	MyPlane* _farPlane = NULL;
-	MyPlane* _rightPlane = NULL;
-	MyPlane* _leftPlane = NULL;
-	MyPlane* _downPlane = NULL;
-	MyPlane* _topPlane = NULL;
-
+	bool useFrustrum;
+	FrustrumCulling* frustrumCulling;
+	vector<int> indexsObjectsDisable;
 
 	float _yaw;
 	float _pitch;
+
 protected:
 	float initOffsetCameraThirdPersonX = 0.0f;
 	float initOffsetCameraThirdPersonY = 0.0f;
@@ -70,35 +70,25 @@ protected:
 	glm::vec3 lastPositionTarget = glm::vec3(0.0f);
 	float lastDistance = 0.0f;
 
-	void SetEnableDrawAABB(bool value) override;
 	void BindBuffer() override;
 
 	void CalculateThirdPersonPositionCamera();
 
-	void checkObjectHerarchy(CollisionManager* frustrumCheck, Entity* object);
 	void disableChildrenAndParent(Entity* parent);
 	void enableChildrenAndParent(Entity* parent);
 
 	float offsetThirdPersonY = 350;
 
 public:
+	vector<Entity*> objectsCheckFrustrum;
+
 	void ChangeActualFrustrum();
-
-	bool positiveNear(glm::vec3 point);
-	bool positiveFar(glm::vec3 point);
-	bool positiveLeft(glm::vec3 point);
-	bool positiveRight(glm::vec3 point);
-	bool positiveTop(glm::vec3 point);
-	bool positiveDown(glm::vec3 point);
-
-	void updateFrustrumPlanes();
+	void SetEnableDrawAABB(bool value) override;
 
 	int indicesBSP[amountPlanesBSP];
 
 	void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
 	int* GetIndicesBSP() { return indicesBSP; }
-
-	void renderThingsOnScene(CollisionManager* frustrumCheck, vector<Entity*> objectsInScene);
 
 	void SetInitOffsetCameraThirdPersonX(float value) { initOffsetCameraThirdPersonX = value; }
 	void SetInitOffsetCameraThirdPersonY(float value) { initOffsetCameraThirdPersonY = value; }
@@ -133,8 +123,9 @@ public:
 	void SetYaw(float y);
 	float GetPitch();
 	float GetYaw();
+	void SetFront(glm::vec3 frontValue);
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 
 	void SetDataPerspective(float FOV, float sizeScreenX, float sizeScreenY, float _near, float front);
 
@@ -142,7 +133,8 @@ public:
 
 	void ChangePerspective(TypeProjectionCamera _typeProjectionCamera);
 
-	void SetFrustrumCulling();
+	void SetUseFrustrum(bool value) { useFrustrum = value; };
+	void UseFrustrum();
 
 	void UseProjection();
 

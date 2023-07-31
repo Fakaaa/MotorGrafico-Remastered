@@ -8,7 +8,7 @@
 #include "Shape.h"
 #include "model.h"
 
-class Game : public GameBase 
+class Game : public GameBase
 {
 private:
 	void ControlCamera(Input* input);
@@ -20,6 +20,8 @@ private:
 	Model* _testModel = NULL;
 
 	Material* _goldMaterial = NULL;
+
+	bool _mouseCameraControl;
 
 	void InitOfMaterials();
 public:

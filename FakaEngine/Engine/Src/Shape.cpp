@@ -38,7 +38,7 @@ unsigned int indexBufferQuad[countElementsIndexBufferQuad] =
 	0, 1, 2, 2, 3, 0,
 };
 
-Shape::Shape(Renderer * _renderer,TypeShape typeShape, const char * filePath): Entity2D(_renderer)
+Shape::Shape(Renderer* _renderer, TypeShape typeShape, const char* filePath) : Entity2D(_renderer)
 {
 	_currentShape = typeShape;
 	renderer = _renderer;
@@ -55,36 +55,37 @@ Shape::Shape(Renderer * _renderer,TypeShape typeShape, const char * filePath): E
 		texImporter->BlendTexture();
 
 	texImporter->LoadTexture(_path, _transparency);
-	
+
 	CreateDataShape();
 }
 
-Shape::Shape(Renderer * _renderer, TypeShape typeShape) : Entity2D(_renderer)
+Shape::Shape(Renderer* _renderer, TypeShape typeShape) : Entity2D(_renderer)
 {
 	_currentShape = typeShape;
 	renderer = _renderer;
 	_typeMaterial = TypeMaterial::ColorType;
 	_path = "None Path";
 	CreateDataShape();
+	CreateMyAxisAlignedBoundingBox();
 }
 
 Shape::~Shape()
 {
 	UnbindBuffers();
-	if (texImporter != NULL) 
+	if (texImporter != NULL)
 	{
 		delete texImporter;
 		texImporter = NULL;
 	}
 }
-void Shape::SetNewMaterial(Material * mat)
+void Shape::SetNewMaterial(Material* mat)
 {
 	material = mat;
 
 	renderer->SetMaterial(material);
 }
 
-void Shape::Draw(bool& wireFrameActive) 
+void Shape::Draw(bool& wireFrameActive)
 {
 	if (isAlive) {
 		BindBuffer();
@@ -100,7 +101,7 @@ void Shape::Draw(bool& wireFrameActive)
 	}
 }
 
-string Shape::GetClassName()
+string Shape::GetNameOfClass()
 {
 	return "Shape";
 }
@@ -115,26 +116,26 @@ void Shape::UseShape(int indices, Shader& shader, bool& wireFrameActive)
 		{
 			texImporter->BindTexture();
 		}
-		
-		if(material != NULL)
+
+		if (material != NULL)
 			material->UseMaterial(shader);
-		
+
 		renderer->Draw(indices, shader, internalData.localModel, wireFrameActive);
 
-		if (_typeMaterial == TypeMaterial::TextureType) 
+		if (_typeMaterial == TypeMaterial::TextureType)
 		{
 			texImporter->UnbindTexture();
 		}
 	}
 }
 
-void Shape::LoadTexture(const char* filePath) 
+void Shape::LoadTexture(const char* filePath)
 {
 	texImporter->LoadTexture(filePath, false);
 }
 //==============================================
 
-unsigned int Shape::GetVbo(){
+unsigned int Shape::GetVbo() {
 	return _vbo;
 }
 
@@ -211,10 +212,10 @@ void Shape::SetVBO()
 	}
 
 	_positionLocation = glGetAttribLocation(renderer->GetCurrentShaderUse().getId(), "position");
-	if (texImporter != NULL) 
+	if (texImporter != NULL)
 	{
 		glUniform1i(_texLocation = glGetUniformLocation(renderer->GetCurrentShaderUse().getId(), "ourTexture"), texImporter->GetTexture());
-		cout << "ENTRE: "+ texImporter->GetTexture() << endl;
+		cout << "ENTRE: " + texImporter->GetTexture() << endl;
 	}
 	BindGeneralData();
 }

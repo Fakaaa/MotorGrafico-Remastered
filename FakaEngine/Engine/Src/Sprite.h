@@ -38,16 +38,16 @@ protected:
 	void UpdateSprite(Time& timer);
 public:
 	void Draw(bool& wireFrameActive) override;
-	
+
 	void SetAttribsSprite();
 
-	Sprite(Renderer * _renderer, const char* filePath, bool transparency);
+	Sprite(Renderer* _renderer, const char* filePath, bool transparency);
 	~Sprite();
 	void Draw(Time& timer);
 	void SetTextureCoordinates(float u0, float v0,
-							   float u1, float v1,
-							   float u2, float v2,
-		                       float u3, float v3);
+		float u1, float v1,
+		float u2, float v2,
+		float u3, float v3);
 	TextureImporter* GetTextureImporter() { return texImporter; }
 	void SetAnimation(Animation* _animation);
 	Animation* GetAnimation() { return animation; }
@@ -56,7 +56,7 @@ public:
 	int getNrChannels();
 	void SetCurrentAnimationIndex(int currentAnimation) { if (animation != NULL) animation->SetCurrentAnimation(currentAnimation); }
 
-	string GetClassName() override;
+	string GetNameOfClass() override;
 
 private:
 	void BlendSprite();
