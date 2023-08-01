@@ -439,18 +439,19 @@ glm::quat Entity::EulerToQuat(glm::vec3 euler)
 {
 	euler *= deg2rad;
 
+	float cr = cos(euler.x * 0.5);
+	float sr = sin(euler.x * 0.5);
+	float cp = cos(euler.y * 0.5);
+	float sp = sin(euler.y * 0.5);
 	float cy = cos(euler.z * 0.5);
 	float sy = sin(euler.z * 0.5);
-	float cp = cos(euler.x * 0.5);
-	float sp = sin(euler.x * 0.5);
-	float cr = cos(euler.y * 0.5);
-	float sr = sin(euler.y * 0.5);
 
 	glm::quat q;
 	q.w = cr * cp * cy + sr * sp * sy;
-	q.x = cr * sp * cy + sr * cp * sy;
-	q.y = sr * cp * cy - cr * sp * sy;
+	q.x = sr * cp * cy - cr * sp * sy;
+	q.y = cr * sp * cy + sr * cp * sy;
 	q.z = cr * cp * sy - sr * sp * cy;
+
 	return q;
 }
 

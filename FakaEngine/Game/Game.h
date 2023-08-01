@@ -18,6 +18,7 @@ private:
 	Shape* _triangle = NULL;
 	Primitive3D* _cube = NULL;
 	Model* _testModel = NULL;
+	Model* _bob = NULL;
 
 	Material* _goldMaterial = NULL;
 

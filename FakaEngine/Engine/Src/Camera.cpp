@@ -6,6 +6,7 @@
 #include "AxisAlignedBoundingBox.h"
 #include "FrustrumCulling.h"
 #include "CollisionManager.h"
+#include "Window.h"
 
 Camera::Camera(Renderer* _render, TypeProjectionCamera _typeProjectionCamera) : Entity(_render)
 {
@@ -71,7 +72,6 @@ void Camera::BindBuffer() {}
 
 void Camera::Draw(bool& wireFrameActive)
 {
-	UseFrustrum();
 	UseCamera(renderer->GetCurrentShaderUse(), internalData.localModel);
 }
 void Camera::UseCamera(Shader& shader, glm::mat4 trsCamera)
@@ -202,9 +202,19 @@ float Camera::GetYaw() {
 	return _yaw;
 }
 
-void Camera::SetFront(glm::vec3 frontValue)
+glm::vec3 Camera::GetFrontView()
 {
-	_front = frontValue;
+	return _front;
+}
+
+glm::vec3 Camera::GetRightView()
+{
+	return _right;
+}
+
+glm::vec3 Camera::GetUpView()
+{
+	return _up;
 }
 
 string Camera::GetNameOfClass()
@@ -237,7 +247,7 @@ void Camera::ChangePerspective(TypeProjectionCamera _typeProjectionCamera)
 	UseProjection();
 }
 
-void Camera::UseFrustrum()
+void Camera::UseFrustrum(float aspectRatio)
 {
 	if (useFrustrum)
 	{

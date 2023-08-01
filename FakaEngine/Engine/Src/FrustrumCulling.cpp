@@ -1,6 +1,9 @@
 #include "FrustrumCulling.h";
 #include "Plane.h"
 #include "Entity.h"
+#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
+#include <math.h>
 
 void FrustrumCulling::UpdateFrustrum(Camera* camera)
 {
@@ -8,10 +11,10 @@ void FrustrumCulling::UpdateFrustrum(Camera* camera)
 	float offsideNearValue = camera->projectionDataPerspective._near;
 	float offsideFarPlane = camera->projectionDataPerspective._front;
 
-	glm::vec4 cameraForward = camera->GetForward();
+	glm::vec4 cameraForward = glm::vec4(camera->GetFrontView(), 0);
 	glm::vec4 auxCameraForward = cameraForward;
-	glm::vec4 cameraUp = camera->GetUp();
-	glm::vec4 cameraRight = camera->GetRight();
+	glm::vec4 cameraUp = glm::vec4(camera->GetUpView(), 0);
+	glm::vec4 cameraRight = glm::vec4(camera->GetRightView(), 0);
 
 	glm::vec4 cameraPosition = glm::vec4(camera->transform.position, 0);
 	glm::vec4 offsideNearPlane = cameraForward + glm::vec4(0, 0, offsideNearValue, 0);
@@ -24,7 +27,7 @@ void FrustrumCulling::UpdateFrustrum(Camera* camera)
 	//Calculo los planos Right y Left.
 	glm::mat4 rotCameraForward;
 
-	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(camera->projectionDataPerspective._FOV / 1.6f), glm::vec3(0, 1, 0));
+	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(camera->projectionDataPerspective._FOV / 1.5f), glm::vec3(0, 1, 0));
 	cameraForward = cameraForward * rotCameraForward;
 
 	_leftPlane->set3Points(cameraForward, cameraPosition);
@@ -54,12 +57,14 @@ void FrustrumCulling::UpdateFrustrum(Camera* camera)
 	//================================//
 
 	//Flipeo los planos
-	_nearPlane->flipPlane();
+	/*_nearPlane->flipPlane();
 	_rightPlane->flipPlane();
 	_leftPlane->flipPlane();
 	_downPlane->flipPlane();
-	_topPlane->flipPlane();
+	_topPlane->flipPlane();*/
 	//========================//
+
+	//camera->UseProjection();
 }
 
 void FrustrumCulling::CheckObjectInFrustrum(int indexObject, vector<int>& indexsObjectsDisables, Entity* objectCompare)

@@ -44,6 +44,11 @@ int Window::GetSizeY()
 {
 	return sizeY;
 }
+float Window::GetAspectRatio()
+{
+	float aspect = (float)sizeX / (float)sizeY;
+	return aspect;
+}
 //============================================
 void Window::SetNameWindows(char name[])
 {

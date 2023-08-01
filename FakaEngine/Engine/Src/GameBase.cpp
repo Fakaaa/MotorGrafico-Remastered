@@ -376,7 +376,7 @@ void GameBase::HandleCamera()
 		_mainCamera->SetViewThirdPerson();
 		break;
 	}
-	_mainCamera->UseFrustrum();
+	_mainCamera->UseFrustrum(_window->GetAspectRatio());
 	_mainCamera->UseCamera(_renderer->GetCurrentShaderUse(), _mainCamera->GetInternalData().localModel);
 }
 

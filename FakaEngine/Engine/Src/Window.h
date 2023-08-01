@@ -19,6 +19,7 @@ public:
 	void SetSize(int _sizeX, int _sizeY);
 	int GetSizeX();
 	int GetSizeY();
+	float GetAspectRatio();
 	void SetNameWindows(char name[]);
 	void SetFullscreen(bool _fullscreen);
 	GLFWwindow* GetWindowsPtr();

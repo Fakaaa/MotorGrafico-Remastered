@@ -123,7 +123,10 @@ public:
 	void SetYaw(float y);
 	float GetPitch();
 	float GetYaw();
-	void SetFront(glm::vec3 frontValue);
+
+	glm::vec3 GetFrontView();
+	glm::vec3 GetRightView();
+	glm::vec3 GetUpView();
 
 	string GetNameOfClass() override;
 
@@ -134,7 +137,7 @@ public:
 	void ChangePerspective(TypeProjectionCamera _typeProjectionCamera);
 
 	void SetUseFrustrum(bool value) { useFrustrum = value; };
-	void UseFrustrum();
+	void UseFrustrum(float aspectRatio);
 
 	void UseProjection();
 

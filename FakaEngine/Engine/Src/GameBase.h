@@ -36,7 +36,7 @@ private:
 
 	const float _nearPlane = 100.0f;
 	const float _farPlane = -10000.0f;
-	const float _fovAmount = 65.0f;
+	const float _fovAmount = 45.0f;
 protected:
 
 	static vector<Entity*> entitysDebugInGame;

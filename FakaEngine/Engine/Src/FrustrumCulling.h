@@ -27,8 +27,9 @@ public:
 	bool positiveRight(glm::vec3 point);
 	bool positiveTop(glm::vec3 point);
 	bool positiveDown(glm::vec3 point);
-	void UpdateFrustrum(Camera* camera);
 	void CheckObjectInFrustrum(int indexObject, vector<int>& indexsObjectsDisables, Entity* objectCompare);
+
+	void UpdateFrustrum(Camera* camera);
 private:
 	float drawDistance = 100;
 	MyPlane* _nearPlane = NULL;

@@ -67,9 +67,54 @@ void Game::InitGame()
 	_testModel->SetScale(30.0f, 30.0f, 30.0f);
 	_testModel->SetRotationY(160.0f);
 
+	_bob = new Model(_renderer, false);
+	_bob->LoadModel("Res/Models/Bob.fbx", "");
+	_bob->SetMaterial(_textureMaterialForLight);
+	_bob->SetName("BobModel");
+	_bob->SetPosition(670, 30, 850);
+	_bob->SetScale(30.0f, 30.0f, 30.0f);
+	_bob->SetRotationX(-90.0f);
+
 	AddObjectInDenugGame(_triangle);
 	AddObjectInDenugGame(_cube);
 	AddObjectInDenugGame(_testModel);
+	AddObjectInDenugGame(_bob);
+
+#pragma region BOB_CONFIG
+	Entity* entity;
+	entity = _bob->GetEntityNode("Cabeza");
+	entity->SetPosition(0.0f, 0.0f, 10.8299f);
+
+	entity = _bob->GetEntityNode("Cuello");
+	entity->SetPosition(0.0f, 0.0f, 9.05693f);
+
+	entity = _bob->GetEntityNode("Torso");
+	entity->SetPosition(0.0f, 0.0f, 5.99098f);
+
+	entity = _bob->GetEntityNode("Brazo_Der");
+	entity->SetPosition(4.140750f, 0.0f, 0.0f);
+
+	entity = _bob->GetEntityNode("Brazo_Izq");
+	entity->SetPosition(-4.140750f, 0.0f, 0.0f);
+
+	entity = _bob->GetEntityNode("Mano_Der");
+	entity->SetPosition(2.646000f, 0.0f, -1.800000f);
+
+	entity = _bob->GetEntityNode("Mano_Izq");
+	entity->SetPosition(-2.646000f, 0.0f, -1.800000f);
+
+	entity = _bob->GetEntityNode("Pierna_Der");
+	entity->SetPosition(1.78f, 0.0f, -4.000000f);
+
+	entity = _bob->GetEntityNode("Pierna_Izq");
+	entity->SetPosition(-1.78f, 0.0f, -4.000000f);
+
+	entity = _bob->GetEntityNode("Pata_Der");
+	entity->SetPosition(0.0f, -0.8f, -2.8f);
+
+	entity = _bob->GetEntityNode("Pata_Izq");
+	entity->SetPosition(0.0f, -0.8f, -2.8f);
+#pragma endregion
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -87,6 +132,11 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 	if (_testModel != NULL)
 	{
 		_testModel->Draw(_engineGUI->GetIfWireFrameIsActive());
+	}
+
+	if (_bob != NULL)
+	{
+		_bob->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
 	if (_mainCamera != NULL)
@@ -116,6 +166,13 @@ void Game::DestroyGame()
 		_testModel->UnloadModel();
 		delete _testModel;
 		_testModel = NULL;
+	}
+
+	if (_bob != NULL)
+	{
+		_bob->UnloadModel();
+		delete _bob;
+		_bob = NULL;
 	}
 }
 
@@ -245,12 +302,11 @@ void Game::InitCustomCamera()
 	newPositionCamZ = 1355;
 
 	_mainCamera->SetPosition(glm::vec3(newPositionCamX, newPositionCamY, newPositionCamZ));
-	//_mainCamera->SetRotationX(-10);
-	//_mainCamera->SetRotationY(270);
 
-	_mainCamera->SetUseFrustrum(true);
-	_mainCamera->UseFrustrum();
+	_mainCamera->SetUseFrustrum(false);
+	_mainCamera->UseFrustrum(_window->GetAspectRatio());
 	_mainCamera->SetEnableDrawAABB(true);
+	AddObjectInDenugGame(_mainCamera);
 }
 
 void Game::InitOfMaterials()

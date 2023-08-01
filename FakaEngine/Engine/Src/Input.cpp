@@ -89,12 +89,9 @@ void MouseCallaback(GLFWwindow* _window, double xpos, double ypos)
 	if (_pitch < -89.0f)
 		_pitch = -89.0f;
 
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-	direction.y = sin(glm::radians(_pitch));
-	direction.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-	_cameraLook = glm::normalize(direction);
-
-	_camera->SetFront(_cameraLook);
+	_camera->SetRotationX(_pitch);
+	_camera->SetRotationY(_yaw);
+	_camera->UpdateCamera();
+	_camera->SetViewFirstPerson();
 }
 //=============================================
