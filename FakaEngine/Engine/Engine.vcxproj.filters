@@ -28,6 +28,9 @@
     <Filter Include="Res\Shaders">
       <UniqueIdentifier>{89e1a7b5-bf20-4ae0-9e81-67c7a0b12021}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Utils">
+      <UniqueIdentifier>{f9b72161-c1f9-46c4-ba71-b835cbf821f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\PrivateClass\Export.h">
@@ -147,6 +150,12 @@
     <ClInclude Include="Src\FrustrumCulling.h">
       <Filter>Src</Filter>
     </ClInclude>
+    <ClInclude Include="Src\PlaneBSP.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utils\Utils.h">
+      <Filter>Src\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Animation.cpp">
@@ -247,6 +256,12 @@
     </ClCompile>
     <ClCompile Include="Src\FrustrumCulling.cpp">
       <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PlaneBSP.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utils\Utils.cpp">
+      <Filter>Src\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

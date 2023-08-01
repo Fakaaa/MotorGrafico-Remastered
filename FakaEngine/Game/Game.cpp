@@ -45,76 +45,16 @@ void Game::InitGame()
 	InitCustomLights();
 	InitOfMaterials();
 
-	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);
-	_triangle->BindGeneralData();
-
-	_triangle->SetName("Test_Triangle");
-	_triangle->SetPosition(883.0f, 71.0f, 355.0);
-	_triangle->SetScale(120.0f, 120.0f, 120.0f);
-	_triangle->SetNewMaterial(_goldMaterial);
-
-	_cube = new Primitive3D(_renderer, TypeModel::Cube, "Res/Textures/ZoroProfile.jpg", false);
-	_cube->SetName("Test Cube");
-	_cube->SetPosition(847.0f, -12.0f, 250.0);
-	_cube->SetScale(690.0f, 20.0f, 815.0f);
-	_cube->SetNewMaterial(_goldMaterial);
-
-	_testModel = new Model(_renderer, false);
-	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
-	_testModel->SetMaterial(_textureMaterialForLight);
-	_testModel->SetName("TankModel");
-	_testModel->SetPosition(1170, 30, 850);
-	_testModel->SetScale(30.0f, 30.0f, 30.0f);
-	_testModel->SetRotationY(160.0f);
-
 	_bob = new Model(_renderer, false);
-	_bob->LoadModel("Res/Models/Bob.fbx", "");
+	_bob->LoadModel("Res/Models/BSPScene.fbx", "");
 	_bob->SetMaterial(_textureMaterialForLight);
-	_bob->SetName("BobModel");
+	_bob->SetName("BSP_Scene");
 	_bob->SetPosition(670, 30, 850);
 	_bob->SetScale(30.0f, 30.0f, 30.0f);
 	_bob->SetRotationX(-90.0f);
+	_bob->SetRotationZ(-90.0f);
 
-	AddObjectInDenugGame(_triangle);
-	AddObjectInDenugGame(_cube);
-	AddObjectInDenugGame(_testModel);
 	AddObjectInDenugGame(_bob);
-
-#pragma region BOB_CONFIG
-	Entity* entity;
-	entity = _bob->GetEntityNode("Cabeza");
-	entity->SetPosition(0.0f, 0.0f, 10.8299f);
-
-	entity = _bob->GetEntityNode("Cuello");
-	entity->SetPosition(0.0f, 0.0f, 9.05693f);
-
-	entity = _bob->GetEntityNode("Torso");
-	entity->SetPosition(0.0f, 0.0f, 5.99098f);
-
-	entity = _bob->GetEntityNode("Brazo_Der");
-	entity->SetPosition(4.140750f, 0.0f, 0.0f);
-
-	entity = _bob->GetEntityNode("Brazo_Izq");
-	entity->SetPosition(-4.140750f, 0.0f, 0.0f);
-
-	entity = _bob->GetEntityNode("Mano_Der");
-	entity->SetPosition(2.646000f, 0.0f, -1.800000f);
-
-	entity = _bob->GetEntityNode("Mano_Izq");
-	entity->SetPosition(-2.646000f, 0.0f, -1.800000f);
-
-	entity = _bob->GetEntityNode("Pierna_Der");
-	entity->SetPosition(1.78f, 0.0f, -4.000000f);
-
-	entity = _bob->GetEntityNode("Pierna_Izq");
-	entity->SetPosition(-1.78f, 0.0f, -4.000000f);
-
-	entity = _bob->GetEntityNode("Pata_Der");
-	entity->SetPosition(0.0f, -0.8f, -2.8f);
-
-	entity = _bob->GetEntityNode("Pata_Izq");
-	entity->SetPosition(0.0f, -0.8f, -2.8f);
-#pragma endregion
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -307,6 +247,35 @@ void Game::InitCustomCamera()
 	_mainCamera->UseFrustrum(_window->GetAspectRatio());
 	_mainCamera->SetEnableDrawAABB(true);
 	AddObjectInDenugGame(_mainCamera);
+}
+
+void Game::InitTestEngine(bool status)
+{
+	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);
+	_triangle->BindGeneralData();
+
+	_triangle->SetName("Test_Triangle");
+	_triangle->SetPosition(883.0f, 71.0f, 355.0);
+	_triangle->SetScale(120.0f, 120.0f, 120.0f);
+	_triangle->SetNewMaterial(_goldMaterial);
+
+	_cube = new Primitive3D(_renderer, TypeModel::Cube, "Res/Textures/ZoroProfile.jpg", false);
+	_cube->SetName("Test Cube");
+	_cube->SetPosition(847.0f, -12.0f, 250.0);
+	_cube->SetScale(690.0f, 20.0f, 815.0f);
+	_cube->SetNewMaterial(_goldMaterial);
+
+	_testModel = new Model(_renderer, false);
+	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
+	_testModel->SetMaterial(_textureMaterialForLight);
+	_testModel->SetName("TankModel");
+	_testModel->SetPosition(1170, 30, 850);
+	_testModel->SetScale(30.0f, 30.0f, 30.0f);
+	_testModel->SetRotationY(160.0f);
+
+	AddObjectInDenugGame(_triangle);
+	AddObjectInDenugGame(_cube);
+	AddObjectInDenugGame(_testModel);
 }
 
 void Game::InitOfMaterials()

@@ -6,6 +6,7 @@
 #include "ModelImporter.h"
 
 #include "ModelNode.h"
+#include "Utils/Utils.h"
 
 #include "AxisAlignedBoundingBox.h"
 
@@ -71,7 +72,10 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 	{
 		for (int j = 0; j < modelMeshes[i]->meshXYZVertices.size(); j++)
 		{
-			_dataXYZ.push_back(modelMeshes[i]->meshXYZVertices[j]);
+			if (!Utils::CheckStringCoincidence(modelMeshes[i]->GetMeshName(), "BSP_Plane"))
+			{
+				_dataXYZ.push_back(modelMeshes[i]->meshXYZVertices[j]);
+			}
 		}
 	}
 

@@ -9,7 +9,7 @@ Mesh::Mesh(Renderer* render) : Entity(render)
 	_vao = 0;
 	_vbo = 0;
 	_ibo = 0;
-	countIndices = 0;
+	_countIndices = 0;
 
 	_uniformIsModelLocation = glGetUniformLocation(render->GetCurrentShaderUse().getId(), "model");
 	_uniformProjectionLocation = glGetUniformLocation(render->GetCurrentShaderUse().getId(), "projection");
@@ -26,6 +26,16 @@ Mesh::~Mesh() {}
 string Mesh::GetNameOfClass()
 {
 	return "Mesh";
+}
+
+string Mesh::GetMeshName()
+{
+	return _meshName;
+}
+
+void Mesh::SetMeshName(string name)
+{
+	_meshName = name;
 }
 
 void Mesh::SetVBO(float* vertices, unsigned int numVertices)
@@ -75,7 +85,7 @@ void Mesh::SetEnableDrawAABB(bool value)
 
 void Mesh::CreateMesh(float* vertices, unsigned int* indices, unsigned int numVertices, unsigned int numOfIndices)
 {
-	countIndices = numOfIndices;
+	_countIndices = numOfIndices;
 
 	SetVAO();
 
@@ -103,7 +113,7 @@ void Mesh::Draw(bool& wireFrameActive)
 
 		GetAABB()->UpdateInternalDataBoundingBox(internalData, transform);
 
-		renderer->Draw(countIndices, renderer->GetCurrentShaderUse(), internalData.localModel, wireFrameActive);
+		renderer->Draw(_countIndices, renderer->GetCurrentShaderUse(), internalData.localModel, wireFrameActive);
 
 		GetAABB()->Draw(GetAABB()->GetEnableDraw());
 	}

@@ -10,7 +10,8 @@ const int elementsForVertex = 8;
 class ENGINE_API Mesh : public Entity
 {
 private:
-	int countIndices;
+	int _countIndices;
+	string _meshName;
 
 protected:
 	void SetVBO(float* vertices, unsigned int numVertices);
@@ -27,6 +28,8 @@ public:
 	~Mesh();
 
 	string GetNameOfClass() override;
+	string GetMeshName();
+	void SetMeshName(string name);
 	vector<glm::vec3> meshXYZVertices;
 
 	void CreateMesh(float* vertices, unsigned int* indices, unsigned int numVertices, unsigned int numOfIndices);

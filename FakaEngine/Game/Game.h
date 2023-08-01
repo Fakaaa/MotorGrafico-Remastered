@@ -14,6 +14,7 @@ private:
 	void ControlCamera(Input* input);
 	void InitCustomLights();
 	void InitCustomCamera();
+	void InitTestEngine(bool status);
 
 	Shape* _triangle = NULL;
 	Primitive3D* _cube = NULL;

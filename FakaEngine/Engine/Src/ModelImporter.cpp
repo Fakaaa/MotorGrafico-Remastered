@@ -5,6 +5,7 @@
 #include "Material.h"
 
 #include "ModelNode.h"
+#include "Utils/Utils.h"
 
 #include <glew.h>
 #include <GLFW/glfw3.h>
@@ -13,15 +14,14 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-ModelImporter::ModelImporter() 
-{ 
-	indexPlane = 1;
-	indexChildrenLoad = 0; 
+ModelImporter::ModelImporter()
+{
+	indexChildrenLoad = 0;
 }
 
 ModelImporter::~ModelImporter() {}
 
-ModelNode* ModelImporter::LoadModel(vector<Mesh*> &modelMeshes, const string& filePath, const string& texturePath, ModelNode* rootNode, vector<ModelNode*> &childrens, vector<Texture*> &textureList,Renderer* render)
+ModelNode* ModelImporter::LoadModel(vector<Mesh*>& modelMeshes, const string& filePath, const string& texturePath, ModelNode* rootNode, vector<ModelNode*>& childrens, vector<Texture*>& textureList, Renderer* render)
 {
 	ClearNodesOldModel();
 	ClearAuxiliarNodesOldModel();
@@ -39,7 +39,6 @@ ModelNode* ModelImporter::LoadModel(vector<Mesh*> &modelMeshes, const string& fi
 	auxiliarNodes.push(rootNode);
 	LoadNode(scene->mRootNode, scene, childrens, render);
 
-
 	LoadMesh(modelMeshes, rootNode, scene, render);
 	LoadMesh(modelMeshes, childrens, scene, render);
 
@@ -48,10 +47,10 @@ ModelNode* ModelImporter::LoadModel(vector<Mesh*> &modelMeshes, const string& fi
 	return rootNode;
 }
 
-void ModelImporter::LoadNode(aiNode* node, const aiScene* scene, vector<ModelNode*> &childrens, Renderer* render)
+void ModelImporter::LoadNode(aiNode* node, const aiScene* scene, vector<ModelNode*>& childrens, Renderer* render)
 {
 	int i = 0;
-	if (node != scene->mRootNode) 
+	if (node != scene->mRootNode)
 	{
 		nodes.push_back(node);
 	}
@@ -59,8 +58,7 @@ void ModelImporter::LoadNode(aiNode* node, const aiScene* scene, vector<ModelNod
 	{
 		ModelNode* n = new ModelNode(render, node->mChildren[i]);
 
-		if(n->GetName() != "BSP_Plane1" || n->GetName() != "BSP_Plane2" || n->GetName() != "BSP_Plane3")
-			childrens.push_back(n);
+		childrens.push_back(n);
 
 		if (auxiliarNodes.size() > 0) {
 			if (!auxiliarNodes.top()->allchildrensDone) {
@@ -68,7 +66,7 @@ void ModelImporter::LoadNode(aiNode* node, const aiScene* scene, vector<ModelNod
 				auxiliarNodes.top()->SetScale(1, 1, 1);
 			}
 
-			if (i >= node->mNumChildren - 1) 
+			if (i >= node->mNumChildren - 1)
 			{
 				auxiliarNodes.top()->allchildrensDone = true;
 			}
@@ -85,7 +83,7 @@ void ModelImporter::LoadNode(aiNode* node, const aiScene* scene, vector<ModelNod
 	}
 }
 
-void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, vector<ModelNode*> childrens, const aiScene* scene, Renderer* render)
+void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, vector<ModelNode*> childrens, const aiScene* scene, Renderer* render)
 {
 	for (int i = 0; i < nodes.size(); i++)
 	{
@@ -96,7 +94,7 @@ void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, vector<ModelNode*> chil
 	}
 }
 
-void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, ModelNode * rootNode, const aiScene * scene, Renderer * render)
+void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, ModelNode* rootNode, const aiScene* scene, Renderer* render)
 {
 	for (int j = 0; j < scene->mRootNode->mNumMeshes; j++)
 	{
@@ -104,14 +102,13 @@ void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, ModelNode * rootNode, c
 	}
 }
 
-void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, aiMesh* mesh, const aiScene* scene, ModelNode* &nodeMesh, Renderer* render)
+void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render)
 {
 	Mesh* newMesh = new Mesh(render);
 	vector<float> vertices;
 	vector<unsigned int> indices;
 
-	string bspPlane = "BSP_Plane";
-	bspPlane += to_string(indexPlane);
+	string bspPlane = "BSP_Plane"; //String to compare the name of the mesh
 
 	for (int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -125,18 +122,17 @@ void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, aiMesh* mesh, const aiS
 			vertices.insert(vertices.end(), { 0.0f,  0.0f });
 		}
 		vertices.insert(vertices.end(), { mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z });
-		
+
 		if (nodeMesh->GetName() == bspPlane.c_str())
 		{
 			planesPosition.push_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
 		}
 	}
 
-	if (nodeMesh->GetName() == bspPlane.c_str())
+	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlane.c_str()))
 	{
 		newMesh->SetInmortalObject(true);
 
-		indexPlane++;
 		planesBSP.push_back(planesPosition);
 		planesPosition.clear();
 		bspPlane.clear();
@@ -152,6 +148,8 @@ void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, aiMesh* mesh, const aiS
 	}
 
 	newMesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
+	newMesh->SetMeshName(nodeMesh->GetName());
+
 	nodeMesh->_meshList.push_back(newMesh);
 	nodeMesh->_meshToTex.push_back(mesh->mMaterialIndex);
 	nodeMesh->AddChildren(newMesh);
@@ -159,7 +157,7 @@ void ModelImporter::LoadMesh(vector<Mesh*> &modelMeshes, aiMesh* mesh, const aiS
 	modelMeshes.push_back(newMesh);
 }
 
-void ModelImporter::LoadMaterial(const aiScene * scene, const string& texturePath, vector<Texture*> &textureList)
+void ModelImporter::LoadMaterial(const aiScene* scene, const string& texturePath, vector<Texture*>& textureList)
 {
 	textureList.resize(scene->mNumMaterials);
 
@@ -202,7 +200,7 @@ void ModelImporter::ClearNodesOldModel()
 void ModelImporter::ClearAuxiliarNodesOldModel()
 {
 	//Vaciar el stack del modelo anterior
-	while (!auxiliarNodes.empty()) 
+	while (!auxiliarNodes.empty())
 	{
 		auxiliarNodes.pop();
 	}

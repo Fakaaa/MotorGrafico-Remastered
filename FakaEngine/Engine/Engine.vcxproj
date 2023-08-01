@@ -47,6 +47,7 @@
     <ClInclude Include="Src\ModelImporter.h" />
     <ClInclude Include="Src\ModelNode.h" />
     <ClInclude Include="Src\Plane.h" />
+    <ClInclude Include="Src\PlaneBSP.h" />
     <ClInclude Include="Src\Primitive3D.h" />
     <ClInclude Include="Src\PrivateClass\Export.h" />
     <ClInclude Include="Src\Renderer.h" />
@@ -57,6 +58,7 @@
     <ClInclude Include="Src\Texture.h" />
     <ClInclude Include="Src\TextureImporter.h" />
     <ClInclude Include="Src\Timer.h" />
+    <ClInclude Include="Src\Utils\Utils.h" />
     <ClInclude Include="Src\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +86,7 @@
     <ClCompile Include="Src\ModelImporter.cpp" />
     <ClCompile Include="Src\ModelNode.cpp" />
     <ClCompile Include="Src\Plane.cpp" />
+    <ClCompile Include="Src\PlaneBSP.cpp" />
     <ClCompile Include="Src\Primitive3D.cpp" />
     <ClCompile Include="Src\Renderer.cpp" />
     <ClCompile Include="Src\Shader.cpp" />
@@ -92,6 +95,7 @@
     <ClCompile Include="Src\Texture.cpp" />
     <ClCompile Include="Src\TextureImporter.cpp" />
     <ClCompile Include="Src\Timer.cpp" />
+    <ClCompile Include="Src\Utils\Utils.cpp" />
     <ClCompile Include="Src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
