@@ -2,6 +2,10 @@
 #include "Camera.h"
 #include "Light.h"
 #include "model.h"
+#include "BSPHandler.h"
+
+#include <vector>
+
 #include <stdlib.h>
 
 #include "Gui/EngineGui.h"
@@ -45,16 +49,36 @@ void Game::InitGame()
 	InitCustomLights();
 	InitOfMaterials();
 
-	_bob = new Model(_renderer, false);
-	_bob->LoadModel("Res/Models/BSPScene.fbx", "");
-	_bob->SetMaterial(_textureMaterialForLight);
-	_bob->SetName("BSP_Scene");
-	_bob->SetPosition(670, 30, 850);
-	_bob->SetScale(30.0f, 30.0f, 30.0f);
-	_bob->SetRotationX(-90.0f);
-	_bob->SetRotationZ(-90.0f);
+	_bspScene = new Model(_renderer, false, GetRootHierarchy()->GetEntityNode("BSP_Scene"));
+	_bspScene->LoadModel("Res/Models/BSPScene.fbx", "");
+	_bspScene->SetMaterial(_textureMaterialForLight);
+	_bspScene->SetName("BSP_Scene");
+	_bspScene->SetPosition(670, 30, 850);
+	_bspScene->SetScale(30.0f, 30.0f, 30.0f);
+	_bspScene->SetRotationX(-90.0f);
+	_bspScene->SetRotationZ(-90.0f);
 
-	AddObjectInDenugGame(_bob);
+	AddObjectInDenugGame(_bspScene);
+
+	for (int i = 0; i < _bspScene->GetBSPs().size(); i++)
+	{
+		string bspName = _bspScene->GetBSPs()[i]->GetName();
+		PlaneBSP* plane = _bspScene->GetBSPs()[i];
+
+		Entity* bspEntity = _bspScene->GetEntityNode(bspName);
+		bspEntity->SetInmortalObject(true);
+		bspEntity->SetPosition(670, 30, 850);
+		bspEntity->SetScale(30.0f, 30.0f, 30.0f);
+		bspEntity->SetRotationX(-90.0f);
+		bspEntity->SetRotationZ(-90.0f);
+
+		plane->SetPlaneAttach(bspEntity);
+
+		_bspScene->RemoveChildren(bspEntity, GetRootHierarchy());
+		_bspHandler->AddPlaneBSP(_bspScene->GetBSPs()[i]);
+	}
+
+	objectsToComputeInBSP.push_back(_bspScene);
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -74,14 +98,19 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 		_testModel->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
-	if (_bob != NULL)
+	if (_bspScene != NULL)
 	{
-		_bob->Draw(_engineGUI->GetIfWireFrameIsActive());
+		_bspScene->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
 	if (_mainCamera != NULL)
 	{
 		ControlCamera(_input);
+	}
+
+	if (_bspHandler != NULL)
+	{
+		_bspHandler->UpdateObjectsRecursiveCommon(objectsToComputeInBSP);
 	}
 }
 
@@ -108,11 +137,11 @@ void Game::DestroyGame()
 		_testModel = NULL;
 	}
 
-	if (_bob != NULL)
+	if (_bspScene != NULL)
 	{
-		_bob->UnloadModel();
-		delete _bob;
-		_bob = NULL;
+		_bspScene->UnloadModel();
+		delete _bspScene;
+		_bspScene = NULL;
 	}
 }
 
@@ -138,10 +167,16 @@ void Game::ControlCamera(Input* input)
 	KeyBoard x_rotateLeft = KeyBoard::KEY_I;
 	KeyBoard x_rotateRight = KeyBoard::KEY_K;
 
+	float lastCameraPtch = _mainCamera->GetPitch();
+	float lastCameraYaw = _mainCamera->GetYaw();
+
 	if (input->GetKey(KEY_TAB))
 	{
-		_mouseCameraControl = !_mouseCameraControl;
-		input->SetUseMouseCamera(_mouseCameraControl);
+		input->SetUseMouseCamera(true);
+	}
+	else if (input->GetKey(KEY_ESCAPE))
+	{
+		input->SetUseMouseCamera(false);
 	}
 
 	//TRASLACION
@@ -237,15 +272,16 @@ void Game::InitCustomLights()
 
 void Game::InitCustomCamera()
 {
-	newPositionCamX = 865.5;
-	newPositionCamY = 245;
-	newPositionCamZ = 1355;
+	newPositionCamX = 670.5;
+	newPositionCamY = 155;
+	newPositionCamZ = 1815;
 
 	_mainCamera->SetPosition(glm::vec3(newPositionCamX, newPositionCamY, newPositionCamZ));
 
 	_mainCamera->SetUseFrustrum(false);
 	_mainCamera->UseFrustrum(_window->GetAspectRatio());
 	_mainCamera->SetEnableDrawAABB(true);
+	_mainCamera->SetRotationY(270);
 	AddObjectInDenugGame(_mainCamera);
 }
 
@@ -265,7 +301,7 @@ void Game::InitTestEngine(bool status)
 	_cube->SetScale(690.0f, 20.0f, 815.0f);
 	_cube->SetNewMaterial(_goldMaterial);
 
-	_testModel = new Model(_renderer, false);
+	_testModel = new Model(_renderer, false, NULL);
 	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
 	_testModel->SetMaterial(_textureMaterialForLight);
 	_testModel->SetName("TankModel");

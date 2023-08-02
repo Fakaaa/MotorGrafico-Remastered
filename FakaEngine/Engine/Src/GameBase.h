@@ -10,6 +10,7 @@
 #include "Light.h"
 #include "Primitive3D.h"
 #include "EmptyObject.h"
+#include "BSPHandler.h"
 
 #include <stdlib.h>
 
@@ -47,6 +48,7 @@ protected:
 	Input* _input = NULL;
 	Time _timeClock;
 	EngineGui* _engineGUI = NULL;
+	BSPHandler* _bspHandler = NULL;
 
 	Material* _textureMaterialForLight = NULL;
 	Material* _textureMaterialDefault = NULL;
@@ -73,6 +75,8 @@ public:
 	int InitEngine();
 	void UpdateEngine();
 	void DestroyEngine();
+
+	EmptyObject* GetRootHierarchy() { return _rootScene; }
 
 	virtual void InitGame() = 0;
 	virtual void UpdateGame(Window* _window, Renderer* _render, Input* _input) = 0;

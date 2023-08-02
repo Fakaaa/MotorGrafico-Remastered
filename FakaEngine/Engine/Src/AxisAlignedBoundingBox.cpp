@@ -96,12 +96,6 @@ glm::vec3* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxPos(vector<glm:
 	returnArrPositions[6] = glm::vec3(max_x, min_y, max_z);
 	returnArrPositions[7] = glm::vec3(max_x, max_y, max_z);
 
-	/*cout << "DATA AABB" << endl;
-	for (int i = 0; i < countVerticesCollider; i++)
-	{
-		cout << i << "_[" << returnArrPositions[i].x << "][" << returnArrPositions[i].y << "][" << returnArrPositions[i].z << "]." << endl;
-	}*/
-
 	return returnArrPositions;
 }
 
@@ -238,9 +232,6 @@ void AxisAlignedBoundingBox::UpdateVerticesData()
 			verticesData[i + 1] = verticesColliderPositions[j].y;
 			verticesData[i + 2] = verticesColliderPositions[j].z;
 
-			//cout << "[" << verticesData[i] << "][" << verticesData[i + 1] <<
-			//	"][" << verticesData[i + 2] << "]." << endl;
-
 			i = i + 7;
 		}
 	}
@@ -253,9 +244,6 @@ void AxisAlignedBoundingBox::UpdateVerticesData()
 			verticesData[i + 4] = verticesColliderColor[j].y;
 			verticesData[i + 5] = verticesColliderColor[j].z;
 			verticesData[i + 6] = verticesColliderColor[j].w;
-
-			//cout << "[" << verticesData[i + 3] << "][" << verticesData[i + 4] << "][" 
-			//	<< verticesData[i + 5] << "]["<< verticesData[i + 6]<<"]."<< endl;
 
 			i = i + 7;
 		}

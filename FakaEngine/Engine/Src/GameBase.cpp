@@ -28,6 +28,8 @@ int GameBase::InitEngine()
 
 	glEnable(GL_DEPTH_TEST);
 
+	_bspHandler = new BSPHandler(_mainCamera, _rootScene);
+
 	return 0;
 }
 
@@ -295,13 +297,14 @@ void GameBase::ChangeColorLight(int id, glm::vec3 color)
 
 void GameBase::DisableObjectInGame(Entity* entity)
 {
-	entity->SetIsAlive(false);
+	entity->DisableMeAndChilds();
 }
 
 void GameBase::EnableObjectInGame(Entity* entity)
 {
-	entity->SetIsAlive(true);
+	entity->EnableMeAndChilds();
 }
+
 #pragma endregion
 
 #pragma region PRIVATE_METHODS

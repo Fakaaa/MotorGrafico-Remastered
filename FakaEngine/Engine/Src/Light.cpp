@@ -10,14 +10,14 @@ int Light::nr_of_directional_light = 0;
 int Light::nr_of_point_light = 0;
 int Light::nr_of_spot_light = 0;
 
-Light::Light(Renderer* _render, TypeLight type, Camera* camera) : Entity(_render)
+Light::Light(Renderer* _render, TypeLight type, Camera* _camera) : Entity(_render)
 {
 	_colour = glm::vec3(1.0f, 1.0f, 1.0f);
 	_ambient = glm::vec3(0.0f, 0.0f, 0.0f);
 	_diffuse = glm::vec3(0.0f, 0.0f, 0.0f);
 	_specular = glm::vec3(0.0f, 0.0f, 0.0f);
 	_typeLight = type;
-	_currentCamera = camera;
+	_currentCamera = _camera;
 	//SetBoolsTypeLight();
 
 	switch (_typeLight)
@@ -47,14 +47,14 @@ Light::Light(Renderer* _render, TypeLight type, Camera* camera) : Entity(_render
 	CreateDataLight();
 }
 
-Light::Light(glm::vec3 colour, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, Renderer* render, TypeLight type, Camera* camera) : Entity(render)
+Light::Light(glm::vec3 colour, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, Renderer* render, TypeLight type, Camera* _camera) : Entity(render)
 {
 	_colour = colour;
 	_ambient = ambient;
 	_diffuse = diffuse;
 	_specular = specular;
 	_typeLight = type;
-	_currentCamera = camera;
+	_currentCamera = _camera;
 	SetBoolsTypeLight();
 
 	switch (_typeLight)

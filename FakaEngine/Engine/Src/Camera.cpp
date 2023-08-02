@@ -49,13 +49,6 @@ void Camera::ChangeActualFrustrum()
 	}
 }
 
-void Camera::SetIndexBSPPlanes(int plane1, int plane2, int plane3)
-{
-	indicesBSP[0] = plane1;
-	indicesBSP[1] = plane2;
-	indicesBSP[2] = plane3;
-}
-
 void Camera::SetEnableDrawAABB(bool value)
 {
 	if (axisAlignedBoundingBox != NULL)

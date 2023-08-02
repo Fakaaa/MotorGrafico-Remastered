@@ -5,6 +5,7 @@
 #include "Material.h"
 
 #include "ModelNode.h"
+#include "PlaneBSP.h"
 #include "Utils/Utils.h"
 
 #include <glew.h>
@@ -43,6 +44,8 @@ ModelNode* ModelImporter::LoadModel(vector<Mesh*>& modelMeshes, const string& fi
 	LoadMesh(modelMeshes, childrens, scene, render);
 
 	LoadMaterial(scene, texturePath, textureList);
+
+	GenerateBSP_Planes(rootNode, childrens);
 
 	return rootNode;
 }
@@ -108,7 +111,9 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiS
 	vector<float> vertices;
 	vector<unsigned int> indices;
 
-	string bspPlane = "BSP_Plane"; //String to compare the name of the mesh
+	vector<float> valuesX;
+	vector<float> valuesY;
+	vector<float> valuesZ;
 
 	for (int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -123,19 +128,22 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiS
 		}
 		vertices.insert(vertices.end(), { mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z });
 
-		if (nodeMesh->GetName() == bspPlane.c_str())
+		//We save the positions of the mesh when detect a coincidence with the key for bsp planes.
+		if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneKey.c_str()))
 		{
-			planesPosition.push_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
+			valuesX.push_back(mesh->mVertices[i].x);
+			valuesY.push_back(mesh->mVertices[i].y);
+			valuesZ.push_back(mesh->mVertices[i].z);
 		}
 	}
 
-	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlane.c_str()))
+	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneKey.c_str()))
 	{
 		newMesh->SetInmortalObject(true);
 
-		planesBSP.push_back(planesPosition);
-		planesPosition.clear();
-		bspPlane.clear();
+		//We create the vertices struct and push this to a vector for compute later.
+		planesPosition.push_back(PlaneBSP::VerticesBSP(Utils::FindMaxValue(valuesX), Utils::FindMinValue(valuesX),
+			Utils::FindMaxValue(valuesY), Utils::FindMinValue(valuesY), Utils::FindMaxValue(valuesZ), Utils::FindMinValue(valuesZ)));
 	}
 
 	for (int i = 0; i < mesh->mNumFaces; i++)
@@ -206,6 +214,50 @@ void ModelImporter::ClearAuxiliarNodesOldModel()
 	}
 }
 
+void ModelImporter::SetBSP_PlanesParent(Entity* newParent)
+{
+	bspsParent = newParent;
+}
+
+vector<PlaneBSP*> ModelImporter::GetBSP_PlanesGenerated()
+{
+	return resultBSPs;
+}
+
 void ModelImporter::LoadTextureFromFile(aiTextureType type)
 {
+}
+
+void ModelImporter::GenerateBSP_Planes(ModelNode* rootNode, vector<ModelNode*> childrens)
+{
+	int currentIndex = 0;
+	string rootSceneName = rootNode->GetNodeName();
+
+	if (Utils::CheckStringCoincidence(rootSceneName, bspPlaneKey))
+	{
+		PlaneBSP* newBsp = new PlaneBSP();
+
+		newBsp->SetName(rootSceneName);
+		newBsp->SetVerticesBSP(planesPosition[currentIndex]);
+
+		currentIndex++;
+
+		resultBSPs.push_back(newBsp);
+	}
+	for (int i = 0; i < childrens.size(); i++)
+	{
+		string currNodeName = childrens[i]->GetNodeName();
+		if (Utils::CheckStringCoincidence(currNodeName, bspPlaneKey))
+		{
+			PlaneBSP* newBsp = new PlaneBSP();
+
+			newBsp->SetName(currNodeName);
+			newBsp->SetVerticesBSP(planesPosition[currentIndex]);
+			currentIndex++;
+
+			cout << "Pushed a new BSP_Plane with KEY: " << currNodeName << endl;
+
+			resultBSPs.push_back(newBsp);
+		}
+	}
 }

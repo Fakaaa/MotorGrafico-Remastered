@@ -8,6 +8,8 @@
 #include "Shape.h"
 #include "model.h"
 
+#include <vector>
+
 class Game : public GameBase
 {
 private:
@@ -19,9 +21,11 @@ private:
 	Shape* _triangle = NULL;
 	Primitive3D* _cube = NULL;
 	Model* _testModel = NULL;
-	Model* _bob = NULL;
+	Model* _bspScene = NULL;
 
 	Material* _goldMaterial = NULL;
+
+	vector<Entity*> objectsToComputeInBSP;
 
 	bool _mouseCameraControl;
 

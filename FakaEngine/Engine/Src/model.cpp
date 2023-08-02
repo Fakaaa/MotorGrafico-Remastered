@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "ModelImporter.h"
+#include "PlaneBSP.h"
 
 #include "ModelNode.h"
 #include "Utils/Utils.h"
@@ -12,13 +13,15 @@
 
 #include "Camera.h"
 
-Model::Model(Renderer* render, bool hasBPSPlane) : Entity(render)
+Model::Model(Renderer* render, bool hasBPSPlane, Entity* parentBSP_Planes) : Entity(render)
 {
 	myMat = NULL;
 	rootNode = NULL;
 	modelImporter = new ModelImporter();
 
 	hasBSPPlanes = hasBPSPlane;
+	this->parentBSP_Planes = parentBSP_Planes;
+	modelImporter->SetBSP_PlanesParent(parentBSP_Planes);
 
 	CreateMyAxisAlignedBoundingBox();
 	axisAlignedBoundingBox->AttachEntity(internalData, transform);
@@ -40,19 +43,6 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 	if (modelImporter != NULL)
 	{
 		rootNode = modelImporter->LoadModel(modelMeshes, filePath, texturePath, rootNode, modelChildrens, textureList, renderer);
-	}
-
-	for (int i = 0; i < modelImporter->getPlanesBSP().size(); i++)
-	{
-		cout << "BSP_PLANE: " << i + 1 << endl;
-
-		for (int j = 0; j < modelImporter->getPlanesBSP()[i].size(); j++)
-		{
-			cout << "Position: " << j <<
-				" X[" << modelImporter->getPlanesBSP()[i][j].x <<
-				"]Y[" << modelImporter->getPlanesBSP()[i][j].y <<
-				"]Z[" << modelImporter->getPlanesBSP()[i][j].z << "]" << endl;
-		}
 	}
 
 	if (rootNode != NULL) {
@@ -173,94 +163,7 @@ void Model::SetEnableDrawAABB(bool value)
 		axisAlignedBoundingBox->SetEnableDraw(value);
 }
 
-void Model::updateNodesIndexBSP()
+vector<PlaneBSP*> Model::GetBSPs()
 {
-	/*if (planeBSP1 != NULL && planeBSP2 != NULL && planeBSP3 != NULL)
-	{
-		Entity::SetIndexBSPPlanes((int)planeBSP1->ObjectPositiveSide(this), (int)planeBSP2->ObjectPositiveSide(this),
-			(int)planeBSP3->ObjectPositiveSide(this));
-
-		if (rootNode != NULL)
-		{
-			rootNode->SetIndexBSPPlanes((int)planeBSP1->ObjectPositiveSide(rootNode), (int)planeBSP2->ObjectPositiveSide(rootNode),
-				(int)planeBSP3->ObjectPositiveSide(rootNode));
-		}
-		for (int i = 0; i < modelChildrens.size(); i++)
-		{
-			if (modelChildrens[i] != NULL)
-			{
-				modelChildrens[i]->SetIndexBSPPlanes((int)planeBSP1->ObjectPositiveSide(rootNode), (int)planeBSP2->ObjectPositiveSide(rootNode),
-					(int)planeBSP3->ObjectPositiveSide(rootNode));
-			}
-		}
-	}*/
-}
-
-void Model::updateBSPPlanes(glm::vec3 posPlane1, glm::vec3 posPlane2, glm::vec3 posPlane3)
-{
-	if (!hasBSPPlanes)
-		return;
-
-	updateNodesIndexBSP();
-
-	//planeBSP1->update_BSP_Plane(modelImporter->getPlanesBSP()[0][0] + posPlane1, modelImporter->getPlanesBSP()[0][2] + posPlane1,
-	//	modelImporter->getPlanesBSP()[0][1] + posPlane1);
-	//
-	//planeBSP2->update_BSP_Plane(modelImporter->getPlanesBSP()[1][0] + posPlane2, modelImporter->getPlanesBSP()[1][1] + posPlane2,
-	//	modelImporter->getPlanesBSP()[1][2] + posPlane2);
-	//
-	//planeBSP3->update_BSP_Plane(modelImporter->getPlanesBSP()[2][0] + posPlane3, modelImporter->getPlanesBSP()[2][2] + posPlane3,
-	//	modelImporter->getPlanesBSP()[2][1] + posPlane3);
-}
-
-void Model::checkBSPRecursive(Camera* camera, Entity* nodeToCompute)
-{
-	/*if (planeBSP1 != NULL && planeBSP2 != NULL && planeBSP3 != NULL)
-	{
-		if (nodeToCompute != NULL)
-		{
-			if (checkIfIsOnSide(camera, nodeToCompute))
-			{
-				ChangeDrawState(nodeToCompute, true);
-
-				for (int i = 0; i < nodeToCompute->GetChildrens().size(); i++)
-				{
-					if (nodeToCompute->GetChildrens()[i] != NULL)
-					{
-						checkBSPRecursive(camera, nodeToCompute->GetChildrens()[i]);
-					}
-				}
-			}
-			else
-			{
-				ChangeDrawState(nodeToCompute, false);
-
-				for (int i = 0; i < nodeToCompute->GetChildrens().size(); i++)
-				{
-					if (nodeToCompute->GetChildrens()[i] != NULL)
-					{
-						ChangeDrawState(nodeToCompute->GetChildrens()[i], false);
-					}
-				}
-			}
-		}
-	}*/
-}
-
-bool Model::checkIfIsOnSide(Camera* camera, Entity* node)
-{
-	for (int i = 0; i < amountPlanesBSP; i++)
-	{
-		if (node->CheckAmountIndicesTrue(camera))
-		{
-			cout << node->GetName() << " esta dentro de los planos" << endl;
-			return true;
-		}
-		else
-		{
-			cout << node->GetName() << " esta fuera" << endl;
-			return false;
-		}
-	}
-	return false;
+	return modelImporter->GetBSP_PlanesGenerated();
 }

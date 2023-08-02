@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Src\Animation.h" />
     <ClInclude Include="Src\AxisAlignedBoundingBox.h" />
+    <ClInclude Include="Src\BSPHandler.h" />
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\CollisionManager.h" />
     <ClInclude Include="Src\CompilationController.h" />
@@ -64,6 +65,7 @@
   <ItemGroup>
     <ClCompile Include="Src\Animation.cpp" />
     <ClCompile Include="Src\AxisAlignedBoundingBox.cpp" />
+    <ClCompile Include="Src\BSPHandler.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\CollisionManager.cpp" />
     <ClCompile Include="Src\EmptyObject.cpp" />

@@ -205,12 +205,6 @@ void EngineGui::ShowEntityNodeInfo(Entity* entity)
 
 	ImGui::Separator();
 
-	float indicesBSP[3] = { entity->GetIndicesBSP()[0],entity->GetIndicesBSP()[1],entity->GetIndicesBSP()[2] };
-	ImGui::Text("BSP_indices");
-	ImGui::InputFloat3("indices", indicesBSP, -1, ImGuiInputTextFlags_CharsDecimal);
-
-	ImGui::Separator();
-
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	ImGui::Separator();

@@ -22,9 +22,9 @@ public:
 		Spot
 	};
 
-	Light(Renderer* _render, TypeLight type, Camera* camera);
+	Light(Renderer* _render, TypeLight type, Camera* _camera);
 	Light(glm::vec3 colour, glm::vec3 ambient, glm::vec3 diffuse
-		, glm::vec3 specular, Renderer* render, TypeLight type, Camera* camera);
+		, glm::vec3 specular, Renderer* render, TypeLight type, Camera* _camera);
 
 	void UseLight();
 
@@ -169,7 +169,7 @@ public:
 	void SetTypeLightSpot();
 	void SetTypeLightDirectional();
 
-	void SetCurrentCamera(Camera* camera) { _currentCamera = camera; }
+	void SetCurrentCamera(Camera* _camera) { _currentCamera = _camera; }
 
 	void Draw(bool& wireFrameActive) override;
 

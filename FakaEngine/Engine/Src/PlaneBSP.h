@@ -2,8 +2,10 @@
 #define PLANEBSP_H
 
 #include "Entity.h"
+
 #include <string>
 #include <string.h>
+
 #include "PrivateClass/Export.h"
 
 class MyPlane;
@@ -14,16 +16,16 @@ public:
 	PlaneBSP();
 	~PlaneBSP();
 
-	struct VertexsPlaneBSP {
-
-	public:
+	struct VerticesBSP 
+	{
+		public:
 		float vertex_max_x;
 		float vertex_min_x;
 		float vertex_max_y;
 		float vertex_min_y;
 		float vertex_max_z;
 		float vertex_min_z;
-		VertexsPlaneBSP(float max_x, float min_x, float max_y, float min_y, float max_z, float min_z)
+		VerticesBSP(float max_x, float min_x, float max_y, float min_y, float max_z, float min_z)
 		{
 			vertex_max_x = max_x;
 			vertex_min_x = min_x;
@@ -34,24 +36,29 @@ public:
 		}
 	};
 
-	enum CurrentCameraPosition
+	enum ObjectPlanePosition
 	{
 		Null,
 		PostivePlane,
 		NegativePlane,
 	};
 
-	CurrentCameraPosition currentCameraPosition = Null;
+	VerticesBSP vertexPlaneBSP = VerticesBSP(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	ObjectPlanePosition currentCameraPosition = Null;
 	vector<Entity*> ObjectsInGame;
-	VertexsPlaneBSP vertexPlaneBSP = VertexsPlaneBSP(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
 	void SetPlaneAttach(Entity* plane);
-	void SetCurrentCameraCompare(Entity* camera);
+	void SetCurrentCameraCompare(Entity* _camera);
+	void GenerateBspPlane();
+
 	Entity* GetPlaneAttach();
-	void GeneratePlane();
+
 	void SetName(string value) { name = value; }
 	string GetName() { return name; }
-	void CheckObjectInPlaneBSP(Entity* ObjectCompare, int indexPlanePush, vector<int>& indexsDisableObjects);
+
+	void SetVerticesBSP(VerticesBSP vertices);
+
+	bool CheckObjectInPlaneBSP(Entity* ObjectCompare);
 private:
 
 	Entity* currentCameraCompare;

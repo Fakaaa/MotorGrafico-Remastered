@@ -29,7 +29,7 @@ public:
 	bool positiveDown(glm::vec3 point);
 	void CheckObjectInFrustrum(int indexObject, vector<int>& indexsObjectsDisables, Entity* objectCompare);
 
-	void UpdateFrustrum(Camera* camera);
+	void UpdateFrustrum(Camera* _camera);
 private:
 	float drawDistance = 100;
 	MyPlane* _nearPlane = NULL;

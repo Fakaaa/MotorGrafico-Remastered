@@ -85,11 +85,6 @@ public:
 	void ChangeActualFrustrum();
 	void SetEnableDrawAABB(bool value) override;
 
-	int indicesBSP[amountPlanesBSP];
-
-	void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
-	int* GetIndicesBSP() { return indicesBSP; }
-
 	void SetInitOffsetCameraThirdPersonX(float value) { initOffsetCameraThirdPersonX = value; }
 	void SetInitOffsetCameraThirdPersonY(float value) { initOffsetCameraThirdPersonY = value; }
 	void SetInitOffsetCameraThirdPersonZ(float value) { initOffsetCameraThirdPersonZ = value; }

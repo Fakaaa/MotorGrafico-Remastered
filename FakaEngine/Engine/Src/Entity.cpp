@@ -36,9 +36,7 @@ Entity::Entity(Renderer* _renderer)
 	SetScale(1, 1, 1);
 
 	isModel = 0;
-	amountIndicesTrue = 0;
 	nameEntity = "Entity sin nombre";
-
 }
 
 Entity::Entity(Renderer* _renderer, float _isModel)
@@ -247,46 +245,19 @@ glm::vec4 Entity::GetRight()
 
 #pragma region UI
 
-void Entity::SetIndexBSPPlanes(int plane1, int plane2, int plane3)
-{
-	indexBSP[0] = plane1;
-	indexBSP[1] = plane2;
-	indexBSP[2] = plane3;
-}
-
-bool Entity::CheckAmountIndicesTrue(Camera* camera)
-{
-	for (int i = 0; i < amountPlanesBSP; i++)
-	{
-		if (camera->GetIndicesBSP()[i] == this->GetIndicesBSP()[i])
-		{
-			if (amountIndicesTrue < amountPlanesBSP)
-				amountIndicesTrue++;
-		}
-		else
-		{
-			if (amountIndicesTrue > 0)
-				amountIndicesTrue--;
-		}
-
-		if (amountIndicesTrue == amountPlanesBSP)
-		{
-			amountIndicesTrue = 0;
-			return true;
-		}
-		else
-		{
-			amountIndicesTrue = 0;
-			return false;
-		}
-	}
-}
-
 void Entity::DisableMeAndChilds()
 {
 	SetIsAlive(false);
 	for (Entity* child : childrens) {
 		child->DisableMeAndChilds();
+	}
+}
+
+void Entity::EnableMeAndChilds()
+{
+	SetIsAlive(true);
+	for (Entity* child : childrens) {
+		child->EnableMeAndChilds();
 	}
 }
 

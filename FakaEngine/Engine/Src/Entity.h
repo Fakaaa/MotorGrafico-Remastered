@@ -71,8 +71,6 @@ struct ENGINE_API InternalData
 	glm::mat4 scale;
 };
 
-const int amountPlanesBSP = 3;
-
 class ENGINE_API Entity
 {
 private:
@@ -161,13 +159,8 @@ public:
 	{
 		return "Entity"; // Aplicar override en todas las clases hijo.
 	}
-	// PLANES BSP //
-	int indexBSP[amountPlanesBSP];
-	virtual void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
-	int* GetIndicesBSP() { return indexBSP; }
-	int amountIndicesTrue;
-	bool CheckAmountIndicesTrue(Camera* camera);
 	void DisableMeAndChilds();
+	void EnableMeAndChilds();
 
 	//UI//
 	void ShowUI();
