@@ -172,6 +172,7 @@ public:
 
 	// JERARQUIA // 
 	Entity* GetParent() { return parent; }
+	void SetParent(Entity* newParent);
 	void AddChildren(Entity* children);
 	void RemoveChildren(Entity* children, Entity* newParent);
 	Entity* GetEntityNode(string name);

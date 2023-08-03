@@ -6,6 +6,7 @@
 
 #include "ModelNode.h"
 #include "PlaneBSP.h"
+#include "BSPHandler.h"
 #include "Utils/Utils.h"
 
 #include <glew.h>
@@ -15,9 +16,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-ModelImporter::ModelImporter()
+ModelImporter::ModelImporter(BSPHandler* bspHandler)
 {
 	indexChildrenLoad = 0;
+	bspHandlerRef = bspHandler;
 }
 
 ModelImporter::~ModelImporter() {}
@@ -45,7 +47,7 @@ ModelNode* ModelImporter::LoadModel(vector<Mesh*>& modelMeshes, const string& fi
 
 	LoadMaterial(scene, texturePath, textureList);
 
-	GenerateBSP_Planes(rootNode, childrens);
+	ConfigureBSP_Planes(bspHandlerRef, childrens);
 
 	return rootNode;
 }
@@ -105,7 +107,7 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, ModelNode* rootNode, co
 	}
 }
 
-void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render)
+void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render)
 {
 	Mesh* newMesh = new Mesh(render);
 	vector<float> vertices;
@@ -115,25 +117,25 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiS
 	vector<float> valuesY;
 	vector<float> valuesZ;
 
-	for (int i = 0; i < mesh->mNumVertices; i++)
+	for (int i = 0; i < node->mNumVertices; i++)
 	{
-		vertices.insert(vertices.end(), { mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z });
-		newMesh->meshXYZVertices.push_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
-		if (mesh->mTextureCoords[0])
+		vertices.insert(vertices.end(), { node->mVertices[i].x,node->mVertices[i].y,node->mVertices[i].z });
+		newMesh->meshXYZVertices.push_back(glm::vec3(node->mVertices[i].x, node->mVertices[i].y, node->mVertices[i].z));
+		if (node->mTextureCoords[0])
 		{
-			vertices.insert(vertices.end(), { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y });
+			vertices.insert(vertices.end(), { node->mTextureCoords[0][i].x, node->mTextureCoords[0][i].y });
 		}
 		else {
 			vertices.insert(vertices.end(), { 0.0f,  0.0f });
 		}
-		vertices.insert(vertices.end(), { mesh->mNormals[i].x,mesh->mNormals[i].y,mesh->mNormals[i].z });
+		vertices.insert(vertices.end(), { node->mNormals[i].x,node->mNormals[i].y,node->mNormals[i].z });
 
 		//We save the positions of the mesh when detect a coincidence with the key for bsp planes.
 		if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneKey.c_str()))
 		{
-			valuesX.push_back(mesh->mVertices[i].x);
-			valuesY.push_back(mesh->mVertices[i].y);
-			valuesZ.push_back(mesh->mVertices[i].z);
+			valuesX.push_back(node->mVertices[i].x);
+			valuesY.push_back(node->mVertices[i].y);
+			valuesZ.push_back(node->mVertices[i].z);
 		}
 	}
 
@@ -146,23 +148,38 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiS
 			Utils::FindMaxValue(valuesY), Utils::FindMinValue(valuesY), Utils::FindMaxValue(valuesZ), Utils::FindMinValue(valuesZ)));
 	}
 
-	for (int i = 0; i < mesh->mNumFaces; i++)
+	for (int i = 0; i < node->mNumFaces; i++)
 	{
-		aiFace face = mesh->mFaces[i];
+		aiFace face = node->mFaces[i];
 		for (int j = 0; j < face.mNumIndices; j++)
 		{
 			indices.push_back(face.mIndices[j]);
 		}
 	}
 
+	//Creamos la data de la mesh y le seteamos el nombre
 	newMesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 	newMesh->SetMeshName(nodeMesh->GetName());
 
-	nodeMesh->_meshList.push_back(newMesh);
-	nodeMesh->_meshToTex.push_back(mesh->mMaterialIndex);
-	nodeMesh->AddChildren(newMesh);
+	//Si es un plano BSP, entonces guardamos la data del mesh en el handler de bsp, para dibujarlo y controlarlo separado.
+	if (Utils::CheckStringCoincidence(newMesh->GetMeshName(), bspPlaneKey.c_str()))
+	{
+		ModelNode* planeNode = new ModelNode(render, scene->mRootNode);
+		planeNode->SetScale(1, 1, 1);
+		planeNode->_meshList.push_back(newMesh);
+		planeNode->_meshToTex.push_back(node->mMaterialIndex);
+		planeNode->AddChildren(newMesh);
 
-	modelMeshes.push_back(newMesh);
+		bspHandlerRef->SetNewPlaneMesh(planeNode, newMesh->GetMeshName());
+	}
+	else //Sino la configuramos en el modelo con normalidad
+	{
+		nodeMesh->_meshList.push_back(newMesh);
+		nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
+		nodeMesh->AddChildren(newMesh);
+
+		modelMeshes.push_back(newMesh);
+	}
 }
 
 void ModelImporter::LoadMaterial(const aiScene* scene, const string& texturePath, vector<Texture*>& textureList)
@@ -214,50 +231,51 @@ void ModelImporter::ClearAuxiliarNodesOldModel()
 	}
 }
 
-void ModelImporter::SetBSP_PlanesParent(Entity* newParent)
-{
-	bspsParent = newParent;
-}
-
-vector<PlaneBSP*> ModelImporter::GetBSP_PlanesGenerated()
-{
-	return resultBSPs;
-}
-
 void ModelImporter::LoadTextureFromFile(aiTextureType type)
 {
 }
 
-void ModelImporter::GenerateBSP_Planes(ModelNode* rootNode, vector<ModelNode*> childrens)
+void ModelImporter::ConfigureBSP_Planes(BSPHandler* bspHandler, vector<ModelNode*> childrens)
 {
 	int currentIndex = 0;
-	string rootSceneName = rootNode->GetNodeName();
 
-	if (Utils::CheckStringCoincidence(rootSceneName, bspPlaneKey))
+	for (int i = 0; i < bspHandler->GetBSP_PlanesData().size(); i++)
 	{
 		PlaneBSP* newBsp = new PlaneBSP();
+		Entity* bspEntity = bspHandler->GetBSP_PlanesData()[i].node;
 
-		newBsp->SetName(rootSceneName);
 		newBsp->SetVerticesBSP(planesPosition[currentIndex]);
+		newBsp->SetName(bspHandler->GetBSP_PlanesData()[i].name);
+		newBsp->SetPlaneAttach(bspHandler->GetBSP_PlanesData()[i].node);
 
+		bspEntity->SetParent(bspHandler->GetRootScene());
+
+		cout << "Pushed a new BSP_Plane with KEY: " << bspHandler->GetBSP_PlanesData()[i].name << endl;
 		currentIndex++;
-
-		resultBSPs.push_back(newBsp);
+		bspHandler->AddPlaneBSP(newBsp);
 	}
+
+	vector<ModelNode*> auxChildrens;
+
+	//Recorremos los childrens del modelo para validar los Nodos BSP.
 	for (int i = 0; i < childrens.size(); i++)
 	{
-		string currNodeName = childrens[i]->GetNodeName();
-		if (Utils::CheckStringCoincidence(currNodeName, bspPlaneKey))
+		ModelNode* currNode = childrens[i];
+
+		//Validamos si alguno de los childs es algun plano BSP, en ese caso lo "sacamos" (No tenemos en cuenta).
+		if (Utils::CheckStringCoincidence(currNode->GetNodeName(), bspPlaneKey))
 		{
-			PlaneBSP* newBsp = new PlaneBSP();
-
-			newBsp->SetName(currNodeName);
-			newBsp->SetVerticesBSP(planesPosition[currentIndex]);
-			currentIndex++;
-
-			cout << "Pushed a new BSP_Plane with KEY: " << currNodeName << endl;
-
-			resultBSPs.push_back(newBsp);
+			continue;
+		}
+		else {
+			auxChildrens.push_back(currNode);
 		}
 	}
+
+	//Transcribimos eso al vector de childrens.
+	childrens = auxChildrens;
+
+	//La razon de hacer esto es que el bsp handler los computa y recibe a travez de la carga de este model
+	//de esta manera la escena (Modelo y Planos) se cargan ambas con el importer de modelos,
+	//pero nosotros podemos manejar de forma aislada los planos encontrados y generados.
 }

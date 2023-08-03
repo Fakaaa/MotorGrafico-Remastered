@@ -49,7 +49,7 @@ void Game::InitGame()
 	InitCustomLights();
 	InitOfMaterials();
 
-	_bspScene = new Model(_renderer, false, GetRootHierarchy()->GetEntityNode("BSP_Scene"));
+	_bspScene = new Model(_renderer, _bspHandler);
 	_bspScene->LoadModel("Res/Models/BSPScene.fbx", "");
 	_bspScene->SetMaterial(_textureMaterialForLight);
 	_bspScene->SetName("BSP_Scene");
@@ -60,22 +60,14 @@ void Game::InitGame()
 
 	AddObjectInDenugGame(_bspScene);
 
-	for (int i = 0; i < _bspScene->GetBSPs().size(); i++)
+	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
 	{
-		string bspName = _bspScene->GetBSPs()[i]->GetName();
-		PlaneBSP* plane = _bspScene->GetBSPs()[i];
-
-		Entity* bspEntity = _bspScene->GetEntityNode(bspName);
-		bspEntity->SetInmortalObject(true);
-		bspEntity->SetPosition(670, 30, 850);
-		bspEntity->SetScale(30.0f, 30.0f, 30.0f);
-		bspEntity->SetRotationX(-90.0f);
-		bspEntity->SetRotationZ(-90.0f);
-
-		plane->SetPlaneAttach(bspEntity);
-
-		_bspScene->RemoveChildren(bspEntity, GetRootHierarchy());
-		_bspHandler->AddPlaneBSP(_bspScene->GetBSPs()[i]);
+		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
+		bspNode->SetInmortalObject(true);
+		bspNode->SetPosition(670, 30, 850);
+		bspNode->SetScale(30.0f, 30.0f, 30.0f);
+		bspNode->SetRotationX(-90.0f);
+		bspNode->SetRotationZ(-90.0f);
 	}
 
 	objectsToComputeInBSP.push_back(_bspScene);
@@ -111,6 +103,7 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 	if (_bspHandler != NULL)
 	{
 		_bspHandler->UpdateObjectsRecursiveCommon(objectsToComputeInBSP);
+		_bspHandler->DrawBSPMeshes(_engineGUI->GetIfWireFrameIsActive());
 	}
 }
 
@@ -301,7 +294,7 @@ void Game::InitTestEngine(bool status)
 	_cube->SetScale(690.0f, 20.0f, 815.0f);
 	_cube->SetNewMaterial(_goldMaterial);
 
-	_testModel = new Model(_renderer, false, NULL);
+	_testModel = new Model(_renderer, _bspHandler);
 	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
 	_testModel->SetMaterial(_textureMaterialForLight);
 	_testModel->SetName("TankModel");

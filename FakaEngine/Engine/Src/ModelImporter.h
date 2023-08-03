@@ -8,6 +8,7 @@
 
 #include "PrivateClass/Export.h"
 #include "PlaneBSP.h"
+#include "BSPHandler.h"
 
 #include "glm/vec3.hpp"
 
@@ -35,26 +36,22 @@ private:
 	stack<ModelNode*> auxiliarNodes;
 	vector<aiNode*> nodes;
 
-	Entity* bspsParent;
+	BSPHandler* bspHandlerRef;
 	vector<PlaneBSP::VerticesBSP> planesPosition;
-	vector<PlaneBSP*> resultBSPs;
 
 	void LoadNode(aiNode* node, const aiScene* scene, vector<ModelNode*>& childrens, Renderer* render);
 	void LoadMesh(vector<Mesh*>& modelMeshes, vector<ModelNode*> childrens, const aiScene* scene, Renderer* render);
 	void LoadMesh(vector<Mesh*>& modelMeshes, ModelNode* rootNode, const aiScene* scene, Renderer* render);
-	void LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* mesh, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render);
+	void LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render);
 	void LoadMaterial(const aiScene* scene, const string& texturePath, vector<Texture*>& textureList);
 	void LoadTextureFromFile(aiTextureType type);
-	void GenerateBSP_Planes(ModelNode* rootNode, vector<ModelNode*> childrens);
+	void ConfigureBSP_Planes(BSPHandler* bspHandler, vector<ModelNode*> childrens);
 public:
-	ModelImporter();
+	ModelImporter(BSPHandler* bspHandler);
 	~ModelImporter();
 	ModelNode* LoadModel(vector<Mesh*>& modelMeshes, const string& filePath, const string& texturePath, ModelNode* rootNode, vector<ModelNode*>& childrens, vector<Texture*>& textureList, Renderer* render);
 	void ClearNodesOldModel();
 	void ClearAuxiliarNodesOldModel();
-	void SetBSP_PlanesParent(Entity* newParent);
-
-	vector<PlaneBSP*> GetBSP_PlanesGenerated();
 };
 
 #endif

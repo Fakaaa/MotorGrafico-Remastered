@@ -13,15 +13,11 @@
 
 #include "Camera.h"
 
-Model::Model(Renderer* render, bool hasBPSPlane, Entity* parentBSP_Planes) : Entity(render)
+Model::Model(Renderer* render, BSPHandler* bspHandler) : Entity(render)
 {
 	myMat = NULL;
 	rootNode = NULL;
-	modelImporter = new ModelImporter();
-
-	hasBSPPlanes = hasBPSPlane;
-	this->parentBSP_Planes = parentBSP_Planes;
-	modelImporter->SetBSP_PlanesParent(parentBSP_Planes);
+	modelImporter = new ModelImporter(bspHandler);
 
 	CreateMyAxisAlignedBoundingBox();
 	axisAlignedBoundingBox->AttachEntity(internalData, transform);
@@ -161,9 +157,4 @@ void Model::SetEnableDrawAABB(bool value)
 {
 	if (axisAlignedBoundingBox != NULL)
 		axisAlignedBoundingBox->SetEnableDraw(value);
-}
-
-vector<PlaneBSP*> Model::GetBSPs()
-{
-	return modelImporter->GetBSP_PlanesGenerated();
 }

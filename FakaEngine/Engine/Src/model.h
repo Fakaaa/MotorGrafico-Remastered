@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Material.h"
 #include "PlaneBSP.h"
+#include "BSPHandler.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ class ENGINE_API Model : public Entity
 private:
 	ModelImporter* modelImporter = NULL;
 public:
-	Model(Renderer* render, bool hasBPSPlane, Entity* parentBSP_Planes);
+	Model(Renderer* render, BSPHandler* bspHandler);
 	~Model();
 
 	void LoadModel(const string& filePath, const string& texturePath);
@@ -35,11 +36,6 @@ public:
 	ModelNode* GetMyModelNode() { return rootNode; }
 	vector<ModelNode*> GetModelChildrens() { return modelChildrens; }
 	vector<Mesh*> GetModelMeshes() { return modelMeshes; }
-
-	//Bsp data generated from import
-	bool hasBSPPlanes;
-	Entity* parentBSP_Planes;
-	vector<PlaneBSP*> GetBSPs();
 protected:
 	void BindBuffer() override;
 	void SetEnableDrawAABB(bool value) override;
@@ -50,5 +46,4 @@ private:
 	ModelNode* rootNode;
 	Material* myMat;
 };
-
 #endif

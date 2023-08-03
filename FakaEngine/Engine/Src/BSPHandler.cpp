@@ -15,16 +15,29 @@ BSPHandler::~BSPHandler()
 	_camera = NULL;
 	_rootScene = NULL;
 
-	for (int i = 0; i < planes_BSP.size(); i++)
+	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
-		if (planes_BSP[i] != NULL) 
+		if (_logicPlanes_BSP[i] != NULL) 
 		{
-			delete planes_BSP[i];
-			planes_BSP[i] = NULL;
+			delete _logicPlanes_BSP[i];
+			_logicPlanes_BSP[i] = NULL;
 		}
 	}
 
-	planes_BSP.clear();
+	_logicPlanes_BSP.clear();
+
+	for (int i = 0; i < _bspNodes.size(); i++)
+	{
+		if (_bspNodes[i].node != NULL)
+		{
+			delete _bspNodes[i].node;
+			_bspNodes[i].node = NULL;
+		}
+	}
+
+	_bspNodes.clear();
+
+	_countBSP_Planes = 0;
 }
 
 #pragma endregion
@@ -53,9 +66,9 @@ bool BSPHandler::UpdateObjectsRecursiveInverse(vector<Entity*> objects)
 
 		bool canBeActive = true;
 		
-		for (int j = 0; j < planes_BSP.size(); j++)
+		for (int j = 0; j < _logicPlanes_BSP.size(); j++)
 		{
-			if (!planes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
+			if (!_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
 			{
 				canBeActive = false;
 				break;
@@ -82,9 +95,9 @@ void BSPHandler::UpdateObjectsRecursiveCommon(vector<Entity*> objects)
 	{
 		bool canBeActive = true;
 
-		for (int j = 0; j < planes_BSP.size(); j++)
+		for (int j = 0; j < _logicPlanes_BSP.size(); j++)
 		{
-			if (!planes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
+			if (!_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
 			{
 				canBeActive = false;
 				break;
@@ -112,7 +125,29 @@ void BSPHandler::UpdateObjectsRecursiveCommon(vector<Entity*> objects)
 void BSPHandler::AddPlaneBSP(PlaneBSP* newBsp)
 {
 	newBsp->SetCurrentCameraCompare(_camera);
-	planes_BSP.push_back(newBsp);
+	_logicPlanes_BSP.push_back(newBsp);
+}
+
+void BSPHandler::SetNewPlaneMesh(ModelNode* planeNode, string planeName)
+{
+	BSPNodeData newbspDrawData;
+
+	newbspDrawData.node = planeNode;
+	newbspDrawData.name = planeName;
+
+	_bspNodes.push_back(newbspDrawData);
+	_countBSP_Planes++;
+}
+
+void BSPHandler::DrawBSPMeshes(bool& wireFrameEnable)
+{
+	for (int i = 0; i < _bspNodes.size(); i++)
+	{
+		if (_bspNodes[i].node != NULL) 
+		{
+			_bspNodes[i].node->Draw(wireFrameEnable);
+		}
+	}
 }
 
 #pragma endregion

@@ -303,6 +303,17 @@ void Entity::_AddChildren(Entity* children, Entity* newParent)
 	children->UpdateMatrixModel();
 }
 
+void Entity::SetParent(Entity* newParent)
+{
+	if (parent != NULL)
+	{
+		parent->RemoveChildren(this, newParent);
+	}
+	else {
+		newParent->AddChildren(this);
+	}
+}
+
 void Entity::AddChildren(Entity* children)
 {
 	if (children == NULL)
