@@ -19,8 +19,8 @@ Model::Model(Renderer* render, BSPHandler* bspHandler) : Entity(render)
 	rootNode = NULL;
 	modelImporter = new ModelImporter(bspHandler);
 
-	CreateMyAxisAlignedBoundingBox();
-	axisAlignedBoundingBox->AttachEntity(internalData, transform);
+	//CreateMyAxisAlignedBoundingBox();
+	//axisAlignedBoundingBox->AttachEntity(internalData, transform);
 }
 
 Model::~Model()
@@ -41,15 +41,22 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 		rootNode = modelImporter->LoadModel(modelMeshes, filePath, texturePath, rootNode, modelChildrens, textureList, renderer);
 	}
 
-	if (rootNode != NULL) {
+	if (rootNode != NULL) 
+	{
 		AddChildren(rootNode);
+
 		rootNode->_textureList = textureList;
+		rootNode->SetupAxisAlignedBoundingBox();
+		rootNode->GetAABB()->SetEnableDraw(false);
 	}
 
 	for (int i = 0; i < modelChildrens.size(); i++)
 	{
 		if (modelChildrens[i] != NULL)
+		{
 			modelChildrens[i]->_textureList = textureList;
+			modelChildrens[i]->SetupAxisAlignedBoundingBox();
+		}
 	}
 
 	vector<glm::vec3> _dataXYZ;
@@ -65,15 +72,15 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 		}
 	}
 
-	axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
-		axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+	//axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
+	//	axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
 }
 
 void Model::Draw(bool& wireFrameActive)
 {
 	if (isAlive || InmortalObject)
 	{
-		axisAlignedBoundingBox->UpdateInternalDataBoundingBox(internalData, transform);
+		//axisAlignedBoundingBox->UpdateInternalDataBoundingBox(internalData, transform);
 
 		if (rootNode != NULL)
 			rootNode->Draw(wireFrameActive);
@@ -84,7 +91,7 @@ void Model::Draw(bool& wireFrameActive)
 				modelChildrens[i]->Draw(wireFrameActive);
 		}
 
-		axisAlignedBoundingBox->Draw(axisAlignedBoundingBox->GetEnableDraw());
+		//axisAlignedBoundingBox->Draw(axisAlignedBoundingBox->GetEnableDraw());
 	}
 }
 
@@ -155,6 +162,6 @@ void Model::BindBuffer() {}
 
 void Model::SetEnableDrawAABB(bool value)
 {
-	if (axisAlignedBoundingBox != NULL)
-		axisAlignedBoundingBox->SetEnableDraw(value);
+	//if (axisAlignedBoundingBox != NULL)
+	//	axisAlignedBoundingBox->SetEnableDraw(value);
 }

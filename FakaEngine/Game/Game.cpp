@@ -100,11 +100,11 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 		ControlCamera(_input);
 	}
 
-	if (_bspHandler != NULL)
+	/*if (_bspHandler != NULL)
 	{
 		_bspHandler->UpdateObjectsRecursiveCommon(objectsToComputeInBSP);
 		_bspHandler->DrawBSPMeshes(_engineGUI->GetIfWireFrameIsActive());
-	}
+	}*/
 }
 
 void Game::DestroyGame()

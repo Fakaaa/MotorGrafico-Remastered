@@ -167,7 +167,6 @@ string Entity::GetName()
 
 void Entity::SetRotationX(float x)
 {
-
 	transform.rotation[0] = x;
 	glm::vec3 axis;
 	axis[0] = 1.0f;

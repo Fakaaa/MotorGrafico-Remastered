@@ -132,7 +132,7 @@ bool PlaneBSP::CheckObjectInPlaneBSP(Entity* objectCompare)
 	}
 
 	//Log the result
-	switch (currentCameraPosition)
+	/*switch (currentCameraPosition)
 	{
 	case PlaneBSP::Null:
 		cout << "The camera has the enum in NULL state" << endl;
@@ -143,7 +143,7 @@ bool PlaneBSP::CheckObjectInPlaneBSP(Entity* objectCompare)
 	case PlaneBSP::NegativePlane:
 		cout << "Camera is on the NEGATIVE side of the plane: " << name << endl;
 		break;
-	}
+	}*/
 
 	//Return true if the item to compare is along the same side that the camera
 	return objectToComparePosition == currentCameraPosition;

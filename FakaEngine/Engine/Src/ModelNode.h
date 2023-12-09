@@ -1,6 +1,8 @@
 #ifndef MODELNODE_H
 #define MODELNODE_H
 
+#include <vector>
+
 #include "Entity.h"
 #include "PrivateClass/Export.h"
 
@@ -33,13 +35,14 @@ public:
 	void PrintMyInfo();
 	void SetEnableDrawAABB(bool value) override;
 	void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
+	void SetupAxisAlignedBoundingBox();
 	void ClearIndexBSPPlanes();
 
 protected:
 	void BindBuffer() override;
+	vector<Mesh*> GetChildNodesMeshes(ModelNode* node);
 private:
 	Material* myMat;
-
 	aiNode* _myNode;
 };
 #endif // !MODELNODE_H

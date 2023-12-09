@@ -47,7 +47,7 @@ ModelNode* ModelImporter::LoadModel(vector<Mesh*>& modelMeshes, const string& fi
 
 	LoadMaterial(scene, texturePath, textureList);
 
-	ConfigureBSP_Planes(bspHandlerRef, childrens);
+	//ConfigureBSP_Planes(bspHandlerRef, childrens);
 
 	return rootNode;
 }
