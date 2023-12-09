@@ -80,12 +80,12 @@ glm::vec3* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxPos(vector<glm:
 		values_z.push_back(_values[i].z);
 	}
 
-	float min_x = GetMinNum(values_x) - 0.04f;
-	float max_x = GetMaxNum(values_x) + 0.04f;
-	float min_y = GetMinNum(values_y) - 0.04f;
-	float max_y = GetMaxNum(values_y) + 0.04f;
-	float min_z = GetMinNum(values_z) - 0.04f;
-	float max_z = GetMaxNum(values_z) + 0.04f;
+	float min_x = GetMinNum(values_x);
+	float max_x = GetMaxNum(values_x);
+	float min_y = GetMinNum(values_y);
+	float max_y = GetMaxNum(values_y);
+	float min_z = GetMinNum(values_z);
+	float max_z = GetMaxNum(values_z);
 
 	returnArrPositions[0] = glm::vec3(min_x, max_y, min_z);
 	returnArrPositions[1] = glm::vec3(min_x, min_y, min_z);
@@ -95,6 +95,12 @@ glm::vec3* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxPos(vector<glm:
 	returnArrPositions[5] = glm::vec3(min_x, min_y, max_z);
 	returnArrPositions[6] = glm::vec3(max_x, min_y, max_z);
 	returnArrPositions[7] = glm::vec3(max_x, max_y, max_z);
+
+	_minCollConst = glm::vec3(min_x, min_y, min_z);
+	_maxCollConst = glm::vec3(max_x, max_y, max_z);
+
+	center = (_minCollConst + _maxCollConst) * 0.5f;
+	extents = glm::vec3(_maxCollConst.x - center.x, _maxCollConst.y - center.y, _maxCollConst.z - center.z);
 
 	return returnArrPositions;
 }
@@ -139,6 +145,24 @@ glm::vec4* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxCol()
 	}
 
 	return returnArrColors;
+}
+
+void AxisAlignedBoundingBox::SetMinColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale)
+{
+	_minCollConst = value;
+	_minColl = (_minCollConst * scale) + position;
+
+	center = (_minColl + _maxColl) * 0.5f;
+	extents = glm::vec3(_maxColl.x - center.x, _maxColl.y - center.y, _maxColl.z - center.z);
+}
+
+void AxisAlignedBoundingBox::SetMaxColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale)
+{
+	_maxCollConst = value;
+	_maxColl = (_maxCollConst * scale) + position + (-_minCollConst * scale);
+
+	center = (_minColl + _maxColl) * 0.5f;
+	extents = glm::vec3(_maxColl.x - center.x, _maxColl.y - center.y, _maxColl.z - center.z);
 }
 
 void AxisAlignedBoundingBox::CreateAxisAlignedBoundingBox()

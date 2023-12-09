@@ -17,10 +17,8 @@ Model::Model(Renderer* render, BSPHandler* bspHandler) : Entity(render)
 {
 	myMat = NULL;
 	rootNode = NULL;
+	this->bspHandler = bspHandler;
 	modelImporter = new ModelImporter(bspHandler);
-
-	CreateMyAxisAlignedBoundingBox();
-	axisAlignedBoundingBox->AttachEntity(internalData, transform);
 }
 
 Model::~Model()
@@ -41,7 +39,8 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 		rootNode = modelImporter->LoadModel(modelMeshes, filePath, texturePath, rootNode, modelChildrens, textureList, renderer);
 	}
 
-	if (rootNode != NULL) {
+	if (rootNode != NULL) 
+	{
 		AddChildren(rootNode);
 		rootNode->_textureList = textureList;
 	}
@@ -49,32 +48,39 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 	for (int i = 0; i < modelChildrens.size(); i++)
 	{
 		if (modelChildrens[i] != NULL)
-			modelChildrens[i]->_textureList = textureList;
-	}
-
-	vector<glm::vec3> _dataXYZ;
-
-	for (int i = 0; i < modelMeshes.size(); i++)
-	{
-		for (int j = 0; j < modelMeshes[i]->meshXYZVertices.size(); j++)
 		{
-			if (!Utils::CheckStringCoincidence(modelMeshes[i]->GetMeshName(), "BSP_Plane"))
-			{
-				_dataXYZ.push_back(modelMeshes[i]->meshXYZVertices[j]);
-			}
+			modelChildrens[i]->_textureList = textureList;
 		}
 	}
 
-	axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
-		axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+	for (int i = 0; i < bspHandler->GetBSP_PlanesData().size(); i++)
+	{
+		if (bspHandler->GetBSP_PlanesData()[i].node != NULL) {
+			rootNode->RemoveChildren(bspHandler->GetBSP_PlanesData()[i].node, bspHandler->GetRootScene());
+		}
+	}
+}
+
+void Model::UpdateAABB()
+{
+	if (rootNode != NULL)
+	{
+		rootNode->SetupAxisAlignedBoundingBox();
+	}
+
+	for (int i = 0; i < modelChildrens.size(); i++)
+	{
+		if (modelChildrens[i] != NULL)
+		{
+			modelChildrens[i]->SetupAxisAlignedBoundingBox();
+		}
+	}
 }
 
 void Model::Draw(bool& wireFrameActive)
 {
 	if (isAlive || InmortalObject)
 	{
-		axisAlignedBoundingBox->UpdateInternalDataBoundingBox(internalData, transform);
-
 		if (rootNode != NULL)
 			rootNode->Draw(wireFrameActive);
 
@@ -83,8 +89,6 @@ void Model::Draw(bool& wireFrameActive)
 			if (modelChildrens[i] != NULL)
 				modelChildrens[i]->Draw(wireFrameActive);
 		}
-
-		axisAlignedBoundingBox->Draw(axisAlignedBoundingBox->GetEnableDraw());
 	}
 }
 
@@ -155,6 +159,4 @@ void Model::BindBuffer() {}
 
 void Model::SetEnableDrawAABB(bool value)
 {
-	if (axisAlignedBoundingBox != NULL)
-		axisAlignedBoundingBox->SetEnableDraw(value);
 }

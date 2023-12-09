@@ -24,6 +24,7 @@ public:
 	~Model();
 
 	void LoadModel(const string& filePath, const string& texturePath);
+	void UpdateAABB();
 	void Draw(bool& wireFrameActive) override;
 	void UnloadModel();
 
@@ -33,7 +34,7 @@ public:
 	virtual void SetIsAlive(bool value);
 	void ChangeDrawState(Entity* nodeToChange, bool value);
 
-	ModelNode* GetMyModelNode() { return rootNode; }
+	ModelNode* GetRootNode() { return rootNode; }
 	vector<ModelNode*> GetModelChildrens() { return modelChildrens; }
 	vector<Mesh*> GetModelMeshes() { return modelMeshes; }
 protected:
@@ -45,5 +46,6 @@ private:
 	vector<Mesh*> modelMeshes;
 	ModelNode* rootNode;
 	Material* myMat;
+	BSPHandler* bspHandler;
 };
 #endif

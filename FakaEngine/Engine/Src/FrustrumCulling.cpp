@@ -20,8 +20,8 @@ void FrustrumCulling::UpdateFrustrum(Camera* _camera)
 	glm::vec4 offsideNearPlane = cameraForward + glm::vec4(0, 0, offsideNearValue, 0);
 
 	//Calculo los planos Near y Far.
-	_nearPlane->set3Points(cameraForward, cameraPosition + offsideNearPlane);
-	_farPlane->set3Points(cameraForward, cameraPosition + offsideNearPlane + glm::vec4(0, 0, offsideFarPlane + drawDistance, 0));
+	//_nearPlane->set3Points(cameraForward, cameraPosition + offsideNearPlane);
+	//_farPlane->set3Points(cameraForward, cameraPosition + offsideNearPlane + glm::vec4(0, 0, offsideFarPlane + drawDistance, 0));
 	//================================//
 
 	//Calculo los planos Right y Left.
@@ -30,13 +30,13 @@ void FrustrumCulling::UpdateFrustrum(Camera* _camera)
 	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(_camera->projectionDataPerspective._FOV / 1.5f), glm::vec3(0, 1, 0));
 	cameraForward = cameraForward * rotCameraForward;
 
-	_leftPlane->set3Points(cameraForward, cameraPosition);
+	//_leftPlane->set3Points(cameraForward, cameraPosition);
 	cameraForward = auxCameraForward;
 
 	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(-_camera->projectionDataPerspective._FOV / 1.5f), glm::vec3(0, 1, 0));
 	cameraForward = cameraForward * rotCameraForward;
 
-	_rightPlane->set3Points(cameraForward, glm::vec4(_camera->transform.position.x + offsetRightPlane, _camera->transform.position.y, _camera->transform.position.z, 0));
+	//_rightPlane->set3Points(cameraForward, glm::vec4(_camera->transform.position.x + offsetRightPlane, _camera->transform.position.y, _camera->transform.position.z, 0));
 	cameraForward = auxCameraForward;
 	//================================//
 
@@ -46,13 +46,13 @@ void FrustrumCulling::UpdateFrustrum(Camera* _camera)
 	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(angleRotate), glm::vec3(1, 0, 0));
 	cameraForward = cameraForward * rotCameraForward;
 
-	_topPlane->set3Points(cameraForward, cameraPosition);
+	//_topPlane->set3Points(cameraForward, cameraPosition);
 	cameraForward = auxCameraForward;
 
 	rotCameraForward = glm::rotate(glm::mat4(1.0f), glm::radians(-angleRotate), glm::vec3(1, 0, 0));
 	cameraForward = cameraForward * rotCameraForward;
 
-	_downPlane->set3Points(cameraForward, cameraPosition);
+	//_downPlane->set3Points(cameraForward, cameraPosition);
 	cameraForward = auxCameraForward;
 	//================================//
 
@@ -85,7 +85,7 @@ void FrustrumCulling::CheckObjectInFrustrum(int indexObject, vector<int>& indexs
 
 bool FrustrumCulling::CheckObjectInPlane(MyPlane* plane, Entity* objectCompare)
 {
-	if (plane->getSide(objectCompare->GetAABBGlobalPositions()[0]) ||
+	/*if (plane->getSide(objectCompare->GetAABBGlobalPositions()[0]) ||
 		plane->getSide(objectCompare->GetAABBGlobalPositions()[1]) ||
 		plane->getSide(objectCompare->GetAABBGlobalPositions()[2]) ||
 		plane->getSide(objectCompare->GetAABBGlobalPositions()[3]) ||
@@ -95,18 +95,18 @@ bool FrustrumCulling::CheckObjectInPlane(MyPlane* plane, Entity* objectCompare)
 		plane->getSide(objectCompare->GetAABBGlobalPositions()[7]))
 	{
 		return true;
-	}
+	}*/
 	return false;
 }
 
 FrustrumCulling::FrustrumCulling()
 {
-	_nearPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
-	_farPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
-	_rightPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
-	_leftPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
-	_downPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
-	_topPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_nearPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_farPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_rightPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_leftPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_downPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+	//_topPlane = new MyPlane(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
 }
 FrustrumCulling::~FrustrumCulling()
 {
@@ -147,7 +147,7 @@ bool FrustrumCulling::positiveNear(glm::vec3 point)
 	if (_nearPlane == NULL)
 		return false;
 
-	return _nearPlane->getSide(point);
+	return false;//_nearPlane->getSide(point);
 }
 
 bool FrustrumCulling::positiveFar(glm::vec3 point)
@@ -155,7 +155,7 @@ bool FrustrumCulling::positiveFar(glm::vec3 point)
 	if (_farPlane == NULL)
 		return false;
 
-	return _farPlane->getSide(point);
+	return false;//_farPlane->getSide(point);
 }
 
 bool FrustrumCulling::positiveLeft(glm::vec3 point)
@@ -163,7 +163,7 @@ bool FrustrumCulling::positiveLeft(glm::vec3 point)
 	if (_leftPlane == NULL)
 		return false;
 
-	return _leftPlane->getSide(point);
+	return false;//_leftPlane->getSide(point);
 }
 
 bool FrustrumCulling::positiveRight(glm::vec3 point)
@@ -171,7 +171,7 @@ bool FrustrumCulling::positiveRight(glm::vec3 point)
 	if (_rightPlane == NULL)
 		return false;
 
-	return _rightPlane->getSide(point);
+	return false;//_rightPlane->getSide(point);
 }
 
 bool FrustrumCulling::positiveTop(glm::vec3 point)
@@ -179,7 +179,7 @@ bool FrustrumCulling::positiveTop(glm::vec3 point)
 	if (_topPlane == NULL)
 		return false;
 
-	return _topPlane->getSide(point);
+	return false;//_topPlane->getSide(point);
 }
 
 bool FrustrumCulling::positiveDown(glm::vec3 point)
@@ -187,5 +187,5 @@ bool FrustrumCulling::positiveDown(glm::vec3 point)
 	if (_downPlane == NULL)
 		return false;
 
-	return _downPlane->getSide(point);
+	return false;//_downPlane->getSide(point);
 }

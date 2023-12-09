@@ -11,6 +11,7 @@ const int countVerticesCollider = 8;
 const int verticesDataCountArr = 56;
 const int elemForVertexCount = 7;
 const int indicesVertexCollider = 36;
+const float coeficient = 36.75;
 
 class ENGINE_API AxisAlignedBoundingBox : public Entity
 {
@@ -35,6 +36,13 @@ private:
 	float verticesData[verticesDataCountArr];
 	glm::vec3 returnArrPositions[countVerticesCollider];
 	glm::vec4 returnArrColors[countVerticesCollider];
+
+	glm::vec3 _minColl;
+	glm::vec3 _maxColl;
+
+	glm::vec3 _minCollConst;
+	glm::vec3 _maxCollConst;
+
 	Material* my_Mat;
 
 	void UpdateVerticesData();
@@ -61,7 +69,21 @@ public:
 	glm::vec3* GenerateAABBFrustrumPerspective(vector<glm::vec3> _values);
 	glm::vec4* GenerateAxisAlignedBoundingBoxCol();
 
+	void SetMinColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale);
+	void SetMaxColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale);
+
+	glm::vec3 center;
+	glm::vec3 extents;
+
 	glm::vec3* GetAABBPositions() { return returnArrPositions; }
+
+	glm::vec3 GetMinCollConst() { return _minCollConst; }
+	glm::vec3 GetMaxCollConst() { return _maxCollConst; }
+	glm::vec3 GetMinColl() { return _minColl; }
+	glm::vec3 GetMaxColl() { return _maxColl; }
+
+	float GetFixedMinExtent() { return (extents.x * coeficient); }
+	float GetFixedMaxExtent() { return (extents.x * 0.5f); }
 
 	void SetNewMaterial(Material* mat);
 	void AttachEntity(InternalData& entityInternalData, Transform& transformAttach);

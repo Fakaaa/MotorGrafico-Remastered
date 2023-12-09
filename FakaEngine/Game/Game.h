@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Shape.h"
 #include "model.h"
+#include "PlaneBSP.h"
 
 #include <vector>
 
@@ -16,16 +17,15 @@ private:
 	void ControlCamera(Input* input);
 	void InitCustomLights();
 	void InitCustomCamera();
+	void InitInputAndExtras();
 	void InitTestEngine(bool status);
 
 	Shape* _triangle = NULL;
-	Primitive3D* _cube = NULL;
+	Primitive3D* _shapeReference = NULL;
 	Model* _testModel = NULL;
 	Model* _bspScene = NULL;
 
 	Material* _goldMaterial = NULL;
-
-	vector<Entity*> objectsToComputeInBSP;
 
 	bool _mouseCameraControl;
 

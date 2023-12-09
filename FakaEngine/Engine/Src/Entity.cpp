@@ -54,6 +54,7 @@ Entity::Entity(Renderer* _renderer, float _isModel)
 	internalData.translate = glm::mat4(1.0f);
 
 	transform.globalScale = glm::vec3(1.0f);
+	transform.globalRotation = glm::vec3(0.0f);
 	transform.forward = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 	transform.backward = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 	transform.left = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
@@ -142,6 +143,7 @@ void Entity::SetScale(float x, float y, float z)
 	transform.scale[2] = z;
 
 	internalData.scale = glm::scale(glm::mat4(1.0f), transform.scale);
+	CalculateScaleToParent();
 	UpdateMatrixModel();
 }
 
@@ -152,7 +154,21 @@ void Entity::SetScale(glm::vec3 scale)
 	transform.scale[2] = scale.z;
 
 	internalData.scale = glm::scale(glm::mat4(1.0f), transform.scale);
+	CalculateScaleToParent();
 	UpdateMatrixModel();
+}
+
+void Entity::CalculateScaleToParent()
+{
+	if (parent != NULL)
+	{
+		transform.globalScale = glm::vec3(transform.globalScale.x * parent->transform.scale.x, transform.globalScale.y * parent->transform.scale.y
+			, transform.globalScale.z * parent->transform.scale.z);
+		for (Entity* child : childrens)
+		{
+			child->CalculateScaleToParent();
+		}
+	}
 }
 
 void Entity::SetName(string name)
@@ -167,7 +183,6 @@ string Entity::GetName()
 
 void Entity::SetRotationX(float x)
 {
-
 	transform.rotation[0] = x;
 	glm::vec3 axis;
 	axis[0] = 1.0f;
@@ -241,6 +256,21 @@ glm::vec4 Entity::GetRight()
 	transform.right = glm::vec4(QuatXVec(transform.rotationQuaternion, glm::vec3(1, 0, 0)), 0);
 
 	return transform.right;
+}
+
+glm::vec3 Entity::GetRootRotation()
+{
+	glm::vec3 rootRotation;
+
+	if (parent != NULL && parent->GetName() != "RootObjects")
+	{
+		rootRotation = parent->GetRootRotation();
+	}
+	else {
+		return transform.rotation;
+	}
+	
+	return rootRotation;
 }
 
 #pragma region UI

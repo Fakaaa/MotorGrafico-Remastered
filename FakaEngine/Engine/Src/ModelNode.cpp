@@ -17,7 +17,8 @@ ModelNode::ModelNode(Renderer* render, aiNode* node) : Entity(render)
 	SetName(_myNode->mName.C_Str());
 	allchildrensDone = false;
 
-	axisAlignedBoundingBox = new AxisAlignedBoundingBox(render);
+	CreateMyAxisAlignedBoundingBox();
+	axisAlignedBoundingBox->AttachEntity(internalData, transform);
 }
 
 ModelNode::~ModelNode()
@@ -70,10 +71,78 @@ void ModelNode::SetEnableDrawAABB(bool value)
 	}
 }
 
+void ModelNode::SetupAxisAlignedBoundingBox()
+{
+	vector<glm::vec3> _dataXYZ;
+
+	vector<Mesh*> allChildMeshes = GetChildNodesMeshes(this);
+
+	for (int i = 0; i < allChildMeshes.size(); i++)
+	{
+		if (allChildMeshes[i] != NULL)
+		{
+			for (int j = 0; j < allChildMeshes[i]->meshXYZVertices.size(); j++)
+			{
+				_dataXYZ.push_back(allChildMeshes[i]->meshXYZVertices[j]);
+			}
+		}
+	}
+
+	if (_dataXYZ.size() <= 0 || allChildMeshes.size() <= 0)
+	{
+		if (axisAlignedBoundingBox != NULL)
+		{
+			delete axisAlignedBoundingBox;
+			axisAlignedBoundingBox = NULL;
+		}
+	}
+	else {
+		axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
+			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+
+		axisAlignedBoundingBox->SetMinColl(axisAlignedBoundingBox->GetMinCollConst(), transform.globalPosition, transform.globalScale);
+		axisAlignedBoundingBox->SetMaxColl(axisAlignedBoundingBox->GetMaxCollConst(), transform.globalPosition, transform.globalScale);
+	}
+}
+
+vector<Mesh*> ModelNode::GetChildNodesMeshes(ModelNode* node)
+{
+	vector<Mesh*> allChildMeshes;
+
+	for (int i = 0; i < node->_meshList.size(); i++)
+	{
+		allChildMeshes.push_back(node->_meshList[i]);
+	}
+
+	for (int i = 0; i < node->GetChildrens().size(); i++)
+	{
+		Entity* entityChild = node->GetChildrens()[i];
+
+		ModelNode* childNode = dynamic_cast<ModelNode*>(entityChild);
+
+		if (childNode != NULL)
+		{
+			vector<Mesh*> currChildMeshes = GetChildNodesMeshes(childNode);
+
+			for (int k = 0; k < currChildMeshes.size(); k++)
+			{
+				allChildMeshes.push_back(currChildMeshes[k]);
+			}
+		}
+	}
+
+	return allChildMeshes;
+}
+
 void ModelNode::Draw(bool& wireFrameActive)
 {
 	if (isAlive || InmortalObject)
 	{
+		if (axisAlignedBoundingBox != NULL)
+		{
+			axisAlignedBoundingBox->UpdateInternalDataBoundingBox(internalData, transform);
+		}
+
 		for (int i = 0; i < _meshList.size(); i++)
 		{
 			unsigned int materialIndex = _meshToTex[i];
@@ -88,6 +157,11 @@ void ModelNode::Draw(bool& wireFrameActive)
 
 			if (materialIndex < _textureList.size() && _textureList[materialIndex])
 				_textureList[materialIndex]->UnbindTexture();
+		}
+
+		if (axisAlignedBoundingBox != NULL)
+		{
+			GetAABB()->Draw(GetAABB()->GetEnableDraw());
 		}
 	}
 }

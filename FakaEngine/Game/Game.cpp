@@ -3,6 +3,7 @@
 #include "Light.h"
 #include "model.h"
 #include "BSPHandler.h"
+#include "PlaneBSP.h"
 
 #include <vector>
 
@@ -60,17 +61,7 @@ void Game::InitGame()
 
 	AddObjectInDenugGame(_bspScene);
 
-	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
-	{
-		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
-		bspNode->SetInmortalObject(true);
-		bspNode->SetPosition(670, 30, 850);
-		bspNode->SetScale(30.0f, 30.0f, 30.0f);
-		bspNode->SetRotationX(-90.0f);
-		bspNode->SetRotationZ(-90.0f);
-	}
-
-	objectsToComputeInBSP.push_back(_bspScene);
+	InitInputAndExtras();
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -80,9 +71,9 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 		_triangle->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
-	if (_cube != NULL)
+	if (_shapeReference != NULL)
 	{
-		_cube->Draw(_engineGUI->GetIfWireFrameIsActive());
+		_shapeReference->Draw(_engineGUI->GetIfWireFrameIsActive());
 	}
 
 	if (_testModel != NULL)
@@ -102,7 +93,8 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 
 	if (_bspHandler != NULL)
 	{
-		_bspHandler->UpdateObjectsRecursiveCommon(objectsToComputeInBSP);
+		_bspHandler->ValidateCameraInBsp();
+		_bspHandler->ValidateObjectInBsp(_bspScene->GetRootNode());
 		_bspHandler->DrawBSPMeshes(_engineGUI->GetIfWireFrameIsActive());
 	}
 }
@@ -117,10 +109,10 @@ void Game::DestroyGame()
 		_triangle = NULL;
 	}
 
-	if (_cube != NULL)
+	if (_shapeReference != NULL)
 	{
-		delete _cube;
-		_cube = NULL;
+		delete _shapeReference;
+		_shapeReference = NULL;
 	}
 
 	if (_testModel != NULL)
@@ -278,6 +270,49 @@ void Game::InitCustomCamera()
 	AddObjectInDenugGame(_mainCamera);
 }
 
+void Game::InitInputAndExtras()
+{
+	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
+	{
+		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
+		bspNode->SetPosition(670, 30, 850);
+		bspNode->SetScale(80.0f, 80.0f, 80.0f);
+		bspNode->UpdateTransformsData();
+	}
+
+	_bspHandler->GetLogicBspPlanes()[0]->GetPlaneAttach()->SetPosition(75.0f, 30.0f, 850.0f);
+	_bspHandler->GetLogicBspPlanes()[0]->SetupBspPlane(_renderer, PlaneBSP::Right);
+
+	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetPosition(670.0f, 30.0f, 250.0f);
+	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetRotationY(-90.0f);
+	_bspHandler->GetLogicBspPlanes()[1]->SetupBspPlane(_renderer, PlaneBSP::Right);
+
+	_bspHandler->GetLogicBspPlanes()[2]->GetPlaneAttach()->SetPosition(1225.0f, 30.0f, 850.0f);
+	_bspHandler->GetLogicBspPlanes()[2]->SetupBspPlane(_renderer, PlaneBSP::Left);
+
+#pragma region
+	_bspScene->GetEntityNode("Neck")->SetPosition(0, 0, 2.2);
+	_bspScene->GetEntityNode("Head")->SetPosition(0, 0, 1);
+
+	_bspScene->GetEntityNode("LeftShoulder")->SetPosition(0, 1.05, 1.6);
+	_bspScene->GetEntityNode("LeftArm")->SetPosition(0, 0.85, -1.55);
+	_bspScene->GetEntityNode("LeftHand")->SetPosition(0, 1.85, -2.95);
+
+	_bspScene->GetEntityNode("RightShoulder")->SetPosition(0, -1.05, 1.6);
+	_bspScene->GetEntityNode("RightArm")->SetPosition(0, -0.85, -1.55);
+	_bspScene->GetEntityNode("RightHand")->SetPosition(0, -1.85, -2.95);
+
+	_bspScene->GetEntityNode("Wip")->SetPosition(0, 0, -1.85);
+	_bspScene->GetEntityNode("LeftLeg")->SetPosition(0, 1, -1.85);
+	_bspScene->GetEntityNode("LeftFeet")->SetPosition(0, 0.5, -1.85);
+
+	_bspScene->GetEntityNode("RightLeg")->SetPosition(0, -1, -1.85);
+	_bspScene->GetEntityNode("RightFeet")->SetPosition(0, -0.5, -1.85);
+
+	_bspScene->UpdateAABB();
+#pragma endregion
+}
+
 void Game::InitTestEngine(bool status)
 {
 	_triangle = new Shape(_renderer, TypeShape::TRIANGLE);
@@ -288,11 +323,11 @@ void Game::InitTestEngine(bool status)
 	_triangle->SetScale(120.0f, 120.0f, 120.0f);
 	_triangle->SetNewMaterial(_goldMaterial);
 
-	_cube = new Primitive3D(_renderer, TypeModel::Cube, "Res/Textures/ZoroProfile.jpg", false);
-	_cube->SetName("Test Cube");
-	_cube->SetPosition(847.0f, -12.0f, 250.0);
-	_cube->SetScale(690.0f, 20.0f, 815.0f);
-	_cube->SetNewMaterial(_goldMaterial);
+	_shapeReference = new Primitive3D(_renderer, TypeModel::Cube, "Res/Textures/ZoroProfile.jpg", false);
+	_shapeReference->SetName("Test Cube");
+	_shapeReference->SetPosition(847.0f, -12.0f, 250.0);
+	_shapeReference->SetScale(690.0f, 20.0f, 815.0f);
+	_shapeReference->SetNewMaterial(_goldMaterial);
 
 	_testModel = new Model(_renderer, _bspHandler);
 	_testModel->LoadModel("Res/Models/NewTank/tank.obj", "Res/Models/NewTank/");
@@ -303,7 +338,7 @@ void Game::InitTestEngine(bool status)
 	_testModel->SetRotationY(160.0f);
 
 	AddObjectInDenugGame(_triangle);
-	AddObjectInDenugGame(_cube);
+	AddObjectInDenugGame(_shapeReference);
 	AddObjectInDenugGame(_testModel);
 }
 

@@ -10,21 +10,16 @@ class MyPlane
 {
 public:
 	MyPlane(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC);
-	MyPlane(glm::vec3 normal, glm::vec3 point);
 	~MyPlane();
 
-	void set3Points(glm::vec3 normal, glm::vec3 point);
-	void set3Points(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC);
+	glm::vec3 GetPlaneNormal() { return _normal; }
 
-	glm::vec3 getNormal() { return glm::normalize(_normal); }
-
-	void flipPlane();
-
-	float getDistanceToPoint(glm::vec3 point);
-	bool getSide(glm::vec3 point);
-
+	bool GetSide(glm::vec3 point);
+	void FlipPlane();
 private:
-	float _distance;
+	float GetDistanceToPoint(glm::vec3 point);
+
 	glm::vec3 _normal;
+	float _distance;
 };
 #endif // !PLANE_H

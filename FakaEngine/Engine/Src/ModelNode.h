@@ -1,6 +1,8 @@
 #ifndef MODELNODE_H
 #define MODELNODE_H
 
+#include <vector>
+
 #include "Entity.h"
 #include "PrivateClass/Export.h"
 
@@ -27,19 +29,21 @@ public:
 	vector<Texture*> _textureList;
 	vector<unsigned int> _meshToTex;
 
+	aiNode* GetAssimpNode() { return _myNode; };
 	string GetNodeName();
 	bool allchildrensDone;
 
 	void PrintMyInfo();
 	void SetEnableDrawAABB(bool value) override;
-	void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
-	void ClearIndexBSPPlanes();
+	void SetupAxisAlignedBoundingBox();
 
+	bool isMesh;
+
+	vector<Mesh*> GetChildNodesMeshes(ModelNode* node);
 protected:
 	void BindBuffer() override;
 private:
 	Material* myMat;
-
 	aiNode* _myNode;
 };
 #endif // !MODELNODE_H
