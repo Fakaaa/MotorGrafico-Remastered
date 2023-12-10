@@ -1,5 +1,6 @@
 #include "BSPHandler.h"
 #include "Entity.h"
+#include "Utils/Utils.h"
 #include <vector>
 
 #pragma region CONSTRUCTOR
@@ -17,7 +18,7 @@ BSPHandler::~BSPHandler()
 
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
-		if (_logicPlanes_BSP[i] != NULL) 
+		if (_logicPlanes_BSP[i] != NULL)
 		{
 			delete _logicPlanes_BSP[i];
 			_logicPlanes_BSP[i] = NULL;
@@ -65,24 +66,27 @@ bool BSPHandler::UpdateObjectsRecursiveInverse(vector<Entity*> objects)
 		}
 
 		bool canBeActive = true;
-		
-		for (int j = 0; j < _logicPlanes_BSP.size(); j++)
-		{
-			if (!_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
-			{
-				canBeActive = false;
-				break;
-			}
-		}
 
-		if (!canBeActive)
+		if (objects[i]->GetAABB() != NULL)
 		{
-			objects[i]->SetIsAlive(false);
-		}
-		else 
-		{
-			result = true;
-			objects[i]->SetIsAlive(true);
+			for (int j = 0; j < _logicPlanes_BSP.size(); j++)
+			{
+				if (!_logicPlanes_BSP[j]->CheckObjectInPlane(objects[i]))
+				{
+					canBeActive = false;
+					break;
+				}
+			}
+
+			if (!canBeActive)
+			{
+				objects[i]->SetIsAlive(false);
+			}
+			else
+			{
+				result = true;
+				objects[i]->SetIsAlive(true);
+			}
 		}
 	}
 
@@ -91,46 +95,57 @@ bool BSPHandler::UpdateObjectsRecursiveInverse(vector<Entity*> objects)
 
 void BSPHandler::UpdateObjectsRecursiveCommon(vector<Entity*> objects)
 {
-	for (int i = 0; i < objects.size(); i++)
+
+
+	/*for (int i = 0; i < objects.size(); i++)
 	{
 		bool canBeActive = true;
+		vector<ObjectPlanePosition> objectUponPlanes;
 
-		for (int j = 0; j < _logicPlanes_BSP.size(); j++)
+		if (objects[i]->GetAABB() != NULL)
 		{
-			if (!_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]))
+			for (int j = 0; j < _logicPlanes_BSP.size(); j++)
+			{
+				objectUponPlanes.push_back(_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]));
+			}
+
+			if (!Utils::SamePlaneSides(cameraPosUponPlanes, objectUponPlanes))
 			{
 				canBeActive = false;
-				break;
 			}
-		}
 
-		if (!canBeActive)
-		{
-			if (objects[i]->GetIsAlive())
+			if (!canBeActive)
 			{
-				objects[i]->DisableMeAndChilds();
+				if (objects[i]->GetIsAlive())
+				{
+					objects[i]->DisableMeAndChilds();
+				}
+				UpdateObjectsRecursiveCommon(objects[i]->GetChildrens());
+			}
+			else
+			{
+				if (!objects[i]->GetIsAlive())
+				{
+					objects[i]->EnableMeAndChilds();
+				}
 			}
 		}
-		else 
-		{
-			if (!objects[i]->GetIsAlive()) 
-			{
-				objects[i]->EnableMeAndChilds();
-			}
+		else {
 			UpdateObjectsRecursiveCommon(objects[i]->GetChildrens());
 		}
-	}
+	}*/
 }
 
 void BSPHandler::AddPlaneBSP(PlaneBSP* newBsp)
 {
-	newBsp->SetCurrentCameraCompare(_camera);
 	_logicPlanes_BSP.push_back(newBsp);
 }
 
 void BSPHandler::SetNewPlaneMesh(ModelNode* planeNode, string planeName)
 {
 	BSPNodeData newbspDrawData;
+
+	planeNode->SetupAxisAlignedBoundingBox();
 
 	newbspDrawData.node = planeNode;
 	newbspDrawData.name = planeName;
@@ -143,7 +158,7 @@ void BSPHandler::DrawBSPMeshes(bool& wireFrameEnable)
 {
 	for (int i = 0; i < _bspNodes.size(); i++)
 	{
-		if (_bspNodes[i].node != NULL) 
+		if (_bspNodes[i].node != NULL)
 		{
 			_bspNodes[i].node->Draw(wireFrameEnable);
 		}

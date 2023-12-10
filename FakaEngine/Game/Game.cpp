@@ -63,9 +63,9 @@ void Game::InitGame()
 	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
 	{
 		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
-		bspNode->SetInmortalObject(true);
+		//bspNode->SetInmortalObject(true);
 		bspNode->SetPosition(670, 30, 850);
-		bspNode->SetScale(30.0f, 30.0f, 30.0f);
+		bspNode->SetScale(100.0f, 100.0f, 100.0f);
 		bspNode->SetRotationX(-90.0f);
 		bspNode->SetRotationZ(-90.0f);
 	}
@@ -100,11 +100,11 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 		ControlCamera(_input);
 	}
 
-	/*if (_bspHandler != NULL)
+	if (_bspHandler != NULL)
 	{
 		_bspHandler->UpdateObjectsRecursiveCommon(objectsToComputeInBSP);
 		_bspHandler->DrawBSPMeshes(_engineGUI->GetIfWireFrameIsActive());
-	}*/
+	}
 }
 
 void Game::DestroyGame()

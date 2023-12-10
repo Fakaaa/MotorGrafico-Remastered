@@ -45,5 +45,6 @@ private:
 	vector<Mesh*> modelMeshes;
 	ModelNode* rootNode;
 	Material* myMat;
+	BSPHandler* bspHandler;
 };
 #endif

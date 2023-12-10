@@ -29,6 +29,7 @@ public:
 	vector<Texture*> _textureList;
 	vector<unsigned int> _meshToTex;
 
+	aiNode* GetAssimpNode() { return _myNode; };
 	string GetNodeName();
 	bool allchildrensDone;
 

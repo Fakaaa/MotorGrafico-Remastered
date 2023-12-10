@@ -31,13 +31,13 @@ private:
 	int indexChildrenLoad;
 	int amountForward;
 
-	const string bspPlaneKey = "BSP_Plane"; //String to compare the name of the mesh
+	const string bspPlaneKey = "PlaneMesh"; //String to compare the name of the mesh
 
 	stack<ModelNode*> auxiliarNodes;
 	vector<aiNode*> nodes;
 
 	BSPHandler* bspHandlerRef;
-	vector<PlaneBSP::VerticesBSP> planesPosition;
+	//vector<PlaneBSP::VerticesBSP> planesPosition;
 
 	void LoadNode(aiNode* node, const aiScene* scene, vector<ModelNode*>& childrens, Renderer* render);
 	void LoadMesh(vector<Mesh*>& modelMeshes, vector<ModelNode*> childrens, const aiScene* scene, Renderer* render);
@@ -45,7 +45,7 @@ private:
 	void LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiScene* scene, ModelNode*& nodeMesh, Renderer* render);
 	void LoadMaterial(const aiScene* scene, const string& texturePath, vector<Texture*>& textureList);
 	void LoadTextureFromFile(aiTextureType type);
-	void ConfigureBSP_Planes(BSPHandler* bspHandler, vector<ModelNode*> childrens);
+	void ConfigureBSP_Planes(BSPHandler* bspHandler, vector<ModelNode*>& childrens);
 public:
 	ModelImporter(BSPHandler* bspHandler);
 	~ModelImporter();

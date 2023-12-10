@@ -1,5 +1,7 @@
-#include "Utils.h"
 #include <vector>
+
+#include "Utils.h"
+#include "../PlaneBSP.h"
 
 bool Utils::CheckStringCoincidence(string stringA, string stringB)
 {
