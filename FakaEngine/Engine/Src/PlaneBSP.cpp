@@ -1,7 +1,11 @@
 #include "PlaneBSP.h"
 #include "Plane.h"
+#include "Primitive3D.h"
 
+#include "glm/vec3.hpp"
 #include "Utils/Utils.h"
+
+#include <math.h>
 
 #pragma region CONSTRUCTORS
 
@@ -17,7 +21,6 @@ PlaneBSP::~PlaneBSP()
 		myPlane = NULL;
 	}
 }
-
 #pragma endregion
 
 #pragma region PUBLIC_METHODS
@@ -25,20 +28,32 @@ PlaneBSP::~PlaneBSP()
 void PlaneBSP::SetPlaneAttach(Entity* planeAttach)
 {
 	this->planeAttach = planeAttach;
-
-	GenerateBspPlane();
 }
 
-void PlaneBSP::GenerateBspPlane()
+void PlaneBSP::SetupBspPlane(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC, Renderer* renderer, DirectionCheck directionCheck)
 {
-	if (planeAttach != NULL)
+	if (myPlane == NULL)
 	{
-		glm::vec3 planeRotation = planeAttach->transform.forward;
+		this->directionCheck = directionCheck;
+		myPlane = new MyPlane(pointA, pointB, pointC);
 
-		if (planeRotation == glm::vec3(90, 0, 0)) {
+		_shapeReference = new Primitive3D(renderer);
 
-		}
+		_shapeReference->SetPosition(GetPlaneNormal());
+		_shapeReference->SetScale(1, 1, 1);
+		
+		planeAttach->AddChildren(_shapeReference);
 	}
+}
+
+bool PlaneBSP::ValidateObject(glm::vec3 meshMinColl, glm::vec3 meshMaxColl)
+{
+	if (myPlane != NULL)
+	{
+		return GetSide(meshMinColl) || GetSide(meshMaxColl);
+	}
+
+	return false;
 }
 
 Entity* PlaneBSP::GetPlaneAttach()
@@ -46,13 +61,55 @@ Entity* PlaneBSP::GetPlaneAttach()
 	return planeAttach;
 }
 
-bool PlaneBSP::CheckObjectInPlane(Entity* objectCompare)
+void PlaneBSP::DrawShapeReference(bool &wireFrameActive)
 {
-	return false;
+	if (_shapeReference != NULL)
+	{
+		_shapeReference->Draw(wireFrameActive);
+	}
 }
 
-bool PlaneBSP::CheckPositionInPlane(glm::vec3 position)
+void PlaneBSP::UpdateShapeReference()
 {
-	return false;
+	glm::vec3 shapeRefPosition = GetPlaneNormal();
+	_shapeReference->SetPosition(shapeRefPosition);
+}
+
+float PlaneBSP::GetDistanceToPoint(glm::vec3 point)
+{
+	glm::vec3 dirFromAtoB = glm::normalize(point - planeAttach->transform.position);
+	float dotProd = glm::dot(dirFromAtoB, GetPlaneNormal());
+
+	cout << "Distance: " << dotProd << endl;
+
+	return dotProd;
+}
+
+bool PlaneBSP::GetSide(glm::vec3 point)
+{
+	return GetDistanceToPoint(point) > 0.0f;
+}
+
+glm::vec3 PlaneBSP::GetPlaneNormal()
+{
+	glm::vec3 dirToCheck;
+
+	switch (directionCheck)
+	{
+	case PlaneBSP::Forward:
+		dirToCheck = glm::vec3(planeAttach->GetForward().x, planeAttach->GetForward().y, planeAttach->GetForward().z);
+		break;
+	case PlaneBSP::Back:
+		dirToCheck = glm::vec3(-planeAttach->GetForward().x, -planeAttach->GetForward().y, -planeAttach->GetForward().z);
+		break;
+	case PlaneBSP::Left:
+		dirToCheck = glm::vec3(-planeAttach->GetRight().x, -planeAttach->GetRight().y, -planeAttach->GetRight().z);
+		break;
+	case PlaneBSP::Right:
+		dirToCheck = glm::vec3(planeAttach->GetRight().x, planeAttach->GetRight().y, planeAttach->GetRight().z);
+		break;
+	}
+
+	return dirToCheck;
 }
 #pragma endregion

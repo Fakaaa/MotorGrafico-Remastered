@@ -56,7 +56,8 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 	for (int i = 0; i < bspHandler->GetBSP_PlanesData().size(); i++)
 	{
 		if (bspHandler->GetBSP_PlanesData()[i].node != NULL) {
-			RemoveChildren(bspHandler->GetBSP_PlanesData()[i].node, bspHandler->GetRootScene());
+			rootNode->RemoveChildren(bspHandler->GetBSP_PlanesData()[i].node, bspHandler->GetRootScene());
+			bspHandler->GetBSP_PlanesData()[i].node->SetupAxisAlignedBoundingBox();
 		}
 	}
 

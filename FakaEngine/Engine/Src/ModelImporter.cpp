@@ -143,6 +143,9 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 	//Si es un plano BSP, entonces guardamos la data del mesh en el handler de bsp, para dibujarlo y controlarlo separado.
 	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneKey.c_str()))
 	{
+		newMesh->SetInmortalObject(true);
+		nodeMesh->SetInmortalObject(true);
+
 		nodeMesh->_meshList.push_back(newMesh);
 		nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
 		nodeMesh->AddChildren(newMesh);
@@ -150,6 +153,9 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 		ModelNode* parentNode = static_cast<ModelNode*>(nodeMesh->GetParent());
 		if (parentNode != NULL)
 		{
+			parentNode->SetInmortalObject(true);
+			parentNode->_meshList.push_back(newMesh);
+			parentNode->_meshToTex.push_back(node->mMaterialIndex);
 			bspHandlerRef->SetNewPlaneMesh(parentNode, newMesh->GetMeshName());
 		}
 	}

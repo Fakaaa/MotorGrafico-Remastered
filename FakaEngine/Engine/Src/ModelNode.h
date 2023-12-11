@@ -39,9 +39,9 @@ public:
 	void SetupAxisAlignedBoundingBox();
 	void ClearIndexBSPPlanes();
 
+	vector<Mesh*> GetChildNodesMeshes(ModelNode* node);
 protected:
 	void BindBuffer() override;
-	vector<Mesh*> GetChildNodesMeshes(ModelNode* node);
 private:
 	Material* myMat;
 	aiNode* _myNode;

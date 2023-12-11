@@ -1,27 +1,31 @@
 #include "Plane.h"
+
 #include <math.h>
 
-MyPlane::MyPlane(glm::vec3 angleLockA, glm::vec3 angleLockB)
+MyPlane::MyPlane(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC)
 {
-	this->_angleLockA = angleLockA;
-	this->_angleLockB = angleLockB;
+	glm::vec3 line1 = pointB - pointA;
+	glm::vec3 line2 = pointC - pointA;
+	glm::vec3 rawNormal = glm::cross(line1, line2);
+
+	_normal = glm::normalize(rawNormal);
+	_distance = 0 - glm::dot(_normal, pointA);
 }
 
 MyPlane::~MyPlane() {}
 
-bool MyPlane::CheckObjectPass(glm::vec3 meshMinColl, glm::vec3 meshMaxColl, glm::vec3 position, glm::vec3 planeFoward)
+void MyPlane::FlipPlane()
 {
-	glm::vec3 dirA = glm::normalize(meshMinColl - position);
-	float dotProdA = glm::dot(dirA, planeFoward);
+	_normal = -_normal;
+	_distance = -_distance;
+}
 
-	glm::vec3 dirB = glm::normalize(meshMaxColl - position);
-	float dotProdB = glm::dot(dirB, planeFoward);
+float MyPlane::GetDistanceToPoint(glm::vec3 point)
+{
+	return glm::dot(_normal, point) + _distance;
+}
 
-	if (dotProdA < 0.0f && dotProdB < 0.0f)
-	{
-		return false;
-	}
-	else {
-		return true;
-	}
+bool MyPlane::GetSide(glm::vec3 point) 
+{
+	return GetDistanceToPoint(point) > 0.0f;
 }

@@ -1,6 +1,15 @@
 #include "BSPHandler.h"
 #include "Entity.h"
+#include "Mesh.h"
 #include "Utils/Utils.h"
+
+#include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
+#include "Plane.h"
+
+#include <math.h>
 #include <vector>
 
 #pragma region CONSTRUCTOR
@@ -45,100 +54,78 @@ BSPHandler::~BSPHandler()
 
 
 #pragma region PRIVATE_METHODS
-
-#pragma endregion
-
-#pragma region PUBLIC_METHODS
-
-bool BSPHandler::UpdateObjectsRecursiveInverse(vector<Entity*> objects)
+void BSPHandler::CheckObjectsInBsp(Entity* node, bool isRoot)
 {
-	bool result = false;
-
-	for (int i = 0; i < objects.size(); i++)
+	Mesh* currMesh = static_cast<Mesh*>(node);
+	if (currMesh != NULL)
 	{
-		if (objects[i]->GetChildrens().size() != 0)
+		if (!isRoot)
 		{
-			if (UpdateObjectsRecursiveInverse(objects[i]->GetChildrens()))
-			{
-				objects[i]->SetIsAlive(true);
-				continue;
-			}
-		}
+			bool checkPassed = true;
 
-		bool canBeActive = true;
+			glm::vec3* aabPositions = currMesh->GetAABBGlobalPositions();
 
-		if (objects[i]->GetAABB() != NULL)
-		{
-			for (int j = 0; j < _logicPlanes_BSP.size(); j++)
+			for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 			{
-				if (!_logicPlanes_BSP[j]->CheckObjectInPlane(objects[i]))
+				if (!_logicPlanes_BSP[i]->ValidateObject(aabPositions[1] /*Posicion Minima del AABB*/, aabPositions[7] /*Posicion Maxima del AABB*/))
 				{
-					canBeActive = false;
+					checkPassed = false;
 					break;
 				}
 			}
 
-			if (!canBeActive)
-			{
-				objects[i]->SetIsAlive(false);
-			}
-			else
-			{
-				result = true;
-				objects[i]->SetIsAlive(true);
-			}
+			currMesh->SetIsAlive(checkPassed);
 		}
 	}
 
-	return result;
-}
-
-void BSPHandler::UpdateObjectsRecursiveCommon(vector<Entity*> objects)
-{
-
-
-	/*for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < node->GetChildrens().size(); i++)
 	{
-		bool canBeActive = true;
-		vector<ObjectPlanePosition> objectUponPlanes;
-
-		if (objects[i]->GetAABB() != NULL)
-		{
-			for (int j = 0; j < _logicPlanes_BSP.size(); j++)
-			{
-				objectUponPlanes.push_back(_logicPlanes_BSP[j]->CheckObjectInPlaneBSP(objects[i]));
-			}
-
-			if (!Utils::SamePlaneSides(cameraPosUponPlanes, objectUponPlanes))
-			{
-				canBeActive = false;
-			}
-
-			if (!canBeActive)
-			{
-				if (objects[i]->GetIsAlive())
-				{
-					objects[i]->DisableMeAndChilds();
-				}
-				UpdateObjectsRecursiveCommon(objects[i]->GetChildrens());
-			}
-			else
-			{
-				if (!objects[i]->GetIsAlive())
-				{
-					objects[i]->EnableMeAndChilds();
-				}
-			}
-		}
-		else {
-			UpdateObjectsRecursiveCommon(objects[i]->GetChildrens());
-		}
-	}*/
+		CheckObjectsInBsp(node->GetChildrens()[i], false);
+	}
 }
+#pragma endregion
 
+#pragma region PUBLIC_METHODS
 void BSPHandler::AddPlaneBSP(PlaneBSP* newBsp)
 {
 	_logicPlanes_BSP.push_back(newBsp);
+	_cameraPlaneChecks.push_back(false);
+}
+
+void BSPHandler::ValidateObjectInBsp(ModelNode* root)
+{
+	CheckObjectsInBsp(root, true);
+}
+
+void BSPHandler::ValidateCameraInBsp()
+{
+	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
+	{
+		_cameraPlaneChecks[i] = _logicPlanes_BSP[i]->GetSide(_camera->transform.position);
+	}
+	
+	/*cout << "----------Camera plane sides----------" << endl;
+	for (int i = 0; i < _cameraPlaneChecks.size(); i++)
+	{
+		if (_cameraPlaneChecks[i])
+		{
+			cout << "Plane " << i << " POSITIVE" << endl;
+		}
+		else {
+			cout << "Plane " << i << " NEGATIVE" << endl;
+		}
+	}
+	cout << "--------------------------------------" << endl;*/
+}
+
+void BSPHandler::FlipBspPlane(int index)
+{
+	if (_logicPlanes_BSP.size() >= index){
+		return;
+	}
+
+	_logicPlanes_BSP[index]->GetLogicPlane()->FlipPlane();
+	_logicPlanes_BSP[index]->UpdateShapeReference();
 }
 
 void BSPHandler::SetNewPlaneMesh(ModelNode* planeNode, string planeName)
@@ -163,6 +150,10 @@ void BSPHandler::DrawBSPMeshes(bool& wireFrameEnable)
 			_bspNodes[i].node->Draw(wireFrameEnable);
 		}
 	}
-}
 
+	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
+	{
+		_logicPlanes_BSP[i]->DrawShapeReference(wireFrameEnable);
+	}
+}
 #pragma endregion
