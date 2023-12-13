@@ -96,6 +96,12 @@ glm::vec3* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxPos(vector<glm:
 	returnArrPositions[6] = glm::vec3(max_x, min_y, max_z);
 	returnArrPositions[7] = glm::vec3(max_x, max_y, max_z);
 
+	_minCollConst = glm::vec3(min_x, min_y, min_z);
+	_maxCollConst = glm::vec3(max_x, max_y, max_z);
+
+	center = (_minCollConst + _maxCollConst) * 0.5f;
+	extents = glm::vec3(_maxCollConst.x - center.x, _maxCollConst.y - center.y, _maxCollConst.z - center.z);
+
 	return returnArrPositions;
 }
 
@@ -139,6 +145,24 @@ glm::vec4* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxCol()
 	}
 
 	return returnArrColors;
+}
+
+void AxisAlignedBoundingBox::SetMinColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale)
+{
+	_minCollConst = value;
+	_minColl = (_minCollConst * scale) + position;
+
+	center = (_minColl + _maxColl) * 0.5f;
+	extents = glm::vec3(_maxColl.x - center.x, _maxColl.y - center.y, _maxColl.z - center.z);
+}
+
+void AxisAlignedBoundingBox::SetMaxColl(glm::vec3 value, glm::vec3 position, glm::vec3 scale)
+{
+	_maxCollConst = value;
+	_maxColl = (_maxCollConst * scale) + position + (-_minCollConst * scale);
+
+	center = (_minColl + _maxColl) * 0.5f;
+	extents = glm::vec3(_maxColl.x - center.x, _maxColl.y - center.y, _maxColl.z - center.z);
 }
 
 void AxisAlignedBoundingBox::CreateAxisAlignedBoundingBox()

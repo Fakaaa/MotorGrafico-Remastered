@@ -83,6 +83,12 @@ void ModelNode::SetupAxisAlignedBoundingBox()
 		{
 			for (int j = 0; j < allChildMeshes[i]->meshXYZVertices.size(); j++)
 			{
+				glm::vec3 meshPosition = allChildMeshes[i]->GetParent()->transform.globalPosition * allChildMeshes[i]->transform.position;
+				glm::vec3 meshScale = allChildMeshes[i]->GetParent()->transform.globalScale * allChildMeshes[i]->transform.scale;
+
+				allChildMeshes[i]->GetAABB()->SetMinColl(allChildMeshes[i]->GetAABB()->GetMinCollConst(), meshPosition, meshScale);
+				allChildMeshes[i]->GetAABB()->SetMaxColl(allChildMeshes[i]->GetAABB()->GetMaxCollConst(), meshPosition, meshScale);
+
 				_dataXYZ.push_back(allChildMeshes[i]->meshXYZVertices[j]);
 			}
 		}
@@ -99,6 +105,9 @@ void ModelNode::SetupAxisAlignedBoundingBox()
 	else {
 		axisAlignedBoundingBox->SetVerticesColliders(axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxPos(_dataXYZ),
 			axisAlignedBoundingBox->GenerateAxisAlignedBoundingBoxCol());
+
+		axisAlignedBoundingBox->SetMinColl(axisAlignedBoundingBox->GetMinCollConst(), transform.globalPosition, transform.globalScale);
+		axisAlignedBoundingBox->SetMaxColl(axisAlignedBoundingBox->GetMaxCollConst(), transform.globalPosition, transform.globalScale);
 	}
 }
 

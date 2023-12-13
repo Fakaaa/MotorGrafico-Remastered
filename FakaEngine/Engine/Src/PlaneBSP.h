@@ -36,8 +36,7 @@ public:
 	vector<Entity*> ObjectsInGame;
 
 	void SetPlaneAttach(Entity* plane);
-	void SetupBspPlane(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC, Renderer* renderer, DirectionCheck directionCheck);
-	bool ValidateObject(glm::vec3 meshMinColl, glm::vec3 meshMaxColl);
+	void SetupBspPlane(Renderer* renderer, DirectionCheck directionCheck);
 
 	Entity* GetPlaneAttach();
 
@@ -45,9 +44,7 @@ public:
 	void UpdateShapeReference();
 
 	float GetDistanceToPoint(glm::vec3 point);
-	bool GetSide(glm::vec3 point);
 
-	MyPlane* GetLogicPlane() { return myPlane; }
 	void SetName(string value) { name = value; }
 	string GetName() { return name; }
 private:
@@ -60,7 +57,6 @@ private:
 	Primitive3D* _shapeReference = NULL;
 
 	Entity* planeAttach = NULL;
-	MyPlane* myPlane = NULL; // Con esto saco la matematica del plano
 };
 
 #endif

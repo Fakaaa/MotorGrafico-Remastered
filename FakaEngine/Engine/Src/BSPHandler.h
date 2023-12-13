@@ -11,6 +11,7 @@
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
+#include "AxisAlignedBoundingBox.h"
 #include "Plane.h"
 #include "PlaneBSP.h"
 #include "Entity.h"
@@ -42,7 +43,8 @@ public:
 	void AddPlaneBSP(PlaneBSP* newBsp);
 	void ValidateObjectInBsp(ModelNode* root);
 	void ValidateCameraInBsp();
-	void FlipBspPlane(int index);
+
+	bool ValidateEntityInBspPlanes(Entity* node);
 
 	void SetNewPlaneMesh(ModelNode* planeNode, string planeName);
 	void DrawBSPMeshes(bool& wireFrameEnable);

@@ -15,11 +15,6 @@ PlaneBSP::PlaneBSP()
 
 PlaneBSP::~PlaneBSP()
 {
-	if (myPlane != NULL)
-	{
-		delete myPlane;
-		myPlane = NULL;
-	}
 }
 #pragma endregion
 
@@ -30,30 +25,16 @@ void PlaneBSP::SetPlaneAttach(Entity* planeAttach)
 	this->planeAttach = planeAttach;
 }
 
-void PlaneBSP::SetupBspPlane(glm::vec3 pointA, glm::vec3 pointB, glm::vec3 pointC, Renderer* renderer, DirectionCheck directionCheck)
+void PlaneBSP::SetupBspPlane(Renderer* renderer, DirectionCheck directionCheck)
 {
-	if (myPlane == NULL)
-	{
-		this->directionCheck = directionCheck;
-		myPlane = new MyPlane(pointA, pointB, pointC);
+	this->directionCheck = directionCheck;
 
-		_shapeReference = new Primitive3D(renderer);
+	_shapeReference = new Primitive3D(renderer);
 
-		_shapeReference->SetPosition(GetPlaneNormal());
-		_shapeReference->SetScale(1, 1, 1);
-		
-		planeAttach->AddChildren(_shapeReference);
-	}
-}
+	_shapeReference->SetPosition(GetPlaneNormal());
+	_shapeReference->SetScale(0.25f, 0.25f, 0.25f);
 
-bool PlaneBSP::ValidateObject(glm::vec3 meshMinColl, glm::vec3 meshMaxColl)
-{
-	if (myPlane != NULL)
-	{
-		return GetSide(meshMinColl) || GetSide(meshMaxColl);
-	}
-
-	return false;
+	planeAttach->AddChildren(_shapeReference);
 }
 
 Entity* PlaneBSP::GetPlaneAttach()
@@ -80,14 +61,7 @@ float PlaneBSP::GetDistanceToPoint(glm::vec3 point)
 	glm::vec3 dirFromAtoB = glm::normalize(point - planeAttach->transform.position);
 	float dotProd = glm::dot(dirFromAtoB, GetPlaneNormal());
 
-	cout << "Distance: " << dotProd << endl;
-
 	return dotProd;
-}
-
-bool PlaneBSP::GetSide(glm::vec3 point)
-{
-	return GetDistanceToPoint(point) > 0.0f;
 }
 
 glm::vec3 PlaneBSP::GetPlaneNormal()

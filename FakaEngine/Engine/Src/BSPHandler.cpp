@@ -7,6 +7,8 @@
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
+
+#include "AxisAlignedBoundingBox.h"
 #include "Plane.h"
 
 #include <math.h>
@@ -49,32 +51,44 @@ BSPHandler::~BSPHandler()
 
 	_countBSP_Planes = 0;
 }
-
 #pragma endregion
 
-
 #pragma region PRIVATE_METHODS
+bool BSPHandler::ValidateEntityInBspPlanes(Entity* node)
+{
+	bool checkPassed = true;
+
+	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
+	{
+		glm::vec3 aabbPos0 = node->GetAABBSidesFromExtent()[0];
+		glm::vec3 aabbPos1 = node->GetAABBSidesFromExtent()[1];
+		glm::vec3 aabbPos2 = node->GetAABBSidesFromExtent()[2];
+
+		float dotProd0 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos0);
+		float dotProd1 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos1);
+		float dotProd2 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos2);
+
+		if (dotProd0 < 0.0f && dotProd1 < 0.0f && dotProd2 < 0.0f)
+		{
+			checkPassed = false;
+			break;
+		}
+	}
+
+	return checkPassed;
+}
+
 void BSPHandler::CheckObjectsInBsp(Entity* node, bool isRoot)
 {
 	Mesh* currMesh = static_cast<Mesh*>(node);
 	if (currMesh != NULL)
 	{
-		if (!isRoot)
+		if (ValidateEntityInBspPlanes(node))
 		{
-			bool checkPassed = true;
-
-			glm::vec3* aabPositions = currMesh->GetAABBGlobalPositions();
-
-			for (int i = 0; i < _logicPlanes_BSP.size(); i++)
-			{
-				if (!_logicPlanes_BSP[i]->ValidateObject(aabPositions[1] /*Posicion Minima del AABB*/, aabPositions[7] /*Posicion Maxima del AABB*/))
-				{
-					checkPassed = false;
-					break;
-				}
-			}
-
-			currMesh->SetIsAlive(checkPassed);
+			currMesh->SetIsAlive(true);
+		}
+		else {
+			currMesh->SetIsAlive(false);
 		}
 	}
 
@@ -101,9 +115,9 @@ void BSPHandler::ValidateCameraInBsp()
 {
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
-		_cameraPlaneChecks[i] = _logicPlanes_BSP[i]->GetSide(_camera->transform.position);
+		_cameraPlaneChecks[i] = !(_logicPlanes_BSP[i]->GetDistanceToPoint(_camera->transform.position) < 0.0f);
 	}
-	
+
 	/*cout << "----------Camera plane sides----------" << endl;
 	for (int i = 0; i < _cameraPlaneChecks.size(); i++)
 	{
@@ -116,16 +130,6 @@ void BSPHandler::ValidateCameraInBsp()
 		}
 	}
 	cout << "--------------------------------------" << endl;*/
-}
-
-void BSPHandler::FlipBspPlane(int index)
-{
-	if (_logicPlanes_BSP.size() >= index){
-		return;
-	}
-
-	_logicPlanes_BSP[index]->GetLogicPlane()->FlipPlane();
-	_logicPlanes_BSP[index]->UpdateShapeReference();
 }
 
 void BSPHandler::SetNewPlaneMesh(ModelNode* planeNode, string planeName)
@@ -153,7 +157,8 @@ void BSPHandler::DrawBSPMeshes(bool& wireFrameEnable)
 
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
-		_logicPlanes_BSP[i]->DrawShapeReference(wireFrameEnable);
+		bool wireFrameActive = true;
+		_logicPlanes_BSP[i]->DrawShapeReference(wireFrameActive);
 	}
 }
 #pragma endregion

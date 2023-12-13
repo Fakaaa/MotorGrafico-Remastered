@@ -54,6 +54,7 @@ struct ENGINE_API Transform
 
 	glm::vec3 globalScale;
 	glm::vec3 globalPosition;
+	glm::vec3 globalRotation;
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
@@ -143,6 +144,7 @@ public:
 	virtual void SetRotationX(float x);
 	virtual void SetRotationY(float y);
 	virtual void SetRotationZ(float z);
+	virtual void CalculateScaleToParent();
 	void SetName(string name);
 	string GetName();
 	void InitIsModelShader();
@@ -188,9 +190,11 @@ public:
 	void CheckVisibleFrustrumCulling(vector<Entity*> ObjectsInFrustrum, vector<int>& indexObjectsVisibility, FrustrumCulling* FrustrumCulling);
 
 	virtual glm::vec3* GetAABBGlobalPositions();
+	virtual glm::vec3* GetAABBSidesFromExtent();
 
 	glm::vec4 GetForward();
 	glm::vec4 GetUp();
 	glm::vec4 GetRight();
+	glm::vec3 GetRootRotation();
 };
 #endif

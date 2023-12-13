@@ -156,6 +156,7 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 			parentNode->SetInmortalObject(true);
 			parentNode->_meshList.push_back(newMesh);
 			parentNode->_meshToTex.push_back(node->mMaterialIndex);
+
 			bspHandlerRef->SetNewPlaneMesh(parentNode, newMesh->GetMeshName());
 		}
 	}

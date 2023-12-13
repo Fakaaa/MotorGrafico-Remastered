@@ -67,27 +67,15 @@ void Game::InitGame()
 		bspNode->UpdateTransformsData();
 	}
 
-	glm::vec3 planeAPointA = _bspHandler->GetBSP_PlanesData()[0].node->GetAABBGlobalPositions()[1];
-	glm::vec3 planeAPointB = _bspHandler->GetBSP_PlanesData()[0].node->GetAABBGlobalPositions()[7];
-	glm::vec3 planeAPointC = _bspHandler->GetBSP_PlanesData()[0].node->GetAABBGlobalPositions()[0];
-
 	_bspHandler->GetLogicBspPlanes()[0]->GetPlaneAttach()->SetPosition(75.0f, 30.0f, 850.0f);
-	_bspHandler->GetLogicBspPlanes()[0]->SetupBspPlane(planeAPointA, planeAPointB, planeAPointC, _renderer, PlaneBSP::Right);
-
-	glm::vec3 planeBPointA = _bspHandler->GetBSP_PlanesData()[1].node->GetAABBGlobalPositions()[1];
-	glm::vec3 planeBPointB = _bspHandler->GetBSP_PlanesData()[1].node->GetAABBGlobalPositions()[7];
-	glm::vec3 planeBPointC = _bspHandler->GetBSP_PlanesData()[1].node->GetAABBGlobalPositions()[0];
+	_bspHandler->GetLogicBspPlanes()[0]->SetupBspPlane(_renderer, PlaneBSP::Right);
 
 	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetPosition(670.0f, 30.0f, 250.0f);
 	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetRotationY(-90.0f);
-	_bspHandler->GetLogicBspPlanes()[1]->SetupBspPlane(planeBPointA, planeBPointB, planeBPointC, _renderer, PlaneBSP::Right);
-
-	glm::vec3 planeCPointA = _bspHandler->GetBSP_PlanesData()[2].node->GetAABBGlobalPositions()[1];
-	glm::vec3 planeCPointB = _bspHandler->GetBSP_PlanesData()[2].node->GetAABBGlobalPositions()[7];
-	glm::vec3 planeCPointC = _bspHandler->GetBSP_PlanesData()[2].node->GetAABBGlobalPositions()[0];
+	_bspHandler->GetLogicBspPlanes()[1]->SetupBspPlane(_renderer, PlaneBSP::Right);
 
 	_bspHandler->GetLogicBspPlanes()[2]->GetPlaneAttach()->SetPosition(1225.0f, 30.0f, 850.0f);
-	_bspHandler->GetLogicBspPlanes()[2]->SetupBspPlane(planeCPointA, planeCPointB, planeCPointC, _renderer, PlaneBSP::Left);
+	_bspHandler->GetLogicBspPlanes()[2]->SetupBspPlane(_renderer, PlaneBSP::Left);
 
 	objectsToComputeInBSP.push_back(_bspScene);
 
@@ -128,7 +116,7 @@ void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
 	if (_bspHandler != NULL)
 	{
 		_bspHandler->ValidateCameraInBsp();
-		//_bspHandler->ValidateObjectInBsp(_bspScene->GetRootNode());
+		_bspHandler->ValidateObjectInBsp(_bspScene->GetRootNode());
 		_bspHandler->DrawBSPMeshes(_engineGUI->GetIfWireFrameIsActive());
 	}
 }
