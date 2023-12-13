@@ -44,7 +44,7 @@ public:
 	void ValidateObjectInBsp(ModelNode* root);
 	void ValidateCameraInBsp();
 
-	bool ValidateEntityInBspPlanes(Entity* node);
+	void ValidateEntityInBspPlanes(Entity* node, vector<bool>& nodeChecks);
 
 	void SetNewPlaneMesh(ModelNode* planeNode, string planeName);
 	void DrawBSPMeshes(bool& wireFrameEnable);

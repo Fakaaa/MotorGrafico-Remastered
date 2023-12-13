@@ -54,9 +54,9 @@ BSPHandler::~BSPHandler()
 #pragma endregion
 
 #pragma region PRIVATE_METHODS
-bool BSPHandler::ValidateEntityInBspPlanes(Entity* node)
+void BSPHandler::ValidateEntityInBspPlanes(Entity* node, vector<bool>& nodeChecks)
 {
-	bool checkPassed = true;
+	nodeChecks.clear();
 
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
@@ -81,12 +81,12 @@ bool BSPHandler::ValidateEntityInBspPlanes(Entity* node)
 		if (dotProd0 < 0.0f && dotProd1 < 0.0f && dotProd2 < 0.0f && dotProd3 < 0.0f
 			&& dotProd4 < 0.0f && dotProd5 < 0.0f && dotProd6 < 0.0f && dotProd7 < 0.0f)
 		{
-			checkPassed = false;
-			break;
+			nodeChecks.push_back(false);
+		}
+		else {
+			nodeChecks.push_back(true);
 		}
 	}
-
-	return checkPassed;
 }
 
 void BSPHandler::CheckObjectsInBsp(Entity* node, bool isRoot)
@@ -94,7 +94,20 @@ void BSPHandler::CheckObjectsInBsp(Entity* node, bool isRoot)
 	Mesh* currMesh = static_cast<Mesh*>(node);
 	if (currMesh != NULL)
 	{
-		if (ValidateEntityInBspPlanes(node))
+		vector<bool> nodeCheck;
+		ValidateEntityInBspPlanes(node, nodeCheck);
+
+		bool checkPassed = true;
+		for (int i = 0; i < nodeCheck.size(); i++)
+		{
+			if (_cameraPlaneChecks[i] != nodeCheck[i])
+			{
+				checkPassed = false;
+				break;
+			}
+		}
+
+		if (checkPassed)
 		{
 			currMesh->SetIsAlive(true);
 		}

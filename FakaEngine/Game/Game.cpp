@@ -59,7 +59,7 @@ void Game::InitGame()
 	_bspScene->SetRotationX(-90.0f);
 	_bspScene->SetRotationZ(-90.0f);
 
-#pragma region Modelito
+#pragma region Modelito && BSP Handler
 	_bspScene->GetEntityNode("Neck")->SetPosition(0, 0, 2.2);
 	_bspScene->GetEntityNode("Head")->SetPosition(0, 0, 1);
 
@@ -77,7 +77,6 @@ void Game::InitGame()
 
 	_bspScene->GetEntityNode("RightLeg")->SetPosition(0, -1, -1.85);
 	_bspScene->GetEntityNode("RightFeet")->SetPosition(0, -0.5, -1.85);
-#pragma endregion
 
 	_bspScene->UpdateAABB();
 
@@ -104,6 +103,7 @@ void Game::InitGame()
 	cout << "------------------- BSP SCENE (JERARQUIA) -----------------" << endl;
 	_bspScene->PrintTree();
 	cout << "------------------------------------" << endl;
+#pragma endregion
 
 	AddObjectInDenugGame(_bspScene);
 }
