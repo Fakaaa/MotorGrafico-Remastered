@@ -34,7 +34,7 @@ private:
 	vector<PlaneBSP*> _logicPlanes_BSP;
 	vector<BSPNodeData> _bspNodes;
 
-	void CheckObjectsInBsp(Entity* node, bool isRoot);
+	void CheckObjectsInBsp(Entity* node);
 public:
 
 	BSPHandler(Entity* _camera, Entity* _rootScene);

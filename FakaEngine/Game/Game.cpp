@@ -51,7 +51,7 @@ void Game::InitGame()
 	InitOfMaterials();
 
 	_bspScene = new Model(_renderer, _bspHandler);
-	_bspScene->LoadModel("Res/Models/BSPSceneUpdate.fbx", "");
+	_bspScene->LoadModel("Res/Models/BSPScene.fbx", "");
 	_bspScene->SetMaterial(_textureMaterialForLight);
 	_bspScene->SetName("BSP_Scene");
 	_bspScene->SetPosition(670, 30, 850);
@@ -59,53 +59,9 @@ void Game::InitGame()
 	_bspScene->SetRotationX(-90.0f);
 	_bspScene->SetRotationZ(-90.0f);
 
-#pragma region Modelito && BSP Handler
-	_bspScene->GetEntityNode("Neck")->SetPosition(0, 0, 2.2);
-	_bspScene->GetEntityNode("Head")->SetPosition(0, 0, 1);
-
-	_bspScene->GetEntityNode("LeftShoulder")->SetPosition(0, 1.05, 1.6);
-	_bspScene->GetEntityNode("LeftArm")->SetPosition(0, 0.85, -1.55);
-	_bspScene->GetEntityNode("LeftHand")->SetPosition(0, 1.85, -2.95);
-
-	_bspScene->GetEntityNode("RightShoulder")->SetPosition(0, -1.05, 1.6);
-	_bspScene->GetEntityNode("RightArm")->SetPosition(0, -0.85, -1.55);
-	_bspScene->GetEntityNode("RightHand")->SetPosition(0, -1.85, -2.95);
-
-	_bspScene->GetEntityNode("Wip")->SetPosition(0,0, -1.85);
-	_bspScene->GetEntityNode("LeftLeg")->SetPosition(0,1, -1.85);
-	_bspScene->GetEntityNode("LeftFeet")->SetPosition(0, 0.5, -1.85);
-
-	_bspScene->GetEntityNode("RightLeg")->SetPosition(0, -1, -1.85);
-	_bspScene->GetEntityNode("RightFeet")->SetPosition(0, -0.5, -1.85);
-
-	_bspScene->UpdateAABB();
-
-	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
-	{
-		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
-		bspNode->SetPosition(670, 30, 850);
-		bspNode->SetScale(80.0f, 80.0f, 80.0f);
-		bspNode->UpdateTransformsData();
-	}
-
-	_bspHandler->GetLogicBspPlanes()[0]->GetPlaneAttach()->SetPosition(75.0f, 30.0f, 850.0f);
-	_bspHandler->GetLogicBspPlanes()[0]->SetupBspPlane(_renderer, PlaneBSP::Right);
-
-	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetPosition(670.0f, 30.0f, 250.0f);
-	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetRotationY(-90.0f);
-	_bspHandler->GetLogicBspPlanes()[1]->SetupBspPlane(_renderer, PlaneBSP::Right);
-
-	_bspHandler->GetLogicBspPlanes()[2]->GetPlaneAttach()->SetPosition(1225.0f, 30.0f, 850.0f);
-	_bspHandler->GetLogicBspPlanes()[2]->SetupBspPlane(_renderer, PlaneBSP::Left);
-
-	objectsToComputeInBSP.push_back(_bspScene);
-
-	cout << "------------------- BSP SCENE (JERARQUIA) -----------------" << endl;
-	_bspScene->PrintTree();
-	cout << "------------------------------------" << endl;
-#pragma endregion
-
 	AddObjectInDenugGame(_bspScene);
+
+	InitInputAndExtras();
 }
 
 void Game::UpdateGame(Window* _window, Renderer* _renderer, Input* _input)
@@ -312,6 +268,49 @@ void Game::InitCustomCamera()
 	_mainCamera->SetEnableDrawAABB(true);
 	_mainCamera->SetRotationY(270);
 	AddObjectInDenugGame(_mainCamera);
+}
+
+void Game::InitInputAndExtras()
+{
+	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
+	{
+		Entity* bspNode = _bspHandler->GetBSP_PlanesData()[i].node;
+		bspNode->SetPosition(670, 30, 850);
+		bspNode->SetScale(80.0f, 80.0f, 80.0f);
+		bspNode->UpdateTransformsData();
+	}
+
+	_bspHandler->GetLogicBspPlanes()[0]->GetPlaneAttach()->SetPosition(75.0f, 30.0f, 850.0f);
+	_bspHandler->GetLogicBspPlanes()[0]->SetupBspPlane(_renderer, PlaneBSP::Right);
+
+	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetPosition(670.0f, 30.0f, 250.0f);
+	_bspHandler->GetLogicBspPlanes()[1]->GetPlaneAttach()->SetRotationY(-90.0f);
+	_bspHandler->GetLogicBspPlanes()[1]->SetupBspPlane(_renderer, PlaneBSP::Right);
+
+	_bspHandler->GetLogicBspPlanes()[2]->GetPlaneAttach()->SetPosition(1225.0f, 30.0f, 850.0f);
+	_bspHandler->GetLogicBspPlanes()[2]->SetupBspPlane(_renderer, PlaneBSP::Left);
+
+#pragma region
+	_bspScene->GetEntityNode("Neck")->SetPosition(0, 0, 2.2);
+	_bspScene->GetEntityNode("Head")->SetPosition(0, 0, 1);
+
+	_bspScene->GetEntityNode("LeftShoulder")->SetPosition(0, 1.05, 1.6);
+	_bspScene->GetEntityNode("LeftArm")->SetPosition(0, 0.85, -1.55);
+	_bspScene->GetEntityNode("LeftHand")->SetPosition(0, 1.85, -2.95);
+
+	_bspScene->GetEntityNode("RightShoulder")->SetPosition(0, -1.05, 1.6);
+	_bspScene->GetEntityNode("RightArm")->SetPosition(0, -0.85, -1.55);
+	_bspScene->GetEntityNode("RightHand")->SetPosition(0, -1.85, -2.95);
+
+	_bspScene->GetEntityNode("Wip")->SetPosition(0, 0, -1.85);
+	_bspScene->GetEntityNode("LeftLeg")->SetPosition(0, 1, -1.85);
+	_bspScene->GetEntityNode("LeftFeet")->SetPosition(0, 0.5, -1.85);
+
+	_bspScene->GetEntityNode("RightLeg")->SetPosition(0, -1, -1.85);
+	_bspScene->GetEntityNode("RightFeet")->SetPosition(0, -0.5, -1.85);
+
+	_bspScene->UpdateAABB();
+#pragma endregion
 }
 
 void Game::InitTestEngine(bool status)

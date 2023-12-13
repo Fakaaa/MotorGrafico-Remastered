@@ -31,7 +31,8 @@ private:
 	int indexChildrenLoad;
 	int amountForward;
 
-	const string bspPlaneKey = "PlaneMesh"; //String to compare the name of the mesh
+	const string bspPlaneMeshKey = "PlaneMesh"; //String to compare the name of the mesh
+	const string bspPlaneHolderKey = "BSP_Plane"; //String to compare the name of the mesh
 
 	stack<ModelNode*> auxiliarNodes;
 	vector<aiNode*> nodes;

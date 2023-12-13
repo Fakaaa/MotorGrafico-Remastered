@@ -140,16 +140,13 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 	newMesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 	newMesh->SetMeshName(nodeMesh->GetName());
 
+	nodeMesh->_meshList.push_back(newMesh);
+	nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
+	nodeMesh->AddChildren(newMesh);
+
 	//Si es un plano BSP, entonces guardamos la data del mesh en el handler de bsp, para dibujarlo y controlarlo separado.
-	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneKey.c_str()))
+	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneMeshKey.c_str()))
 	{
-		newMesh->SetInmortalObject(true);
-		nodeMesh->SetInmortalObject(true);
-
-		nodeMesh->_meshList.push_back(newMesh);
-		nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
-		nodeMesh->AddChildren(newMesh);
-
 		ModelNode* parentNode = static_cast<ModelNode*>(nodeMesh->GetParent());
 		if (parentNode != NULL)
 		{
@@ -162,10 +159,6 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 	}
 	else //Sino la configuramos en el modelo con normalidad
 	{
-		nodeMesh->_meshList.push_back(newMesh);
-		nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
-		nodeMesh->AddChildren(newMesh);
-
 		modelMeshes.push_back(newMesh);
 	}
 }
@@ -248,7 +241,8 @@ void ModelImporter::ConfigureBSP_Planes(BSPHandler* bspHandler, vector<ModelNode
 		ModelNode* currNode = childrens[i];
 
 		//Validamos si alguno de los childs es algun plano BSP, en ese caso lo "sacamos" (No tenemos en cuenta).
-		if (Utils::CheckStringCoincidence(currNode->GetNodeName(), bspPlaneKey))
+		if (Utils::CheckStringCoincidence(currNode->GetNodeName(), bspPlaneMeshKey) ||
+			Utils::CheckStringCoincidence(currNode->GetNodeName(), bspPlaneHolderKey))
 		{
 			continue;
 		}

@@ -37,6 +37,14 @@ void PlaneBSP::SetupBspPlane(Renderer* renderer, DirectionCheck directionCheck)
 	planeAttach->AddChildren(_shapeReference);
 }
 
+float PlaneBSP::GetDistanceToPoint(glm::vec3 point)
+{
+	glm::vec3 dirFromAtoB = glm::normalize(point - planeAttach->transform.position);
+	float dotProd = glm::dot(dirFromAtoB, GetPlaneNormal());
+
+	return dotProd;
+}
+
 Entity* PlaneBSP::GetPlaneAttach()
 {
 	return planeAttach;
@@ -54,14 +62,6 @@ void PlaneBSP::UpdateShapeReference()
 {
 	glm::vec3 shapeRefPosition = GetPlaneNormal();
 	_shapeReference->SetPosition(shapeRefPosition);
-}
-
-float PlaneBSP::GetDistanceToPoint(glm::vec3 point)
-{
-	glm::vec3 dirFromAtoB = glm::normalize(point - planeAttach->transform.position);
-	float dotProd = glm::dot(dirFromAtoB, GetPlaneNormal());
-
-	return dotProd;
 }
 
 glm::vec3 PlaneBSP::GetPlaneNormal()

@@ -17,6 +17,7 @@ private:
 	void ControlCamera(Input* input);
 	void InitCustomLights();
 	void InitCustomCamera();
+	void InitInputAndExtras();
 	void InitTestEngine(bool status);
 
 	Shape* _triangle = NULL;
@@ -25,8 +26,6 @@ private:
 	Model* _bspScene = NULL;
 
 	Material* _goldMaterial = NULL;
-
-	vector<Entity*> objectsToComputeInBSP;
 
 	bool _mouseCameraControl;
 

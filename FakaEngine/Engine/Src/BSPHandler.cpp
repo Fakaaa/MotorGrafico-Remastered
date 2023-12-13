@@ -89,36 +89,32 @@ void BSPHandler::ValidateEntityInBspPlanes(Entity* node, vector<bool>& nodeCheck
 	}
 }
 
-void BSPHandler::CheckObjectsInBsp(Entity* node, bool isRoot)
+void BSPHandler::CheckObjectsInBsp(Entity* node)
 {
-	Mesh* currMesh = static_cast<Mesh*>(node);
-	if (currMesh != NULL)
+	vector<bool> nodeCheck;
+	ValidateEntityInBspPlanes(node, nodeCheck);
+
+	bool checkPassed = true;
+	for (int i = 0; i < nodeCheck.size(); i++)
 	{
-		vector<bool> nodeCheck;
-		ValidateEntityInBspPlanes(node, nodeCheck);
-
-		bool checkPassed = true;
-		for (int i = 0; i < nodeCheck.size(); i++)
+		if (_cameraPlaneChecks[i] != nodeCheck[i])
 		{
-			if (_cameraPlaneChecks[i] != nodeCheck[i])
-			{
-				checkPassed = false;
-				break;
-			}
+			checkPassed = false;
+			break;
 		}
+	}
 
-		if (checkPassed)
-		{
-			currMesh->SetIsAlive(true);
-		}
-		else {
-			currMesh->SetIsAlive(false);
-		}
+	if (checkPassed)
+	{
+		node->SetIsAlive(true);
+	}
+	else {
+		node->SetIsAlive(false);
 	}
 
 	for (int i = 0; i < node->GetChildrens().size(); i++)
 	{
-		CheckObjectsInBsp(node->GetChildrens()[i], false);
+		CheckObjectsInBsp(node->GetChildrens()[i]);
 	}
 }
 #pragma endregion
@@ -132,7 +128,7 @@ void BSPHandler::AddPlaneBSP(PlaneBSP* newBsp)
 
 void BSPHandler::ValidateObjectInBsp(ModelNode* root)
 {
-	CheckObjectsInBsp(root, true);
+	CheckObjectsInBsp(root);
 }
 
 void BSPHandler::ValidateCameraInBsp()
@@ -141,19 +137,6 @@ void BSPHandler::ValidateCameraInBsp()
 	{
 		_cameraPlaneChecks[i] = !(_logicPlanes_BSP[i]->GetDistanceToPoint(_camera->transform.position) < 0.0f);
 	}
-
-	/*cout << "----------Camera plane sides----------" << endl;
-	for (int i = 0; i < _cameraPlaneChecks.size(); i++)
-	{
-		if (_cameraPlaneChecks[i])
-		{
-			cout << "Plane " << i << " POSITIVE" << endl;
-		}
-		else {
-			cout << "Plane " << i << " NEGATIVE" << endl;
-		}
-	}
-	cout << "--------------------------------------" << endl;*/
 }
 
 void BSPHandler::SetNewPlaneMesh(ModelNode* planeNode, string planeName)
