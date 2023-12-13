@@ -547,25 +547,4 @@ glm::vec3* Entity::GetAABBGlobalPositions()
 
 	return auxVec;
 }
-
-glm::vec3* Entity::GetAABBSidesFromExtent()
-{
-	glm::vec3 auxVec[3];
-
-	glm::vec3 rightCheck = glm::vec3(GetRight()) * axisAlignedBoundingBox->extents.x;
-	glm::vec3 upCheck = glm::vec3(GetUp()) * axisAlignedBoundingBox->extents.y;
-	glm::vec3 forwardCheck = glm::vec3(GetForward()) * axisAlignedBoundingBox->extents.z;
-
-	glm::vec3 rootRotation = GetRootRotation();
-
-	glm::vec3 rightCheckToGlobalCoordinate = rootRotation * glm::vec3(rightCheck * transform.globalScale) + transform.globalPosition;
-	glm::vec3 upCheckToGlobalCoordinate = rootRotation * glm::vec3(upCheck * transform.globalScale) + transform.globalPosition;
-	glm::vec3 forwardCheckToGlobalCoordinate = rootRotation * glm::vec3(forwardCheck * transform.globalScale) + transform.globalPosition;
-
-	auxVec[0] = rightCheckToGlobalCoordinate;
-	auxVec[1] = upCheckToGlobalCoordinate;
-	auxVec[2] = forwardCheckToGlobalCoordinate;
-
-	return auxVec;
-}
 #pragma endregion 

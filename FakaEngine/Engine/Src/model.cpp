@@ -59,7 +59,10 @@ void Model::LoadModel(const string& filePath, const string& texturePath)
 			rootNode->RemoveChildren(bspHandler->GetBSP_PlanesData()[i].node, bspHandler->GetRootScene());
 		}
 	}
+}
 
+void Model::UpdateAABB()
+{
 	if (rootNode != NULL)
 	{
 		rootNode->SetupAxisAlignedBoundingBox();

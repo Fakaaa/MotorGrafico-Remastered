@@ -24,6 +24,7 @@ public:
 	~Model();
 
 	void LoadModel(const string& filePath, const string& texturePath);
+	void UpdateAABB();
 	void Draw(bool& wireFrameActive) override;
 	void UnloadModel();
 

@@ -60,15 +60,26 @@ bool BSPHandler::ValidateEntityInBspPlanes(Entity* node)
 
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
-		glm::vec3 aabbPos0 = node->GetAABBSidesFromExtent()[0];
-		glm::vec3 aabbPos1 = node->GetAABBSidesFromExtent()[1];
-		glm::vec3 aabbPos2 = node->GetAABBSidesFromExtent()[2];
+		glm::vec3 aabbPos0 = node->GetAABBGlobalPositions()[0];
+		glm::vec3 aabbPos1 = node->GetAABBGlobalPositions()[1];
+		glm::vec3 aabbPos2 = node->GetAABBGlobalPositions()[2];
+		glm::vec3 aabbPos3 = node->GetAABBGlobalPositions()[3];
+		glm::vec3 aabbPos4 = node->GetAABBGlobalPositions()[4];
+		glm::vec3 aabbPos5 = node->GetAABBGlobalPositions()[5];
+		glm::vec3 aabbPos6 = node->GetAABBGlobalPositions()[6];
+		glm::vec3 aabbPos7 = node->GetAABBGlobalPositions()[7];
 
 		float dotProd0 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos0);
 		float dotProd1 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos1);
 		float dotProd2 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos2);
+		float dotProd3 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos3);
+		float dotProd4 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos4);
+		float dotProd5 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos5);
+		float dotProd6 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos6);
+		float dotProd7 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos7);
 
-		if (dotProd0 < 0.0f && dotProd1 < 0.0f && dotProd2 < 0.0f)
+		if (dotProd0 < 0.0f && dotProd1 < 0.0f && dotProd2 < 0.0f && dotProd3 < 0.0f
+			&& dotProd4 < 0.0f && dotProd5 < 0.0f && dotProd6 < 0.0f && dotProd7 < 0.0f)
 		{
 			checkPassed = false;
 			break;

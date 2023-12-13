@@ -190,7 +190,6 @@ public:
 	void CheckVisibleFrustrumCulling(vector<Entity*> ObjectsInFrustrum, vector<int>& indexObjectsVisibility, FrustrumCulling* FrustrumCulling);
 
 	virtual glm::vec3* GetAABBGlobalPositions();
-	virtual glm::vec3* GetAABBSidesFromExtent();
 
 	glm::vec4 GetForward();
 	glm::vec4 GetUp();

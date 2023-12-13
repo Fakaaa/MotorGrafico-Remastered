@@ -51,13 +51,35 @@ void Game::InitGame()
 	InitOfMaterials();
 
 	_bspScene = new Model(_renderer, _bspHandler);
-	_bspScene->LoadModel("Res/Models/BSPScene.fbx", "");
+	_bspScene->LoadModel("Res/Models/BSPSceneUpdate.fbx", "");
 	_bspScene->SetMaterial(_textureMaterialForLight);
 	_bspScene->SetName("BSP_Scene");
 	_bspScene->SetPosition(670, 30, 850);
 	_bspScene->SetScale(30.0f, 30.0f, 30.0f);
 	_bspScene->SetRotationX(-90.0f);
 	_bspScene->SetRotationZ(-90.0f);
+
+#pragma region Modelito
+	_bspScene->GetEntityNode("Neck")->SetPosition(0, 0, 2.2);
+	_bspScene->GetEntityNode("Head")->SetPosition(0, 0, 1);
+
+	_bspScene->GetEntityNode("LeftShoulder")->SetPosition(0, 1.05, 1.6);
+	_bspScene->GetEntityNode("LeftArm")->SetPosition(0, 0.85, -1.55);
+	_bspScene->GetEntityNode("LeftHand")->SetPosition(0, 1.85, -2.95);
+
+	_bspScene->GetEntityNode("RightShoulder")->SetPosition(0, -1.05, 1.6);
+	_bspScene->GetEntityNode("RightArm")->SetPosition(0, -0.85, -1.55);
+	_bspScene->GetEntityNode("RightHand")->SetPosition(0, -1.85, -2.95);
+
+	_bspScene->GetEntityNode("Wip")->SetPosition(0,0, -1.85);
+	_bspScene->GetEntityNode("LeftLeg")->SetPosition(0,1, -1.85);
+	_bspScene->GetEntityNode("LeftFeet")->SetPosition(0, 0.5, -1.85);
+
+	_bspScene->GetEntityNode("RightLeg")->SetPosition(0, -1, -1.85);
+	_bspScene->GetEntityNode("RightFeet")->SetPosition(0, -0.5, -1.85);
+#pragma endregion
+
+	_bspScene->UpdateAABB();
 
 	for (int i = 0; i < _bspHandler->GetBSP_PlanesData().size(); i++)
 	{
