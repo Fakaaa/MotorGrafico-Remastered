@@ -80,12 +80,12 @@ glm::vec3* AxisAlignedBoundingBox::GenerateAxisAlignedBoundingBoxPos(vector<glm:
 		values_z.push_back(_values[i].z);
 	}
 
-	float min_x = GetMinNum(values_x) - 0.04f;
-	float max_x = GetMaxNum(values_x) + 0.04f;
-	float min_y = GetMinNum(values_y) - 0.04f;
-	float max_y = GetMaxNum(values_y) + 0.04f;
-	float min_z = GetMinNum(values_z) - 0.04f;
-	float max_z = GetMaxNum(values_z) + 0.04f;
+	float min_x = GetMinNum(values_x);
+	float max_x = GetMaxNum(values_x);
+	float min_y = GetMinNum(values_y);
+	float max_y = GetMaxNum(values_y);
+	float min_z = GetMinNum(values_z);
+	float max_z = GetMaxNum(values_z);
 
 	returnArrPositions[0] = glm::vec3(min_x, max_y, min_z);
 	returnArrPositions[1] = glm::vec3(min_x, min_y, min_z);

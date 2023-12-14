@@ -11,6 +11,7 @@ const int countVerticesCollider = 8;
 const int verticesDataCountArr = 56;
 const int elemForVertexCount = 7;
 const int indicesVertexCollider = 36;
+const float coeficient = 36.75;
 
 class ENGINE_API AxisAlignedBoundingBox : public Entity
 {
@@ -80,6 +81,9 @@ public:
 	glm::vec3 GetMaxCollConst() { return _maxCollConst; }
 	glm::vec3 GetMinColl() { return _minColl; }
 	glm::vec3 GetMaxColl() { return _maxColl; }
+
+	float GetFixedMinExtent() { return (extents.x * coeficient); }
+	float GetFixedMaxExtent() { return (extents.x * 0.5f); }
 
 	void SetNewMaterial(Material* mat);
 	void AttachEntity(InternalData& entityInternalData, Transform& transformAttach);

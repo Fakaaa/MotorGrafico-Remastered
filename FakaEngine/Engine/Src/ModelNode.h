@@ -35,9 +35,9 @@ public:
 
 	void PrintMyInfo();
 	void SetEnableDrawAABB(bool value) override;
-	void SetIndexBSPPlanes(int plane1, int plane2, int plane3);
 	void SetupAxisAlignedBoundingBox();
-	void ClearIndexBSPPlanes();
+
+	bool isMesh;
 
 	vector<Mesh*> GetChildNodesMeshes(ModelNode* node);
 protected:

@@ -144,6 +144,11 @@ void ModelImporter::LoadMesh(vector<Mesh*>& modelMeshes, aiMesh* node, const aiS
 	nodeMesh->_meshToTex.push_back(node->mMaterialIndex);
 	nodeMesh->AddChildren(newMesh);
 
+	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), meshKey.c_str()))
+	{
+		nodeMesh->isMesh = true;
+	}
+
 	//Si es un plano BSP, entonces guardamos la data del mesh en el handler de bsp, para dibujarlo y controlarlo separado.
 	if (Utils::CheckStringCoincidence(nodeMesh->GetName(), bspPlaneMeshKey.c_str()))
 	{

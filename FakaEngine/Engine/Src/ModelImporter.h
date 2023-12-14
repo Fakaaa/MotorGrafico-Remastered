@@ -33,6 +33,7 @@ private:
 
 	const string bspPlaneMeshKey = "PlaneMesh"; //String to compare the name of the mesh
 	const string bspPlaneHolderKey = "BSP_Plane"; //String to compare the name of the mesh
+	const string meshKey = "Mesh"; //String to compare the name of the mesh
 
 	stack<ModelNode*> auxiliarNodes;
 	vector<aiNode*> nodes;

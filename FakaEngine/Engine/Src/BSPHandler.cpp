@@ -61,25 +61,12 @@ void BSPHandler::ValidateEntityInBspPlanes(Entity* node, vector<bool>& nodeCheck
 	for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 	{
 		glm::vec3 aabbPos0 = node->GetAABBGlobalPositions()[0];
-		glm::vec3 aabbPos1 = node->GetAABBGlobalPositions()[1];
-		glm::vec3 aabbPos2 = node->GetAABBGlobalPositions()[2];
-		glm::vec3 aabbPos3 = node->GetAABBGlobalPositions()[3];
-		glm::vec3 aabbPos4 = node->GetAABBGlobalPositions()[4];
-		glm::vec3 aabbPos5 = node->GetAABBGlobalPositions()[5];
-		glm::vec3 aabbPos6 = node->GetAABBGlobalPositions()[6];
 		glm::vec3 aabbPos7 = node->GetAABBGlobalPositions()[7];
 
 		float dotProd0 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos0);
-		float dotProd1 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos1);
-		float dotProd2 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos2);
-		float dotProd3 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos3);
-		float dotProd4 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos4);
-		float dotProd5 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos5);
-		float dotProd6 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos6);
 		float dotProd7 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos7);
 
-		if (dotProd0 < 0.0f && dotProd1 < 0.0f && dotProd2 < 0.0f && dotProd3 < 0.0f
-			&& dotProd4 < 0.0f && dotProd5 < 0.0f && dotProd6 < 0.0f && dotProd7 < 0.0f)
+		if (dotProd0 < 0.0f && dotProd7 < 0.0f)
 		{
 			nodeChecks.push_back(false);
 		}
@@ -89,20 +76,47 @@ void BSPHandler::ValidateEntityInBspPlanes(Entity* node, vector<bool>& nodeCheck
 	}
 }
 
-void BSPHandler::CheckObjectsInBsp(Entity* node)
+bool BSPHandler::UpdatedValidateObjectsBsp(Entity* node)
 {
-	vector<bool> nodeCheck;
-	ValidateEntityInBspPlanes(node, nodeCheck);
-
 	bool checkPassed = true;
-	for (int i = 0; i < nodeCheck.size(); i++)
+	
+	ModelNode* modelNode = static_cast<ModelNode*>(node);
+	if (modelNode != NULL && !modelNode->isMesh)
 	{
-		if (_cameraPlaneChecks[i] != nodeCheck[i])
+		for (int i = 0; i < _logicPlanes_BSP.size(); i++)
 		{
-			checkPassed = false;
-			break;
+			glm::vec3 aabbPos0 = node->GetAABBGlobalPositions()[1] - node->GetAABB()->GetFixedMinExtent();
+			glm::vec3 aabbPos7 = node->GetAABBGlobalPositions()[7] + node->GetAABB()->GetFixedMaxExtent();
+
+			float dotProd0 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos0);
+			float dotProd7 = _logicPlanes_BSP[i]->GetDistanceToPoint(aabbPos7);
+
+			if (_cameraPlaneChecks[i])
+			{
+				if (dotProd0 < 0.0f && dotProd7 < 0.0f)
+				{
+					checkPassed = false;
+				}
+			}
+			else
+			{
+				if (dotProd0 > 0.0f && dotProd7 > 0.0f)
+				{
+					checkPassed = false;
+				}
+			}
 		}
 	}
+	else {
+		checkPassed = modelNode->GetParent()->GetIsAlive();
+	}
+
+	return checkPassed;
+}
+
+void BSPHandler::CheckObjectsInBsp(Entity* node)
+{
+	bool checkPassed = UpdatedValidateObjectsBsp(node);
 
 	if (checkPassed)
 	{
